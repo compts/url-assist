@@ -1,0 +1,39 @@
+{
+  "name": "url-assist",
+  "version": "1.0.0",
+  "description": "HTTP base promised and callback and User agent",
+  "main": "src/index.js",
+  "module": "dist/esm/src/index.js",
+  "types": "dist/ts/index.d.ts",
+  "scripts": {
+    "es_linter": "eslint   src/module/*/*.js src/lib/*/*.js src/core/*.js *.js --fix",
+    "test_esm": "mocha -r esm test/esm/*.test.js",
+    "test_cjs": "mocha test/cjs/*.test.js",
+    "validate": "npm run style && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/compts/url-assist.git"
+  },
+  "keywords": [
+    "compt"
+  ],
+  "tsd": {
+    "directory": "test/ts"
+  },
+  "author": "Pein Freccs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/compts/url-assist/issues"
+  },
+  "homepage": "https://github.com/compts/url-assist#readme",
+  "dependencies": {
+    "tsd": "^0.19.1",
+    "structkit": "^1.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.22",
+    "eslint": "^7.13.0",
+    "eslint-config-strongloop": "^2.1.0"
+  }
+}
