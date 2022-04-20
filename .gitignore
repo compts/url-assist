@@ -15,3 +15,5 @@ dist/.DS_Store
 src/.DS_Store
 example/.DS_Store
 test/.DS_Store
+src/module/.DS_Store
+src/lib/.DS_Store

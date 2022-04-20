@@ -4,10 +4,7 @@ const list_package_utility_js = [
     "src/*/*/*.js",
     "src/*/*/*/*.js"
 ];
-const list_iife_js = [
-
-    "src/index.js"
-];
+const list_iife_js = "src/index.js";
 
 
 exports.module=function (grassconf) {
@@ -40,19 +37,20 @@ exports.module=function (grassconf) {
 
         return packpier(
             grassconf.event(),
-            {"input": {
-                "modules": {
-                    "replaces": {
-                        "structkit": "_stk"
-                    }
+            {
+                "input": {
+                    "modules": {
+                        "replaces": {
+                            "structkit": "_stk"
+                        }
+                    },
+                    "path": list_iife_js
                 },
-                "path": list_iife_js
-            },
-            "output": {
-                "globalName": "urs",
-                "type": "iife"
-            },
-            "plugin": []
+                "output": {
+                    "globalName": "urs",
+                    "type": "iife"
+                },
+                "plugin": []
             }
         )
             //
