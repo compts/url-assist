@@ -1,6 +1,5 @@
 (function(global){
 global.urs={}
-
 configQueryString = {
 
     "arrayFormat": "[]",
@@ -156,6 +155,64 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
     }
 
 };
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} domain The first number in an addition.
+ * @param {string} path The first number in an addition.
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function joinUrlPath (domain, path) {
+
+    var replaceDomain = domain.replace(/(\/)$/, "");
+    var replacePath = path.replace(/^(\/)/, "");
+
+    return replaceDomain+"/"+replacePath;
+
+}
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} config The first number in an addition.
+ * @returns {boolean} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function isHttpProtocolValid (config) {
+
+    return (/^(https|http):\/\//g).test(config);
+
+}
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} config The first number in an addition.
+ * @returns {boolean} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function isHttps (config) {
+
+    return (/^(https)$/g).test(config);
+
+}
 
 /**
  * Is Exact
@@ -377,5 +434,8 @@ function qsParse (value, config) {
 urs.getHostDetails=getHostDetails
 urs.qsStringify=qsStringify
 urs.qsParse=qsParse
+urs.isHttps=isHttps
+urs.isHttpProtocolValid=isHttpProtocolValid
+urs.joinUrlPath=joinUrlPath
 
 })(typeof window !== "undefined" ? window : this);

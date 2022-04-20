@@ -1,9 +1,66 @@
-
 const {configQueryString} = require("./lib/config");
 const {parseStringConvert} = require("./lib/queryString");
 const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
 const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} = require("structkit");
 const url = require('url');
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} domain The first number in an addition.
+ * @param {string} path The first number in an addition.
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function joinUrlPath (domain, path) {
+
+    const replaceDomain = domain.replace(/(\/)$/, "");
+    const replacePath = path.replace(/^(\/)/, "");
+
+    return replaceDomain+"/"+replacePath;
+
+}
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} config The first number in an addition.
+ * @returns {boolean} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function isHttpProtocolValid (config) {
+
+    return (/^(https|http):\/\//g).test(config);
+
+}
+
+/**
+ * Check if object or value
+ *
+ * @since 1.0.1
+ * @category environment
+ * @param {string} config The first number in an addition.
+ * @returns {boolean} Returns the total.
+ * @example
+ *
+ * append({'as':1}, 'as',2)
+ * // => {'as':2}
+ */
+function isHttps (config) {
+
+    return (/^(https)$/g).test(config);
+
+}
 
 /**
  * Is Exact
@@ -228,3 +285,7 @@ function qsParse (value, config) {
 exports.getHostDetails=getHostDetails;
 exports.qsStringify=qsStringify;
 exports.qsParse=qsParse;
+exports.isHttps=isHttps;
+exports.isHttpProtocolValid =isHttpProtocolValid;
+exports.joinUrlPath =joinUrlPath;
+
