@@ -178,6 +178,7 @@ function getHostDetails (host) {
         urlAjax.setAttribute('href', host);
 
         return {
+            "hostArgument": host,
             //  'example.com'
             "hostname": urlAjax.hostname,
             //  '/blog/foo/bar'
@@ -197,6 +198,7 @@ function getHostDetails (host) {
         var urlHttp = new url.URL(host);
 
         return {
+            "hostArgument": host,
             //  'example.com'
             "hostname": urlHttp.hostname,
             //  '/blog/foo/bar'
@@ -212,6 +214,7 @@ function getHostDetails (host) {
     }
 
     return {
+        "hostArgument": host,
         //  'example.com'
         "hostname": "",
         //  '/blog/foo/bar'
