@@ -7,11 +7,13 @@
 
 In a browser:
 ```html
+<script src="structkit-full.iife.js"></script>
 <script src="url-assist.js"></script>
 ```
 ## Download
 
  * [Core build](https://raw.githubusercontent.com/compts/getkit/main/dist/web/url-assist.js) ([~65KB](https://raw.githubusercontent.com/compts/getkit/main/dist/web/url-assist.js))
+ * [Dependency build](https://raw.githubusercontent.com/compts/structkit/main/dist/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/web/structkit-full.iife.js))
 
 Using npm:
 ```shell
