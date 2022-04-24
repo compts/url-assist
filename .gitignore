@@ -17,3 +17,4 @@ example/.DS_Store
 test/.DS_Store
 src/module/.DS_Store
 src/lib/.DS_Store
+package-lock.json
