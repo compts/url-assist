@@ -5,17 +5,17 @@ const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} = require
 const url = require('url');
 
 /**
- * Check if object or value
+ * To join the domain and path
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
  * @param {string} domain The first number in an addition.
  * @param {string} path The first number in an addition.
  * @returns {string} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * joinUrlPath('https://example.com','test')
+ * // => https://example.com/test
  */
 function joinUrlPath (domain, path) {
 
@@ -27,16 +27,16 @@ function joinUrlPath (domain, path) {
 }
 
 /**
- * Check if object or value
+ * Check url has valid https/http protocol
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
  * @param {string} config The first number in an addition.
  * @returns {boolean} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttpProtocolValid('https://example.com')
+ * // => true
  */
 function isHttpProtocolValid (config) {
 
@@ -45,16 +45,16 @@ function isHttpProtocolValid (config) {
 }
 
 /**
- * Check if object or value
+ * Check if url is valid https
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
  * @param {string} config The first number in an addition.
  * @returns {boolean} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttps('https://example.com')
+ * // => true
  */
 function isHttps (config) {
 
@@ -63,7 +63,7 @@ function isHttps (config) {
 }
 
 /**
- * Is Exact
+ * Check the domain details and verify it library is access via browser or nodejs
  *
  * @since 1.0.1
  * @category Seq
@@ -71,8 +71,16 @@ function isHttps (config) {
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getHostDetails('https://example.com')
+ * // => {
+ *          "hostArgument": host,
+ *          "hostname": 'example.com',
+ *          "pathname": /,
+ *          "port": 43,
+ *          "protocol": https,
+ *          "search": '',
+ *          "type": "ajax"
+ *     }
  */
 function getHostDetails (host) {
 
@@ -84,14 +92,10 @@ function getHostDetails (host) {
 
         return {
             "hostArgument": host,
-            //  'example.com'
             "hostname": urlAjax.hostname,
-            //  '/blog/foo/bar'
             "pathname": urlAjax.pathname,
-            //  12345
             "port": urlAjax.port,
             "protocol": urlAjax.protocol.replace(/[:]/g, ""),
-            //  '?startIndex=1&pageSize=10'
             "search": urlAjax.search,
             "type": "ajax"
         };
@@ -104,14 +108,10 @@ function getHostDetails (host) {
 
         return {
             "hostArgument": host,
-            //  'example.com'
             "hostname": urlHttp.hostname,
-            //  '/blog/foo/bar'
             "pathname": urlHttp.pathname,
-            //  12345
             "port": urlHttp.port,
             "protocol": urlHttp.protocol.replace(/[:]/g, ""),
-            //  '?startIndex=1&pageSize=10'
             "search": urlHttp.search,
             "type": "http"
         };
@@ -120,14 +120,10 @@ function getHostDetails (host) {
 
     return {
         "hostArgument": host,
-        //  'example.com'
         "hostname": "",
-        //  '/blog/foo/bar'
         "pathname": "",
-        //  12345
         "port": "80",
         "protocol": "",
-        //  '?startIndex=1&pageSize=10'
         "search": "",
         "type": "invalid"
     };
@@ -136,7 +132,7 @@ function getHostDetails (host) {
 
 
 /**
- * Is Exact
+ * Query String stringify
  *
  * @since 1.0.1
  * @category Seq
@@ -145,8 +141,8 @@ function getHostDetails (host) {
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsStringify({"test": 11,"test2": 11})
+ * // => test=1&test2=11
  */
 function qsStringify (value, config) {
 
@@ -173,7 +169,7 @@ function qsStringify (value, config) {
 }
 
 /**
- * Is Exact
+ * Query String object
  *
  * @since 1.0.1
  * @category Seq
@@ -182,8 +178,8 @@ function qsStringify (value, config) {
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsParse(test=1&test2=11)
+ * // => {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
 
