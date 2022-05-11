@@ -9,8 +9,8 @@ const url = require('url');
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The first number in an addition.
- * @param {string} path The first number in an addition.
+ * @param {string} domain The Domain url
+ * @param {string} path The Url path
  * @returns {string} Returns the total.
  * @example
  *
@@ -31,16 +31,16 @@ function joinUrlPath (domain, path) {
  *
  * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {boolean} Returns the total.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  * // => true
  */
-function isHttpProtocolValid (config) {
+function isHttpProtocolValid (host) {
 
-    return (/^(https|http):\/\//g).test(config);
+    return (/^(https|http):\/\//g).test(host);
 
 }
 
@@ -49,16 +49,16 @@ function isHttpProtocolValid (config) {
  *
  * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {boolean} Returns the total.
  * @example
  *
  * isHttps('https://example.com')
  * // => true
  */
-function isHttps (config) {
+function isHttps (host) {
 
-    return (/^(https)$/g).test(config);
+    return (/^(https)$/g).test(host);
 
 }
 
@@ -67,7 +67,7 @@ function isHttps (config) {
  *
  * @since 1.0.0
  * @category Seq
- * @param {string} host The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {any} Returns the total.
  * @example
  *
@@ -134,10 +134,10 @@ function getHostDetails (host) {
 /**
  * Query String stringify
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {any} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {any} value Passing object to convert string
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
@@ -173,8 +173,8 @@ function qsStringify (value, config) {
  *
  * @since 1.0.0
  * @category Seq
- * @param {string} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {string} value Passing string to convert to object
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
