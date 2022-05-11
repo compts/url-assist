@@ -65,7 +65,7 @@ function isHttps (config) {
 /**
  * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
  * @param {string} host The first number in an addition.
  * @returns {any} Returns the total.
@@ -171,7 +171,7 @@ function qsStringify (value, config) {
 /**
  * Query String object
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
  * @param {string} value The first number in an addition.
  * @param {any} config The first number in an addition.
