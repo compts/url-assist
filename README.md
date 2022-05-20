@@ -12,7 +12,7 @@ In a browser:
 ```
 ## Download
 
- * [Core build](https://raw.githubusercontent.com/compts/getkit/main/dist/web/url-assist.js) ([~65KB](https://raw.githubusercontent.com/compts/getkit/main/dist/web/url-assist.js))
+ * [Core build](https://raw.githubusercontent.com/compts/url-assist/main/dist/web/url-assist.js) ([~65KB](https://raw.githubusercontent.com/compts/url-assist/main/dist/web/url-assist.js))
  * [Dependency build](https://raw.githubusercontent.com/compts/structkit/main/dist/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/structkit-full.iife.js) ([~65KB](https://raw.githubusercontent.com/compts/structkit/main/dist/web/web/structkit-full.iife.js))
 
 Using npm:
