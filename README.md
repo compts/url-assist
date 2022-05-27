@@ -26,4 +26,4 @@ npm install grasseum -g
 ```
 
 [npm-url]: https://www.npmjs.com/package/url-assist
-[npm-image]: https://img.shields.io/badge/url_assist-1.0.0-brightgreen
+[npm-image]: https://img.shields.io/badge/url_assist-1.0.2-brightgreen
