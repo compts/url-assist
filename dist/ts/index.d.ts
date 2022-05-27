@@ -1,81 +1,89 @@
 /**
- * Is Exact
+ * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {string} host The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getHostDetails('https://example.com')
+ * // => {
+ *          "hostArgument": host,
+ *          "hostname": 'example.com',
+ *          "pathname": /,
+ *          "port": 43,
+ *          "protocol": https,
+ *          "search": '',
+ *          "type": "ajax"
+ *     }
  */
 export function getHostDetails(host: string): any;
 /**
- * Is Exact
+ * Query String stringify
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {any} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {any} value Passing object to convert string
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsStringify({"test": 11,"test2": 11})
+ * // => test=1&test2=11
  */
 export function qsStringify(value: any, config: any): any;
 /**
- * Is Exact
+ * Query String object
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {string} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {string} value Passing string to convert to object
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsParse(test=1&test2=11)
+ * // => {"test": 11,"test2": 11}
  */
 export function qsParse(value: string, config: any): any;
 /**
- * Check if object or value
+ * Check if url is valid https
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {boolean} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttps('https://example.com')
+ * // => true
  */
-export function isHttps(config: string): boolean;
+export function isHttps(host: string): boolean;
 /**
- * Check if object or value
+ * Check url has valid https/http protocol
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
+ * @param {string} host Passing the completet domain url
  * @returns {boolean} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttpProtocolValid('https://example.com')
+ * // => true
  */
-export function isHttpProtocolValid(config: string): boolean;
+export function isHttpProtocolValid(host: string): boolean;
 /**
- * Check if object or value
+ * To join the domain and path
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} domain The first number in an addition.
- * @param {string} path The first number in an addition.
+ * @param {string} domain The Domain url
+ * @param {string} path The Url path
  * @returns {string} Returns the total.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * joinUrlPath('https://example.com','test')
+ * // => https://example.com/test
  */
 export function joinUrlPath(domain: string, path: string): string;
