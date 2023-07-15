@@ -5,7 +5,7 @@ const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} = require
 const url = require('url');
 const zero =0;
 const one =1;
-const minusone =1;
+const minusone =-1;
 
 /**
  * To join the domain and path
@@ -274,7 +274,6 @@ function qsParse (value, config) {
             parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
         }
-
 
     });
 

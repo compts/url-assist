@@ -86,18 +86,15 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
         }
 
-
     } else {
 
         if (getTypeof(referenceValue[keyOnly]) === "string") {
-
 
             referenceValue[keyOnly] = [];
 
         }
 
     }
-
 
 };
 
