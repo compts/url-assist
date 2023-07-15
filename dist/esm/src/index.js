@@ -8,6 +8,10 @@ import {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} from 'st
 
 import url from 'url';
 
+const zero =0;
+const one =1;
+const minusone =1;
+
 /**
  * To join the domain and path
  *
@@ -62,7 +66,7 @@ function isHttpProtocolValid (host) {
  */
 function isHttps (host) {
 
-    return (/^(https)$/g).test(host);
+    return (/^(https):\/\/\b/g).test(host);
 
 }
 
@@ -152,7 +156,7 @@ function qsStringify (value, config) {
     if (indexOf([
         "json",
         "array"
-    ], getTypeof(value)) ===-1) {
+    ], getTypeof(value)) === minusone) {
 
         return "";
 
@@ -186,7 +190,7 @@ function qsStringify (value, config) {
  */
 function qsParse (value, config) {
 
-    if (indexOf(["string"], getTypeof(value)) === -1) {
+    if (indexOf(["string"], getTypeof(value)) === minusone) {
 
         return {};
 
@@ -204,10 +208,10 @@ function qsParse (value, config) {
     each(defaultSplit, function (key, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue).value;
-        const getValueOnly = delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             let keyOnly = "";
             const keyList = [];
@@ -228,7 +232,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
@@ -242,10 +246,10 @@ function qsParse (value, config) {
     each(defaultSplit, function (key, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue).value;
-        const getValueOnly = delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             let keyOnly = "";
             const keyList = [];
@@ -266,7 +270,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 

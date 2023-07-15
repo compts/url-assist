@@ -7,6 +7,8 @@ configQueryString = {
     "newLineSeparator": "&"
 };
 
+var zero =0;
+
 /**
  * Is Exact
  *
@@ -28,14 +30,14 @@ var parseStringConvert=function (key, value, type, config, reference) {
     if (_stk.indexOf([
         "json",
         "array"
-    ], type) >=0) {
+    ], type) >=zero) {
 
         _stk.each(value, function (ky, vl) {
 
             var keyVal = _stk.indexOf([
                 "number",
                 "array"
-            ], type) >=0
+            ], type) >=zero
                 ?config.arrayFormat
                 :"["+ky+"]";
 
@@ -89,13 +91,7 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     }
 
-    if (_stk.isEmpty(keyList)) {
-
-        console.log(keyList, "firstKey");
-
-    }
-
-}
+};
 
 /**
  * Is Exact
@@ -115,7 +111,6 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
  */
 var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
-    console.log(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly,"@@@");
     if (_stk.has(referenceValue, keyOnly) ===false) {
 
         if (_stk.isEmpty(keyList)) {
@@ -155,6 +150,10 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
     }
 
 };
+
+var zero =0;
+var one =1;
+var minusone =1;
 
 /**
  * To join the domain and path
@@ -210,7 +209,7 @@ function isHttpProtocolValid (host) {
  */
 function isHttps (host) {
 
-    return (/^(https)$/g).test(host);
+    return (/^(https):\/\/\b/g).test(host);
 
 }
 
@@ -300,7 +299,7 @@ function qsStringify (value, config) {
     if (_stk.indexOf([
         "json",
         "array"
-    ], _stk.getTypeof(value)) ===-1) {
+    ], _stk.getTypeof(value)) === minusone) {
 
         return "";
 
@@ -334,7 +333,7 @@ function qsStringify (value, config) {
  */
 function qsParse (value, config) {
 
-    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === -1) {
+    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === minusone) {
 
         return {};
 
@@ -352,10 +351,10 @@ function qsParse (value, config) {
     _stk.each(defaultSplit, function (key, val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue).value;
-        var getValueOnly = _stk.delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             var keyOnly = "";
             var keyList = [];
@@ -376,7 +375,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
@@ -390,10 +389,10 @@ function qsParse (value, config) {
     _stk.each(defaultSplit, function (key, val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue).value;
-        var getValueOnly = _stk.delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             var keyOnly = "";
             var keyList = [];
@@ -414,7 +413,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 

@@ -3,6 +3,9 @@ const {parseStringConvert} = require("./lib/queryString");
 const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
 const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} = require("structkit");
 const url = require('url');
+const zero =0;
+const one =1;
+const minusone =1;
 
 /**
  * To join the domain and path
@@ -15,7 +18,7 @@ const url = require('url');
  * @example
  *
  * joinUrlPath('https://example.com','test')
- * // => https://example.com/test
+ *=> https://example.com/test
  */
 function joinUrlPath (domain, path) {
 
@@ -36,7 +39,7 @@ function joinUrlPath (domain, path) {
  * @example
  *
  * isHttpProtocolValid('https://example.com')
- * // => true
+ *=> true
  */
 function isHttpProtocolValid (host) {
 
@@ -54,11 +57,11 @@ function isHttpProtocolValid (host) {
  * @example
  *
  * isHttps('https://example.com')
- * // => true
+ *=> true
  */
 function isHttps (host) {
 
-    return (/^(https)$/g).test(host);
+    return (/^(https):\/\/\b/g).test(host);
 
 }
 
@@ -72,7 +75,7 @@ function isHttps (host) {
  * @example
  *
  * getHostDetails('https://example.com')
- * // => {
+ *=> {
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
@@ -142,14 +145,14 @@ function getHostDetails (host) {
  * @example
  *
  * qsStringify({"test": 11,"test2": 11})
- * // => test=1&test2=11
+ *=> test=1&test2=11
  */
 function qsStringify (value, config) {
 
     if (indexOf([
         "json",
         "array"
-    ], getTypeof(value)) ===-1) {
+    ], getTypeof(value)) === minusone) {
 
         return "";
 
@@ -179,11 +182,11 @@ function qsStringify (value, config) {
  * @example
  *
  * qsParse(test=1&test2=11)
- * // => {"test": 11,"test2": 11}
+ *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
 
-    if (indexOf(["string"], getTypeof(value)) === -1) {
+    if (indexOf(["string"], getTypeof(value)) === minusone) {
 
         return {};
 
@@ -201,10 +204,10 @@ function qsParse (value, config) {
     each(defaultSplit, function (key, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue).value;
-        const getValueOnly = delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             let keyOnly = "";
             const keyList = [];
@@ -225,7 +228,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
@@ -240,10 +243,10 @@ function qsParse (value, config) {
     each(defaultSplit, function (key, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue).value;
-        const getValueOnly = delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             let keyOnly = "";
             const keyList = [];
@@ -264,7 +267,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
