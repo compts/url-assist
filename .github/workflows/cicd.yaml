@@ -1,0 +1,23 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  test_on_node:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 20.x, 18.x, 17.x, 16.x, 15.x, 14.x, 13.x, 12.x, 10.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm install -g eslint          
+    - run: npm run es_linter
+    - run: npm run test_esm
+    - run: npm run test_cjs    
