@@ -46,7 +46,7 @@ In a browser
 ```html
 urs.isUrlExtValid('https://example.com/example.js', 'js')
 ```
-keep in my `urs` is used as global library at html
+keep in mind `urs` is used as global library at html
 
 
 CJS, ESM and TS use this code below
