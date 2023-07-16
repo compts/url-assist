@@ -14,7 +14,7 @@ const minusone =-1;
  * @category environment
  * @param {string} domain The Domain url
  * @param {string} path The Url path
- * @returns {string} Returns the total.
+ * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
@@ -35,7 +35,7 @@ function joinUrlPath (domain, path) {
  * @since 1.0.0
  * @category environment
  * @param {string} host Passing the completet domain url
- * @returns {boolean} Returns the total.
+ * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
@@ -53,7 +53,7 @@ function isHttpProtocolValid (host) {
  * @since 1.0.0
  * @category environment
  * @param {string} host Passing the completet domain url
- * @returns {boolean} Returns the total.
+ * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttps('https://example.com')
@@ -71,7 +71,7 @@ function isHttps (host) {
  * @since 1.0.0
  * @category Seq
  * @param {string} host Passing the completet domain url
- * @returns {any} Returns the total.
+ * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
@@ -280,10 +280,33 @@ function qsParse (value, config) {
     return referenceValue;
 
 }
+
+/**
+ * Check if url extenstion,is valid
+ *
+ * @since 1.0.2
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @param {string} ext Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlExtIsValid('https://example.com/example.js','js')
+ *=> true
+ */
+function isUrlExtValid (host, ext) {
+
+    const regularExpression = new RegExp("(."+ext+")$");
+
+    return regularExpression.test(host);
+
+}
+
 exports.getHostDetails=getHostDetails;
 exports.qsStringify=qsStringify;
 exports.qsParse=qsParse;
 exports.isHttps=isHttps;
 exports.isHttpProtocolValid =isHttpProtocolValid;
 exports.joinUrlPath =joinUrlPath;
+exports.isUrlExtValid =isUrlExtValid;
 

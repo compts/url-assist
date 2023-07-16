@@ -98,4 +98,4 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
 };
 
-export {parseObjectConvert, parseObjectSchema};
+export {parseObjectConvert,parseObjectSchema};

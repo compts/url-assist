@@ -153,7 +153,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
 var zero =0;
 var one =1;
-var minusone =1;
+var minusone =-1;
 
 /**
  * To join the domain and path
@@ -162,11 +162,11 @@ var minusone =1;
  * @category environment
  * @param {string} domain The Domain url
  * @param {string} path The Url path
- * @returns {string} Returns the total.
+ * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
- * // => https://example.com/test
+ *=> https://example.com/test
  */
 function joinUrlPath (domain, path) {
 
@@ -183,11 +183,11 @@ function joinUrlPath (domain, path) {
  * @since 1.0.0
  * @category environment
  * @param {string} host Passing the completet domain url
- * @returns {boolean} Returns the total.
+ * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
- * // => true
+ *=> true
  */
 function isHttpProtocolValid (host) {
 
@@ -201,11 +201,11 @@ function isHttpProtocolValid (host) {
  * @since 1.0.0
  * @category environment
  * @param {string} host Passing the completet domain url
- * @returns {boolean} Returns the total.
+ * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttps('https://example.com')
- * // => true
+ *=> true
  */
 function isHttps (host) {
 
@@ -219,11 +219,11 @@ function isHttps (host) {
  * @since 1.0.0
  * @category Seq
  * @param {string} host Passing the completet domain url
- * @returns {any} Returns the total.
+ * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
- * // => {
+ *=> {
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
@@ -292,7 +292,7 @@ function getHostDetails (host) {
  * @example
  *
  * qsStringify({"test": 11,"test2": 11})
- * // => test=1&test2=11
+ *=> test=1&test2=11
  */
 function qsStringify (value, config) {
 
@@ -329,7 +329,7 @@ function qsStringify (value, config) {
  * @example
  *
  * qsParse(test=1&test2=11)
- * // => {"test": 11,"test2": 11}
+ *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
 
@@ -427,11 +427,33 @@ function qsParse (value, config) {
 
 }
 
+/**
+ * Check if url extenstion,is valid
+ *
+ * @since 1.0.2
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @param {string} ext Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlExtIsValid('https://example.com/example.js','js')
+ *=> true
+ */
+function isUrlExtValid (host, ext) {
+
+    var regularExpression = new RegExp("(."+ext+")$");
+
+    return regularExpression.test(host);
+
+}
+
 urs.getHostDetails=getHostDetails
 urs.qsStringify=qsStringify
 urs.qsParse=qsParse
 urs.isHttps=isHttps
 urs.isHttpProtocolValid=isHttpProtocolValid
 urs.joinUrlPath=joinUrlPath
+urs.isUrlExtValid=isUrlExtValid
 
 })(typeof window !== "undefined" ? window : this);
