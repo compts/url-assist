@@ -54,7 +54,8 @@ module.exports = {
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-name-matching": "error",
-        // "func-names":"error",
+        // "func-names":"error",+
+
         // "function-call-argument-newline": "error",
         "function-paren-newline": "error",
         "generator-star-spacing": "error",
@@ -187,7 +188,7 @@ module.exports = {
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
         "no-unreachable-loop": "error",
-        "no-unsafe-optional-chaining": "error",
+        // "no-unsafe-optional-chaining": "error",
         "no-unused-expressions": "error",
         // "no-use-before-define": "error",
         "no-useless-backreference": "error",
@@ -224,12 +225,14 @@ module.exports = {
         "prefer-object-spread": "error",
         "prefer-promise-reject-errors": "error",
         // "prefer-reflect": "error",
+
         // "prefer-regex-literals": "error",
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         // "prefer-template": "error",
         "quote-props": "error",
-        //"radix": "error",
+
+        // "radix": "error",
         "require-atomic-updates": "error",
         "require-await": "error",
         "require-jsdoc": "error",

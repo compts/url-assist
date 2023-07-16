@@ -1,4 +1,4 @@
-import {count, each, isEmpty, has, getTypeof, indexOf, first} from 'structkit';
+import {isEmpty, has, getTypeof, first} from 'structkit';
 
 /**
  * Is Exact
@@ -38,13 +38,7 @@ const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, key
 
     }
 
-    if (isEmpty(keyList)) {
-
-        console.log(keyList, "firstKey");
-
-    }
-
-}
+};
 
 /**
  * Is Exact
@@ -64,7 +58,6 @@ const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, key
  */
 const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
-    console.log(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly,"@@@");
     if (has(referenceValue, keyOnly) ===false) {
 
         if (isEmpty(keyList)) {
@@ -105,4 +98,4 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
 };
 
-export {parseObjectConvert, parseObjectSchema};
+export {parseObjectConvert,parseObjectSchema};

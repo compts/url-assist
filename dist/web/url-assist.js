@@ -7,6 +7,8 @@ configQueryString = {
     "newLineSeparator": "&"
 };
 
+var zero =0;
+
 /**
  * Is Exact
  *
@@ -28,14 +30,14 @@ var parseStringConvert=function (key, value, type, config, reference) {
     if (_stk.indexOf([
         "json",
         "array"
-    ], type) >=0) {
+    ], type) >=zero) {
 
         _stk.each(value, function (ky, vl) {
 
             var keyVal = _stk.indexOf([
                 "number",
                 "array"
-            ], type) >=0
+            ], type) >=zero
                 ?config.arrayFormat
                 :"["+ky+"]";
 
@@ -89,13 +91,7 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     }
 
-    if (_stk.isEmpty(keyList)) {
-
-        console.log(keyList, "firstKey");
-
-    }
-
-}
+};
 
 /**
  * Is Exact
@@ -115,7 +111,6 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
  */
 var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
-    console.log(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly,"@@@");
     if (_stk.has(referenceValue, keyOnly) ===false) {
 
         if (_stk.isEmpty(keyList)) {
@@ -156,18 +151,22 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
 };
 
+var zero =0;
+var one =1;
+var minusone =-1;
+
 /**
- * Check if object or value
+ * To join the domain and path
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} domain The first number in an addition.
- * @param {string} path The first number in an addition.
- * @returns {string} Returns the total.
+ * @param {string} domain The Domain url
+ * @param {string} path The Url path
+ * @returns {string} Return the boolean.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * joinUrlPath('https://example.com','test')
+ *=> https://example.com/test
  */
 function joinUrlPath (domain, path) {
 
@@ -179,52 +178,60 @@ function joinUrlPath (domain, path) {
 }
 
 /**
- * Check if object or value
+ * Check url has valid https/http protocol
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
- * @returns {boolean} Returns the total.
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttpProtocolValid('https://example.com')
+ *=> true
  */
-function isHttpProtocolValid (config) {
+function isHttpProtocolValid (host) {
 
-    return (/^(https|http):\/\//g).test(config);
+    return (/^(https|http):\/\//g).test(host);
 
 }
 
 /**
- * Check if object or value
+ * Check if url is valid https
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category environment
- * @param {string} config The first number in an addition.
- * @returns {boolean} Returns the total.
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
  * @example
  *
- * append({'as':1}, 'as',2)
- * // => {'as':2}
+ * isHttps('https://example.com')
+ *=> true
  */
-function isHttps (config) {
+function isHttps (host) {
 
-    return (/^(https)$/g).test(config);
+    return (/^(https):\/\/\b/g).test(host);
 
 }
 
 /**
- * Is Exact
+ * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {string} host The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} host Passing the completet domain url
+ * @returns {any} Returns the object details.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getHostDetails('https://example.com')
+ *=> {
+ *          "hostArgument": host,
+ *          "hostname": 'example.com',
+ *          "pathname": /,
+ *          "port": 43,
+ *          "protocol": https,
+ *          "search": '',
+ *          "type": "ajax"
+ *     }
  */
 function getHostDetails (host) {
 
@@ -236,14 +243,10 @@ function getHostDetails (host) {
 
         return {
             "hostArgument": host,
-            //  'example.com'
             "hostname": urlAjax.hostname,
-            //  '/blog/foo/bar'
             "pathname": urlAjax.pathname,
-            //  12345
             "port": urlAjax.port,
             "protocol": urlAjax.protocol.replace(/[:]/g, ""),
-            //  '?startIndex=1&pageSize=10'
             "search": urlAjax.search,
             "type": "ajax"
         };
@@ -256,14 +259,10 @@ function getHostDetails (host) {
 
         return {
             "hostArgument": host,
-            //  'example.com'
             "hostname": urlHttp.hostname,
-            //  '/blog/foo/bar'
             "pathname": urlHttp.pathname,
-            //  12345
             "port": urlHttp.port,
             "protocol": urlHttp.protocol.replace(/[:]/g, ""),
-            //  '?startIndex=1&pageSize=10'
             "search": urlHttp.search,
             "type": "http"
         };
@@ -272,14 +271,10 @@ function getHostDetails (host) {
 
     return {
         "hostArgument": host,
-        //  'example.com'
         "hostname": "",
-        //  '/blog/foo/bar'
         "pathname": "",
-        //  12345
         "port": "80",
         "protocol": "",
-        //  '?startIndex=1&pageSize=10'
         "search": "",
         "type": "invalid"
     };
@@ -287,24 +282,24 @@ function getHostDetails (host) {
 }
 
 /**
- * Is Exact
+ * Query String stringify
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {any} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {any} value Passing object to convert string
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsStringify({"test": 11,"test2": 11})
+ *=> test=1&test2=11
  */
 function qsStringify (value, config) {
 
     if (_stk.indexOf([
         "json",
         "array"
-    ], _stk.getTypeof(value)) ===-1) {
+    ], _stk.getTypeof(value)) === minusone) {
 
         return "";
 
@@ -324,21 +319,21 @@ function qsStringify (value, config) {
 }
 
 /**
- * Is Exact
+ * Query String object
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {string} value The first number in an addition.
- * @param {any} config The first number in an addition.
+ * @param {string} value Passing string to convert to object
+ * @param {any} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsParse(test=1&test2=11)
+ *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
 
-    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === -1) {
+    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === minusone) {
 
         return {};
 
@@ -356,10 +351,10 @@ function qsParse (value, config) {
     _stk.each(defaultSplit, function (key, val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue).value;
-        var getValueOnly = _stk.delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             var keyOnly = "";
             var keyList = [];
@@ -380,7 +375,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
@@ -394,10 +389,10 @@ function qsParse (value, config) {
     _stk.each(defaultSplit, function (key, val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue).value;
-        var getValueOnly = _stk.delimiter(getKeyAndValue, 1).join(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
-        if (getKeyAndValue.length > 0) {
+        if (getKeyAndValue.length > zero) {
 
             var keyOnly = "";
             var keyList = [];
@@ -418,7 +413,7 @@ function qsParse (value, config) {
 
             keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
 
-                keyList.push(sub1.replace(/[\[\]]/g, ""));
+                keyList.push(sub1.replace(/[[\]]/g, ""));
 
             });
 
@@ -431,11 +426,34 @@ function qsParse (value, config) {
     return referenceValue;
 
 }
+
+/**
+ * Check if url extenstion,is valid
+ *
+ * @since 1.0.2
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @param {string} ext Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlExtIsValid('https://example.com/example.js','js')
+ *=> true
+ */
+function isUrlExtValid (host, ext) {
+
+    var regularExpression = new RegExp("(."+ext+")$");
+
+    return regularExpression.test(host);
+
+}
+
 urs.getHostDetails=getHostDetails
 urs.qsStringify=qsStringify
 urs.qsParse=qsParse
 urs.isHttps=isHttps
 urs.isHttpProtocolValid=isHttpProtocolValid
 urs.joinUrlPath=joinUrlPath
+urs.isUrlExtValid=isUrlExtValid
 
 })(typeof window !== "undefined" ? window : this);

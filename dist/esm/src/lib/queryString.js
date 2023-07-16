@@ -1,5 +1,7 @@
 import {each, getTypeof, indexOf} from 'structkit';
 
+const zero =0;
+
 /**
  * Is Exact
  *
@@ -21,14 +23,14 @@ const parseStringConvert=function (key, value, type, config, reference) {
     if (indexOf([
         "json",
         "array"
-    ], type) >=0) {
+    ], type) >=zero) {
 
         each(value, function (ky, vl) {
 
             const keyVal = indexOf([
                 "number",
                 "array"
-            ], type) >=0
+            ], type) >=zero
                 ?config.arrayFormat
                 :"["+ky+"]";
 
