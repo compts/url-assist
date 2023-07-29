@@ -25,28 +25,28 @@ export function getHostDetails(host: string): any;
  * @since 1.0.0
  * @category Seq
  * @param {any} value Passing object to convert string
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
  * qsStringify({"test": 11,"test2": 11})
  *=> test=1&test2=11
  */
-export function qsStringify(value: any, config: any): any;
+export function qsStringify(value: any, config?: any | undefined): any;
 /**
  * Query String object
  *
  * @since 1.0.0
  * @category Seq
  * @param {string} value Passing string to convert to object
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
  * qsParse(test=1&test2=11)
  *=> {"test": 11,"test2": 11}
  */
-export function qsParse(value: string, config: any): any;
+export function qsParse(value: string, config?: any | undefined): any;
 /**
  * Check if url is valid https
  *
@@ -101,3 +101,16 @@ export function joinUrlPath(domain: string, path: string): string;
  *=> true
  */
 export function isUrlExtValid(host: string, ext: string): boolean;
+/**
+ * Check url has valid ws/wss websocket protocol
+ *
+ * @since 1.0.0
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isWebSocketProtocolValid('wss://example.com')
+ *=> true
+ */
+export function isWebSocketProtocolValid(host: string): boolean;

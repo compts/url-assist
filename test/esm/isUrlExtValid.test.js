@@ -15,4 +15,10 @@ describe('ESM: isUrlExtValid method', function () {
 
     });
 
+    it('check isUrlExtValid extension with argument', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1', 'js'), true);
+
+    });
+
 });

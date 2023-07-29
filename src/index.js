@@ -48,6 +48,24 @@ function isHttpProtocolValid (host) {
 }
 
 /**
+ * Check url has valid ws/wss websocket protocol
+ *
+ * @since 1.0.0
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isWebSocketProtocolValid('wss://example.com')
+ *=> true
+ */
+function isWebSocketProtocolValid (host) {
+
+    return (/^(wss|ws):\/\//g).test(host);
+
+}
+
+/**
  * Check if url is valid https
  *
  * @since 1.0.0
@@ -140,7 +158,7 @@ function getHostDetails (host) {
  * @since 1.0.0
  * @category Seq
  * @param {any} value Passing object to convert string
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
@@ -177,7 +195,7 @@ function qsStringify (value, config) {
  * @since 1.0.0
  * @category Seq
  * @param {string} value Passing string to convert to object
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
@@ -296,7 +314,7 @@ function qsParse (value, config) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")$");
+    const regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return regularExpression.test(host);
 
@@ -309,4 +327,5 @@ exports.isHttps=isHttps;
 exports.isHttpProtocolValid =isHttpProtocolValid;
 exports.joinUrlPath =joinUrlPath;
 exports.isUrlExtValid =isUrlExtValid;
+exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
 

@@ -1,5 +1,5 @@
 export namespace configQueryString {
-    const arrayFormat: string;
-    const equalSeparator: string;
-    const newLineSeparator: string;
+    let arrayFormat: string;
+    let equalSeparator: string;
+    let newLineSeparator: string;
 }
