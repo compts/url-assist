@@ -11,7 +11,7 @@ scans:
       - check_trailing_space : true
       - max_newline_limit : 2,
      files:
-    # - 'src/*'
+     - 'src/*'
      - 'src/*/*'
 
       
