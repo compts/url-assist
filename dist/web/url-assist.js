@@ -153,7 +153,6 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
 var zero =0;
 var one =1;
-var minusone =-1;
 
 /**
  * To join the domain and path
@@ -314,10 +313,10 @@ function getHostDetails (host) {
  */
 function qsStringify (value, config) {
 
-    if (_stk.indexOf([
+    if (_stk.indexOfNotExist([
         "json",
         "array"
-    ], _stk.getTypeof(value)) === minusone) {
+    ], _stk.getTypeof(value))) {
 
         return "";
 
@@ -351,7 +350,7 @@ function qsStringify (value, config) {
  */
 function qsParse (value, config) {
 
-    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === minusone) {
+    if (_stk.indexOfNotExist(["string"], _stk.getTypeof(value))) {
 
         return {};
 

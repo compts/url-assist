@@ -4,13 +4,12 @@ import {parseStringConvert} from './lib/queryString';
 
 import {parseObjectConvert, parseObjectSchema} from './lib/queryObject';
 
-import {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOf} from 'structkit';
+import {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} from 'structkit';
 
 import url from 'url';
 
 const zero =0;
 const one =1;
-const minusone =-1;
 
 /**
  * To join the domain and path
@@ -171,10 +170,10 @@ function getHostDetails (host) {
  */
 function qsStringify (value, config) {
 
-    if (indexOf([
+    if (indexOfNotExist([
         "json",
         "array"
-    ], getTypeof(value)) === minusone) {
+    ], getTypeof(value))) {
 
         return "";
 
@@ -208,7 +207,7 @@ function qsStringify (value, config) {
  */
 function qsParse (value, config) {
 
-    if (indexOf(["string"], getTypeof(value)) === minusone) {
+    if (indexOfNotExist(["string"], getTypeof(value))) {
 
         return {};
 

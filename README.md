@@ -56,4 +56,4 @@ isUrlExtValid('https://example.com/example.js', 'js')
 ```
 
 [npm-url]: https://www.npmjs.com/package/url-assist
-[npm-image]: https://img.shields.io/badge/url_assist-1.0.2-brightgreen
+[npm-image]: https://img.shields.io/badge/url_assist-1.1.0-brightgreen
