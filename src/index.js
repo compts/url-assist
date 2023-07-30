@@ -1,7 +1,7 @@
 const {configQueryString} = require("./lib/config");
 const {parseStringConvert} = require("./lib/queryString");
 const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
-const {delimiter, has, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
+const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
 const url = require('url');
 const zero =0;
 const one =1;
