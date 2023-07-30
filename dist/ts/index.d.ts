@@ -78,15 +78,14 @@ export function isHttpProtocolValid(host: string): boolean;
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The Domain url
- * @param {string} path The Url path
+ * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-export function joinUrlPath(domain: string, path: string): string;
+export function joinUrlPath(...ags: any[]): string;
 /**
  * Check if url extenstion,is valid
  *

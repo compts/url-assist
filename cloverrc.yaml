@@ -6,12 +6,11 @@ scans:
      lang: javascript
      is_modify_file: true
      action:
-      #- file_line_limit : 200,
-      #- check_new_line_in_last_file : true
+      - file_line_limit : 400,
+      - check_new_line_in_last_file : true
       - check_trailing_space : true
       - max_newline_limit : 2,
      files:
      - 'src/*'
      - 'src/*/*'
 
-      

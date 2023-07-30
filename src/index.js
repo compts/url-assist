@@ -1,7 +1,7 @@
 const {configQueryString} = require("./lib/config");
 const {parseStringConvert} = require("./lib/queryString");
 const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
-const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
+const {delimiter, has, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
 const url = require('url');
 const zero =0;
 const one =1;
@@ -11,20 +11,26 @@ const one =1;
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The Domain url
- * @param {string} path The Url path
+ * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-function joinUrlPath (domain, path) {
+function joinUrlPath (...ags) {
 
-    const replaceDomain = domain.replace(/(\/)$/, "");
-    const replacePath = path.replace(/^(\/)/, "");
+    const replaceDomain = first(ags).replace(/(\/)$/, "");
+    const replacePath = delimiter(ags, one);
+    const cleanReplacePath = [];
 
-    return replaceDomain+"/"+replacePath;
+    each(replacePath, function (key, value) {
+
+        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+
+    });
+
+    return replaceDomain+"/"+cleanReplacePath.join("/");
 
 }
 

@@ -1,34 +1,34 @@
 /**
- * Is Exact
+ * Parsing query string into JSON object
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
  */
-export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): any;
+export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
 /**
- * Is Exact
+ * Parsing JSON object into query string
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
  * isExact({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
-export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): any;
+export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;

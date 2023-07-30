@@ -54,20 +54,20 @@ var parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
- * Is Exact
+ * Parsing query string into JSON object
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
  */
 var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
@@ -94,16 +94,16 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 };
 
 /**
- * Is Exact
+ * Parsing JSON object into query string
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
  * isExact({"test": 11,"test2": 11}, {"test2": 11})
@@ -159,20 +159,28 @@ var one =1;
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The Domain url
- * @param {string} path The Url path
+ * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-function joinUrlPath (domain, path) {
+function joinUrlPath () {
 
-    var replaceDomain = domain.replace(/(\/)$/, "");
-    var replacePath = path.replace(/^(\/)/, "");
+var ags=arguments
 
-    return replaceDomain+"/"+replacePath;
+    var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
+    var replacePath = _stk.delimiter(ags, one);
+    var cleanReplacePath = [];
+
+    _stk.each(replacePath, function (key, value) {
+
+        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+
+    });
+
+    return replaceDomain+"/"+cleanReplacePath.join("/");
 
 }
 
