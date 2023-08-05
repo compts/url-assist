@@ -23,4 +23,25 @@ describe('ESM: getHostDetails method', function () {
 
     });
 
+    it('check getHostDetails with subdomain check output', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://www.example.com'), {
+            "domainDetails": {
+                "domain": "example",
+                "domainWithTld": "example.com",
+                "subdomain": "www",
+                "tld": "com"
+            },
+            "hostArgument": 'https://www.example.com',
+            "hostname": 'www.example.com',
+            "pathname": "/",
+            "port": "",
+            "protocol": "https",
+            "search": '',
+            "type": "http"
+        });
+
+    });
+
+
 });

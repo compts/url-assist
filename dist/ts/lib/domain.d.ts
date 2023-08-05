@@ -7,7 +7,12 @@
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getDomainDetails("example.com")
+ * // =>  domainDetails = {
+ *      "domain": "",
+ *      "domainWithTld": "",
+ *      "subdomain": "",
+ *      "tld": ""
+ *  }
  */
 export function getDomainDetails(domain: string): any;

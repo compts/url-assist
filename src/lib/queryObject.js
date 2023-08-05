@@ -26,13 +26,20 @@ const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, key
 
     if (getTypeof(referenceValue[keyOnly]) === "array") {
 
-        referenceValue[keyOnly].push(getValueOnly);
+        const firstKey = first(keyList);
+        const referenceData = {};
+
+        referenceData[firstKey] =getValueOnly;
+
+        referenceValue[keyOnly].push(isEmpty(firstKey)
+            ? getValueOnly
+            : referenceData);
 
     }
 
     if (getTypeof(referenceValue[keyOnly]) === "json") {
 
-        const firstKey = first(keyList).value;
+        const firstKey = first(keyList);
 
         referenceValue[keyOnly][firstKey]=getValueOnly;
 
@@ -66,7 +73,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
         } else {
 
-            const firstKey = first(keyList).value;
+            const firstKey = first(keyList);
 
             if (isEmpty(firstKey)) {
 

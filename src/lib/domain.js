@@ -44,7 +44,7 @@ const getDomainDetails=function (domain) {
 
     }
 
-    if (count(last) === three) {
+    if (count(domainSplit) === three) {
 
         domainDetails = {
             "domain": domainSplit[one],

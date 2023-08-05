@@ -62,10 +62,15 @@ var parseStringConvert=function (key, value, type, config, reference) {
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getDomainDetails("example.com")
+ * // =>  domainDetails = {
+ *      "domain": "",
+ *      "domainWithTld": "",
+ *      "subdomain": "",
+ *      "tld": ""
+ *  }
  */
-var getDomainDetails=functievents.on (domain) {
+var getDomainDetails=function (domain) {
 
     var one =1;
     var two =2;
@@ -91,7 +96,7 @@ var getDomainDetails=functievents.on (domain) {
 
     }
 
-    if (_stk.count(last) === three) {
+    if (_stk.count(domainSplit) === three) {
 
         domainDetails = {
             "domain": domainSplit[one],
@@ -132,13 +137,20 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
 
-        referenceValue[keyOnly].push(getValueOnly);
+        var firstKey = _stk.first(keyList);
+        var referenceData = {};
+
+        referenceData[firstKey] =getValueOnly;
+
+        referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
+            ? getValueOnly
+            : referenceData);
 
     }
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
 
-        var firstKey = _stk.first(keyList).value;
+        var firstKey = _stk.first(keyList);
 
         referenceValue[keyOnly][firstKey]=getValueOnly;
 
@@ -172,7 +184,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         } else {
 
-            var firstKey = _stk.first(keyList).value;
+            var firstKey = _stk.first(keyList);
 
             if (_stk.isEmpty(firstKey)) {
 
@@ -221,7 +233,7 @@ var one =1;
  */
 function joinUrlPath () {
 
-var ags=arguments
+    var ags=arguments;
 
     var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
     var replacePath = _stk.delimiter(ags, one);

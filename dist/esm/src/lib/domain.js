@@ -1,5 +1,3 @@
-import { on } from 'events';
-
 import {count, first, last} from 'structkit';
 
 /**
@@ -11,8 +9,13 @@ import {count, first, last} from 'structkit';
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getDomainDetails("example.com")
+ * // =>  domainDetails = {
+ *      "domain": "",
+ *      "domainWithTld": "",
+ *      "subdomain": "",
+ *      "tld": ""
+ *  }
  */
 const getDomainDetails=function (domain) {
 
@@ -40,7 +43,7 @@ const getDomainDetails=function (domain) {
 
     }
 
-    if (count(last) === three) {
+    if (count(domainSplit) === three) {
 
         domainDetails = {
             "domain": domainSplit[one],
