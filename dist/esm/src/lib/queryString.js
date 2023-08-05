@@ -3,7 +3,7 @@ import {each, getTypeof, indexOf} from 'structkit';
 const zero =0;
 
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq

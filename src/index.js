@@ -1,10 +1,12 @@
 const {configQueryString} = require("./lib/config");
 const {parseStringConvert} = require("./lib/queryString");
+const {getDomainDetails} = require("./lib/domain");
 const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
 const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
 const url = require('url');
 const zero =0;
 const one =1;
+
 
 /**
  * To join the domain and path
@@ -117,6 +119,7 @@ function getHostDetails (host) {
         urlAjax.setAttribute('href', host);
 
         return {
+            "domainDetails": getDomainDetails(urlAjax.hostname),
             "hostArgument": host,
             "hostname": urlAjax.hostname,
             "pathname": urlAjax.pathname,
@@ -133,6 +136,7 @@ function getHostDetails (host) {
         const urlHttp = new url.URL(host);
 
         return {
+            "domainDetails": getDomainDetails(urlHttp.hostname),
             "hostArgument": host,
             "hostname": urlHttp.hostname,
             "pathname": urlHttp.pathname,

@@ -1,5 +1,5 @@
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq

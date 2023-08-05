@@ -1,5 +1,6 @@
 import {qsStringify} from "../../dist/esm/src/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
 describe('TS: qsStringify method', function () {
 
@@ -31,4 +32,13 @@ describe('TS: qsStringify method', function () {
 
     });
 
+    it('check expected type', function () {
+
+        expectType<string>(qsStringify({"test": [
+            "11",
+            "22"
+        ],
+        "test2": "11"}));
+
+    });
 });

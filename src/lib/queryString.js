@@ -2,7 +2,7 @@ const {each, getTypeof, indexOf} = require("structkit");
 const zero =0;
 
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq

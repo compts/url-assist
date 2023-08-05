@@ -1,5 +1,6 @@
 import {isHttps} from "../../dist/esm/src/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
 describe('TS: isHttps method', function () {
 
@@ -15,4 +16,9 @@ describe('TS: isHttps method', function () {
 
     });
 
+    it('check expected type', function () {
+       
+        expectType<boolean>(isHttps('https://example.com'));
+  
+    });
 });

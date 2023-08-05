@@ -1,5 +1,6 @@
 import {isHttpProtocolValid} from "../../dist/esm/src/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
 describe('TS: isHttpProtocolValid method', function () {
 
@@ -26,5 +27,12 @@ describe('TS: isHttpProtocolValid method', function () {
         assert.deepStrictEqual(isHttpProtocolValid("ssh://example.com"), false);
 
     });
+    it('check expected type', function () {
+       
+        expectType<boolean>(isHttpProtocolValid('https://example.com'));
+  
+      });
+
+
 
 });

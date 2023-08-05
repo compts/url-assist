@@ -10,7 +10,7 @@ configQueryString = {
 var zero =0;
 
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq
@@ -50,6 +50,59 @@ var parseStringConvert=function (key, value, type, config, reference) {
         reference.push(key+""+config.equalSeparator+""+value);
 
     }
+
+};
+
+/**
+ * Get Domain Details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * // => true
+ */
+var getDomainDetails=functievents.on (domain) {
+
+    var one =1;
+    var two =2;
+    var three = 3;
+
+    var domainDetails = {
+        "domain": "",
+        "domainWithTld": "",
+        "subdomain": "",
+        "tld": ""
+    };
+
+    var domainSplit = domain.split(".");
+
+    if (_stk.count(domainSplit) === two) {
+
+        domainDetails = {
+            "domain": _stk.first(domainSplit),
+            "domainWithTld": _stk.first(domainSplit)+"."+_stk.last(domainSplit),
+            "subdomain": "",
+            "tld": _stk.last(domainSplit)
+        };
+
+    }
+
+    if (_stk.count(last) === three) {
+
+        domainDetails = {
+            "domain": domainSplit[one],
+            "domainWithTld": domainSplit[one]+"."+_stk.last(domainSplit),
+            "subdomain": _stk.first(domainSplit),
+            "tld": _stk.last(domainSplit)
+        };
+
+    }
+
+    return domainDetails;
 
 };
 
@@ -267,6 +320,7 @@ function getHostDetails (host) {
         urlAjax.setAttribute('href', host);
 
         return {
+            "domainDetails": getDomainDetails(urlAjax.hostname),
             "hostArgument": host,
             "hostname": urlAjax.hostname,
             "pathname": urlAjax.pathname,
@@ -283,6 +337,7 @@ function getHostDetails (host) {
         var urlHttp = new url.URL(host);
 
         return {
+            "domainDetails": getDomainDetails(urlHttp.hostname),
             "hostArgument": host,
             "hostname": urlHttp.hostname,
             "pathname": urlHttp.pathname,

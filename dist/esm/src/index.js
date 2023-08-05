@@ -2,9 +2,11 @@ import {configQueryString} from './lib/config';
 
 import {parseStringConvert} from './lib/queryString';
 
+import {getDomainDetails} from './lib/domain';
+
 import {parseObjectConvert, parseObjectSchema} from './lib/queryObject';
 
-import {delimiter, has, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} from 'structkit';
+import {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} from 'structkit';
 
 import url from 'url';
 
@@ -122,6 +124,7 @@ function getHostDetails (host) {
         urlAjax.setAttribute('href', host);
 
         return {
+            "domainDetails": getDomainDetails(urlAjax.hostname),
             "hostArgument": host,
             "hostname": urlAjax.hostname,
             "pathname": urlAjax.pathname,
@@ -138,6 +141,7 @@ function getHostDetails (host) {
         const urlHttp = new url.URL(host);
 
         return {
+            "domainDetails": getDomainDetails(urlHttp.hostname),
             "hostArgument": host,
             "hostname": urlHttp.hostname,
             "pathname": urlHttp.pathname,

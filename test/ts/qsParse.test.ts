@@ -1,5 +1,6 @@
 import {qsParse} from "../../dist/esm/src/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
 describe('TS: qsParse method', function () {
 
@@ -19,5 +20,9 @@ describe('TS: qsParse method', function () {
         "test2": "11"});
 
     });
+    it('check expected type', function () {
 
+        expectType<any>(qsParse("test=11&test2=11&test=22"));
+
+    });
 });
