@@ -4,12 +4,13 @@ import {parseStringConvert} from './lib/queryString';
 
 import {getDomainDetails, isUrlValidFormatVerifier} from './lib/domain';
 
-import {parseObjectConvert, qsParseCallback, parseObjectSchema} from './lib/queryObject';
+import {parseObjectConvert, parseObjectSchema} from './lib/queryObject';
 
-import {delimiter, each, first, varExtend, getTypeof, indexOfNotExist} from 'structkit';
+import {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} from 'structkit';
 
 import url from 'url';
 
+const zero =0;
 const one =1;
 
 /**
@@ -221,6 +222,10 @@ function qsStringify (value, config) {
 
 }
 
+const qsParseCallback = function(referenceValue, defaultConfig, defaultSplit) {
+
+}
+
 /**
  * Query String object
  *
@@ -251,16 +256,76 @@ function qsParse (value, config) {
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+    each(defaultSplit, function (key, val) {
 
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            let keyOnly = "";
+            const keyList = [];
+
+            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+            parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+        }
 
     });
-
     // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+    each(defaultSplit, function (key, val) {
 
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            let keyOnly = "";
+            const keyList = [];
+
+            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+
+            parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+        }
 
     });
 

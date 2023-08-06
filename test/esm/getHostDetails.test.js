@@ -12,6 +12,7 @@ describe('ESM: getHostDetails method', function () {
                 "subdomain": "",
                 "tld": "com"
             },
+            "hash": "",
             "hostArgument": 'https://example.com',
             "hostname": 'example.com',
             "pathname": "/",
@@ -32,6 +33,7 @@ describe('ESM: getHostDetails method', function () {
                 "subdomain": "www",
                 "tld": "com"
             },
+            "hash": "",
             "hostArgument": 'https://www.example.com',
             "hostname": 'www.example.com',
             "pathname": "/",

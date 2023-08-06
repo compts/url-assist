@@ -13,6 +13,7 @@ describe('CJS: getHostDetails method', function () {
                 "subdomain": "",
                 "tld": "com"
             },
+            "hash": "",
             "hostArgument": 'https://example.com',
             "hostname": 'example.com',
             "pathname": "/",
@@ -33,6 +34,7 @@ describe('CJS: getHostDetails method', function () {
                 "subdomain": "www",
                 "tld": "com"
             },
+            "hash": "",
             "hostArgument": 'https://www.example.com',
             "hostname": 'www.example.com',
             "pathname": "/",

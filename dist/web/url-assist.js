@@ -112,6 +112,72 @@ var getDomainDetails=function (domain) {
 };
 
 /**
+ * Get Domain Details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * getDomainDetails("example.com")
+ * // =>  domainDetails = {
+ *      "domain": "",
+ *      "domainWithTld": "",
+ *      "subdomain": "",
+ *      "tld": ""
+ *  }
+ */
+var isUrlValidFormatVerifier=function (domain) {
+
+    var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
+    var validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
+
+    var one =1;
+    var two =2;
+    var theee =3;
+    var four = 63;
+
+    if (httpRegExp.test(domain)) {
+
+        var cleanUrl = domain.replace(httpRegExp, "").replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+        var cleanUrlSplit = cleanUrl.split(".");
+
+        if (_stk.count(cleanUrlSplit) === two || _stk.count(cleanUrlSplit) === theee) {
+
+            var getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
+
+            if (getTLD > one && getTLD <= four) {
+
+                if (_stk.count(cleanUrlSplit) === two) {
+
+                    return validDomainRegExp.test(_stk.first(cleanUrlSplit));
+
+                }
+
+                if (_stk.count(cleanUrlSplit) === theee) {
+
+                    var regSubDomain =validDomainRegExp.test(_stk.first(cleanUrlSplit));
+                    var regDomain = (/^([\w\d-]{1,})$/g).test(cleanUrlSplit[one].toString());
+
+                    return regSubDomain && regDomain;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    return false;
+
+};
+
+var zero =0;
+var one =1;
+
+/**
  * Parsing query string into JSON object
  *
  * @since 1.0.1
@@ -129,6 +195,12 @@ var getDomainDetails=function (domain) {
  */
 var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
+    var filterKeyList = _stk.filter(keyList, function (ke, value) {
+
+        return _stk.isEmpty(value)===false;
+
+    });
+
     if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
 
         referenceValue[keyOnly] = getValueOnly;
@@ -137,11 +209,10 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
 
-        var firstKey = _stk.first(keyList);
+        var firstKey = _stk.first(filterKeyList);
         var referenceData = {};
 
-        referenceData[firstKey] =getValueOnly;
-
+        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
         referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
             ? getValueOnly
             : referenceData);
@@ -150,9 +221,46 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
 
-        var firstKey = _stk.first(keyList);
+        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
 
-        referenceValue[keyOnly][firstKey]=getValueOnly;
+    }
+
+};
+
+/**
+ * Parsing query string into JSON object
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
+ */
+var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
+
+    var keyListClone = _stk.clone(keyList);
+
+    keyList.shift();
+    if (_stk.isEmpty(keyList)) {
+
+        if (_stk.getTypeof(referenceValue[_stk.first(keyListClone)]) === "array") {
+
+            referenceValue[_stk.first(keyListClone)].push(getValueOnly);
+
+        } else {
+
+            referenceValue[_stk.first(keyListClone)] = getValueOnly;
+
+        }
+
+    } else {
+
+        objectMultipleKey(referenceValue[_stk.first(keyListClone)], keyList, getValueOnly);
 
     }
 
@@ -180,7 +288,11 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         if (_stk.isEmpty(keyList)) {
 
-            referenceValue[keyOnly]="";
+            if (_stk.isEmpty(keyOnly) ===false) {
+
+                referenceValue[keyOnly]="";
+
+            }
 
         } else {
 
@@ -195,10 +307,14 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
                 referenceValue[keyOnly] = {};
 
             }
-            keyList.shift();
+
             if (_stk.isEmpty(keyList) ===false) {
 
-                parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+                var keyListClone = _stk.clone(keyList);
+
+                keyList.shift();
+
+                parseObjectSchema(referenceValue[keyOnly], defaultConfig, _stk.first(keyListClone), keyList, getValueOnly);
 
             }
 
@@ -216,8 +332,80 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
 };
 
-var zero =0;
+/**
+ * Parsing JSON object callback
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} defaultConfig config defalut value
+ * @param {any} defaultSplit Key in array
+ * @param {any} callbacks array of keys in array argument
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * // => true
+ */
+var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
+
+    _stk.each(defaultSplit, function (key, val) {
+
+        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            var keyOnly = "";
+            var keyList = [];
+
+            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (_stk.isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+
+            callbacks(keyOnly, keyList, getValueOnly);
+
+        }
+
+    });
+
+};
+
 var one =1;
+
+/**
+ * Check url is valid format
+ *
+ * @since 1.0.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlValidFormat('https://example.com')
+ *=> true
+ */
+function isUrlValidFormat (domain) {
+
+    return isUrlValidFormatVerifier(domain);
+
+}
 
 /**
  * To join the domain and path
@@ -333,6 +521,7 @@ function getHostDetails (host) {
 
         return {
             "domainDetails": getDomainDetails(urlAjax.hostname),
+            "hash": urlAjax.hash.replace(/^#/, ""),
             "hostArgument": host,
             "hostname": urlAjax.hostname,
             "pathname": urlAjax.pathname,
@@ -350,6 +539,7 @@ function getHostDetails (host) {
 
         return {
             "domainDetails": getDomainDetails(urlHttp.hostname),
+            "hash": urlHttp.hash.replace(/^#/, ""),
             "hostArgument": host,
             "hostname": urlHttp.hostname,
             "pathname": urlHttp.pathname,
@@ -440,78 +630,16 @@ function qsParse (value, config) {
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
-    _stk.each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            var keyOnly = "";
-            var keyList = [];
-
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (_stk.isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
+        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
     // Value for its data
-    _stk.each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            var keyOnly = "";
-            var keyList = [];
-
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (_stk.isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
+        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
@@ -548,5 +676,6 @@ urs.isHttpProtocolValid=isHttpProtocolValid
 urs.joinUrlPath=joinUrlPath
 urs.isUrlExtValid=isUrlExtValid
 urs.isWebSocketProtocolValid=isWebSocketProtocolValid
+urs.isUrlValidFormat=isUrlValidFormat
 
 })(typeof window !== "undefined" ? window : this);

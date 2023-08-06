@@ -1,12 +1,29 @@
 const {configQueryString} = require("./lib/config");
 const {parseStringConvert} = require("./lib/queryString");
-const {getDomainDetails} = require("./lib/domain");
-const {parseObjectConvert, parseObjectSchema} = require("./lib/queryObject");
-const {delimiter, each, first, isEmpty, varExtend, getTypeof, indexOfNotExist} = require("structkit");
+const {getDomainDetails, isUrlValidFormatVerifier} = require("./lib/domain");
+const {parseObjectConvert, qsParseCallback, parseObjectSchema} = require("./lib/queryObject");
+const {delimiter, each, first, varExtend, getTypeof, indexOfNotExist} = require("structkit");
 const url = require('url');
-const zero =0;
+
 const one =1;
 
+/**
+ * Check url is valid format
+ *
+ * @since 1.0.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlValidFormat('https://example.com')
+ *=> true
+ */
+function isUrlValidFormat (domain) {
+
+    return isUrlValidFormatVerifier(domain);
+
+}
 
 /**
  * To join the domain and path
@@ -120,6 +137,7 @@ function getHostDetails (host) {
 
         return {
             "domainDetails": getDomainDetails(urlAjax.hostname),
+            "hash": urlAjax.hash.replace(/^#/, ""),
             "hostArgument": host,
             "hostname": urlAjax.hostname,
             "pathname": urlAjax.pathname,
@@ -137,6 +155,7 @@ function getHostDetails (host) {
 
         return {
             "domainDetails": getDomainDetails(urlHttp.hostname),
+            "hash": urlHttp.hash.replace(/^#/, ""),
             "hostArgument": host,
             "hostname": urlHttp.hostname,
             "pathname": urlHttp.pathname,
@@ -198,6 +217,7 @@ function qsStringify (value, config) {
 
 }
 
+
 /**
  * Query String object
  *
@@ -228,79 +248,16 @@ function qsParse (value, config) {
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
-    each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue);
-        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            let keyOnly = "";
-            const keyList = [];
-
-            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
-
+        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
     // Value for its data
-    each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        const getKeyOnly = first(getKeyAndValue);
-        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            let keyOnly = "";
-            const keyList = [];
-
-            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
+        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
@@ -337,4 +294,4 @@ exports.isHttpProtocolValid =isHttpProtocolValid;
 exports.joinUrlPath =joinUrlPath;
 exports.isUrlExtValid =isUrlExtValid;
 exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
-
+exports.isUrlValidFormat =isUrlValidFormat;

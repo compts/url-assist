@@ -26,7 +26,7 @@ describe('ESM: qsParse method', function () {
             qsParse("test=11&test2=11&test3[sa][as]=22"),
             {"test": "11",
                 "test2": "11",
-                "test3": {"sa": "22"}}
+                "test3": {"sa": {"as": "22"}}}
         );
 
     });

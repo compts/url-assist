@@ -32,3 +32,18 @@ export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyO
  * // => true
  */
 export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
+/**
+ * Parsing JSON object callback
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} defaultConfig config defalut value
+ * @param {any} defaultSplit Key in array
+ * @param {any} callbacks array of keys in array argument
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * // => true
+ */
+export function qsParseCallback(defaultConfig: any, defaultSplit: any, callbacks: any): any;
