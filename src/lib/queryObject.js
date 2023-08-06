@@ -55,14 +55,14 @@ const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, key
 
 
 /**
- * Parsing query string into JSON object
+ * Parsing nested object
  *
  * @since 1.0.1
  * @category Seq
  * @param {any} referenceValue reference from main function to recursive
  * @param {any} keyList array of keys in array argument
  * @param {any} getValueOnly Value to replace
- * @returns {any} Returns the null.
+ * @returns {null} Returns the null.
  * @example
  *
  * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
@@ -106,7 +106,7 @@ const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
@@ -170,7 +170,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
  * @returns {any} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
 const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {

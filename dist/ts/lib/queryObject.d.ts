@@ -28,7 +28,7 @@ export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyO
  * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
@@ -43,7 +43,7 @@ export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOn
  * @returns {any} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
 export function qsParseCallback(defaultConfig: any, defaultSplit: any, callbacks: any): any;

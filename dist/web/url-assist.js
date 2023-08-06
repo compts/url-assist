@@ -22,7 +22,7 @@ var zero =0;
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 var parseStringConvert=function (key, value, type, config, reference) {
@@ -228,14 +228,14 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 };
 
 /**
- * Parsing query string into JSON object
+ * Parsing nested object
  *
  * @since 1.0.1
  * @category Seq
  * @param {any} referenceValue reference from main function to recursive
  * @param {any} keyList array of keys in array argument
  * @param {any} getValueOnly Value to replace
- * @returns {any} Returns the null.
+ * @returns {null} Returns the null.
  * @example
  *
  * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
@@ -279,7 +279,7 @@ var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
@@ -343,7 +343,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
  * @returns {any} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
 var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
@@ -392,7 +392,7 @@ var one =1;
 /**
  * Check url is valid format
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category environment
  * @param {string} domain Passing the completet domain url
  * @returns {boolean} Return the boolean.
@@ -458,7 +458,7 @@ function isHttpProtocolValid (host) {
 /**
  * Check url has valid ws/wss websocket protocol
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category environment
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
@@ -494,18 +494,25 @@ function isHttps (host) {
 /**
  * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category Seq
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
- *=> {
+ * => {
+ *          "domainDetails": {
+ *              "domain": "example",
+ *              "domainWithTld": "example.com",
+ *               "subdomain": "",
+ *               "tld": "com"
+ *           },
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
  *          "port": 43,
+ *          "hash": ''
  *          "protocol": https,
  *          "search": '',
  *          "type": "ajax"

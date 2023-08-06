@@ -1,18 +1,25 @@
 /**
  * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category Seq
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
- *=> {
+ * => {
+ *          "domainDetails": {
+ *              "domain": "example",
+ *              "domainWithTld": "example.com",
+ *               "subdomain": "",
+ *               "tld": "com"
+ *           },
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
  *          "port": 43,
+ *          "hash": ''
  *          "protocol": https,
  *          "search": '',
  *          "type": "ajax"
@@ -103,7 +110,7 @@ export function isUrlExtValid(host: string, ext: string): boolean;
 /**
  * Check url has valid ws/wss websocket protocol
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category environment
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
@@ -116,7 +123,7 @@ export function isWebSocketProtocolValid(host: string): boolean;
 /**
  * Check url is valid format
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category environment
  * @param {string} domain Passing the completet domain url
  * @returns {boolean} Return the boolean.
