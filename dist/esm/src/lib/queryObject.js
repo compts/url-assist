@@ -106,7 +106,7 @@ const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @example
  *
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 

@@ -20,9 +20,9 @@
  *          "pathname": /,
  *          "port": 43,
  *          "hash": ''
+ *          "user": ''
  *          "protocol": https,
- *          "search": '',
- *          "type": "ajax"
+ *          "search": ''
  *     }
  */
 export function getHostDetails(host: string): any;
@@ -133,3 +133,16 @@ export function isWebSocketProtocolValid(host: string): boolean;
  *=> true
  */
 export function isUrlValidFormat(domain: string): boolean;
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+export function urlComposer(domain: string): boolean;

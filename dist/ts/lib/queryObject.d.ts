@@ -29,7 +29,7 @@ export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyO
  * @example
  *
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
 /**

@@ -54,6 +54,67 @@ var parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
+ * Get if domain segmet details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * getDomain("example.com")
+ * // =>  {
+ *        "hash": "hashValue",
+ *       "path": ""
+ *       "search": "",
+ *       "url": "example.com"
+ *   }
+ *
+ */
+var getDomain =function (domain) {
+
+    var one =1;
+
+    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+
+    var splitDomain = referenceDomain.split("/");
+
+    var pathValueDetails = _stk.delimiter(splitDomain, one).join("/");
+
+    var pathValue = pathValueDetails;
+    var hashValue = "";
+    var queryValue = "";
+
+    var pathSplitHash = pathValue.split("#");
+
+    if (_stk.count(pathSplitHash) > one) {
+
+        pathValue = _stk.first(pathSplitHash);
+        hashValue = _stk.last(pathSplitHash);
+
+    }
+
+    var pathSplitQuery = pathValue.split("?");
+
+    if (_stk.count(pathSplitQuery) > one) {
+
+        pathValue = _stk.first(pathSplitQuery);
+        queryValue = _stk.last(pathSplitQuery);
+
+    }
+
+    return {
+        "hash": hashValue,
+        "path": pathValue
+            .replace(/^(\/)/, "")
+            .replace(/(\/)$/, ""),
+        "search": queryValue,
+        "url": _stk.first(splitDomain)
+    };
+
+};
+
+/**
  * Get Domain Details
  *
  * @since 1.1.0
@@ -84,6 +145,7 @@ var getDomainDetails=function (domain) {
     };
 
     var domainSplit = domain.split(".");
+    var getTLD = _stk.last(domainSplit).split(":");
 
     if (_stk.count(domainSplit) === two) {
 
@@ -91,7 +153,7 @@ var getDomainDetails=function (domain) {
             "domain": _stk.first(domainSplit),
             "domainWithTld": _stk.first(domainSplit)+"."+_stk.last(domainSplit),
             "subdomain": "",
-            "tld": _stk.last(domainSplit)
+            "tld": _stk.first(getTLD)
         };
 
     }
@@ -102,7 +164,7 @@ var getDomainDetails=function (domain) {
             "domain": domainSplit[one],
             "domainWithTld": domainSplit[one]+"."+_stk.last(domainSplit),
             "subdomain": _stk.first(domainSplit),
-            "tld": _stk.last(domainSplit)
+            "tld": _stk.first(getTLD)
         };
 
     }
@@ -112,7 +174,7 @@ var getDomainDetails=function (domain) {
 };
 
 /**
- * Get Domain Details
+ * Check if domain is valid
  *
  * @since 1.1.0
  * @category Seq
@@ -120,13 +182,9 @@ var getDomainDetails=function (domain) {
  * @returns {any} Returns the total.
  * @example
  *
- * getDomainDetails("example.com")
- * // =>  domainDetails = {
- *      "domain": "",
- *      "domainWithTld": "",
- *      "subdomain": "",
- *      "tld": ""
- *  }
+ * isUrlValidFormatVerifier("example.com")
+ * // =>  false
+ *
  */
 var isUrlValidFormatVerifier=function (domain) {
 
@@ -140,7 +198,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
     if (httpRegExp.test(domain)) {
 
-        var cleanUrl = domain.replace(httpRegExp, "").replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+        var cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
         var cleanUrlSplit = cleanUrl.split(".");
 
         if (_stk.count(cleanUrlSplit) === two || _stk.count(cleanUrlSplit) === theee) {
@@ -171,6 +229,103 @@ var isUrlValidFormatVerifier=function (domain) {
     }
 
     return false;
+
+};
+
+/**
+ * Get domain details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * urlDetails("example.com")
+ * // =>  dataReference = {
+ *      "hash": "",
+ *      "hostname": "",
+ *      "hostnamePort": "",
+ *      "pathname": "",
+ *       "port": "",
+ *      "protocol": "",
+ *      "search": ""
+ *  }
+ *
+ */
+var urlDetails=function (domain) {
+
+    var dataReference = {
+        "hash": "",
+        "hostname": "",
+        "hostnamePort": "",
+        "password": "",
+        "pathname": "",
+        "port": "",
+        "protocol": "",
+        "search": "",
+        "user": ""
+    };
+
+    var zero =0;
+    var one =1;
+    var two =2;
+
+    domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
+
+        dataReference.protocol = s1;
+
+        return "";
+
+    });
+
+    var hostname = getDomain(domain);
+
+    var splitPort = hostname.url.split(":");
+
+    dataReference.hostnamePort = hostname.url;
+    dataReference.search = hostname.search;
+    dataReference.hash = hostname.hash;
+    dataReference.pathname = hostname.path;
+    dataReference.hostname = _stk.first(splitPort);
+    dataReference.port = _stk.count(splitPort) > one
+        ? _stk.last(splitPort)
+        : "";
+
+    if ((/^([\d]{1,})$/g).test(dataReference.port) === false) {
+
+        dataReference.port ="";
+
+    }
+
+    if (_stk.isEmpty(dataReference.port)) {
+
+        dataReference.hostname = hostname.url;
+
+    } else {
+
+        dataReference.hostname = _stk.delimiter(splitPort, zero, _stk.count(splitPort) - two).join(":");
+
+    }
+    var splitUsernameDomain = dataReference.hostname.split("@");
+
+    if (_stk.count(splitUsernameDomain) === two) {
+
+        dataReference.user = _stk.first(splitUsernameDomain);
+        dataReference.hostname = _stk.last(splitUsernameDomain);
+
+        var usernameAndPassword = dataReference.user.split(":");
+
+        if (_stk.count(usernameAndPassword) === two) {
+
+            dataReference.user = _stk.first(usernameAndPassword);
+            dataReference.password = _stk.last(usernameAndPassword);
+
+        }
+
+    }
+
+    return dataReference;
 
 };
 
@@ -280,7 +435,7 @@ var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @example
  *
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
@@ -388,6 +543,24 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 };
 
 var one =1;
+
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function urlComposer (domain) {
+
+    return isUrlValidFormatVerifier(domain);
+
+}
 
 /**
  * Check url is valid format
@@ -513,60 +686,44 @@ function isHttps (host) {
  *          "pathname": /,
  *          "port": 43,
  *          "hash": ''
+ *          "user": ''
  *          "protocol": https,
- *          "search": '',
- *          "type": "ajax"
+ *          "search": ''
  *     }
  */
 function getHostDetails (host) {
 
-    if (typeof document !== "undefined") {
-
-        var urlAjax = document.createElement('a');
-
-        urlAjax.setAttribute('href', host);
-
-        return {
-            "domainDetails": getDomainDetails(urlAjax.hostname),
-            "hash": urlAjax.hash.replace(/^#/, ""),
-            "hostArgument": host,
-            "hostname": urlAjax.hostname,
-            "pathname": urlAjax.pathname,
-            "port": urlAjax.port,
-            "protocol": urlAjax.protocol.replace(/[:]/g, ""),
-            "search": urlAjax.search,
-            "type": "ajax"
-        };
-
-    }
-
-    if (typeof process !== "undefined") {
-
-        var urlHttp = new url.URL(host);
-
-        return {
-            "domainDetails": getDomainDetails(urlHttp.hostname),
-            "hash": urlHttp.hash.replace(/^#/, ""),
-            "hostArgument": host,
-            "hostname": urlHttp.hostname,
-            "pathname": urlHttp.pathname,
-            "port": urlHttp.port,
-            "protocol": urlHttp.protocol.replace(/[:]/g, ""),
-            "search": urlHttp.search,
-            "type": "http"
-        };
-
-    }
-
-    return {
-        "hostArgument": host,
+    var dataReference = {
+        "domainDetails": {},
         "hostname": "",
+        "href": host,
+        "password": "",
         "pathname": "",
-        "port": "80",
+        "port": "",
         "protocol": "",
         "search": "",
-        "type": "invalid"
+        "user": ""
     };
+
+    if (_stk.isEmpty(host) === false) {
+
+        var details = urlDetails(host);
+
+        dataReference.protocol = details.protocol;
+        dataReference.hostname = details.hostname;
+        dataReference.pathname = details.pathname;
+        dataReference.user = details.user;
+        dataReference.password = details.password;
+
+        dataReference.search = details.search;
+        dataReference.hash = details.hash;
+
+        dataReference.domainDetails = getDomainDetails(details.hostnamePort);
+        dataReference.port = details.port;
+
+    }
+
+    return dataReference;
 
 }
 
@@ -684,5 +841,6 @@ urs.joinUrlPath=joinUrlPath
 urs.isUrlExtValid=isUrlExtValid
 urs.isWebSocketProtocolValid=isWebSocketProtocolValid
 urs.isUrlValidFormat=isUrlValidFormat
+urs.urlComposer=urlComposer
 
 })(typeof window !== "undefined" ? window : this);

@@ -2,15 +2,31 @@ import {configQueryString} from './lib/config';
 
 import {parseStringConvert} from './lib/queryString';
 
-import {getDomainDetails, isUrlValidFormatVerifier} from './lib/domain';
+import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
 
 import {parseObjectConvert, qsParseCallback, parseObjectSchema} from './lib/queryObject';
 
-import {delimiter, each, first, varExtend, getTypeof, indexOfNotExist} from 'structkit';
-
-import url from 'url';
+import {delimiter, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} from 'structkit';
 
 const one =1;
+
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function urlComposer (domain) {
+
+    return isUrlValidFormatVerifier(domain);
+
+}
 
 /**
  * Check url is valid format
@@ -134,60 +150,44 @@ function isHttps (host) {
  *          "pathname": /,
  *          "port": 43,
  *          "hash": ''
+ *          "user": ''
  *          "protocol": https,
- *          "search": '',
- *          "type": "ajax"
+ *          "search": ''
  *     }
  */
 function getHostDetails (host) {
 
-    if (typeof document !== "undefined") {
-
-        const urlAjax = document.createElement('a');
-
-        urlAjax.setAttribute('href', host);
-
-        return {
-            "domainDetails": getDomainDetails(urlAjax.hostname),
-            "hash": urlAjax.hash.replace(/^#/, ""),
-            "hostArgument": host,
-            "hostname": urlAjax.hostname,
-            "pathname": urlAjax.pathname,
-            "port": urlAjax.port,
-            "protocol": urlAjax.protocol.replace(/[:]/g, ""),
-            "search": urlAjax.search,
-            "type": "ajax"
-        };
-
-    }
-
-    if (typeof process !== "undefined") {
-
-        const urlHttp = new url.URL(host);
-
-        return {
-            "domainDetails": getDomainDetails(urlHttp.hostname),
-            "hash": urlHttp.hash.replace(/^#/, ""),
-            "hostArgument": host,
-            "hostname": urlHttp.hostname,
-            "pathname": urlHttp.pathname,
-            "port": urlHttp.port,
-            "protocol": urlHttp.protocol.replace(/[:]/g, ""),
-            "search": urlHttp.search,
-            "type": "http"
-        };
-
-    }
-
-    return {
-        "hostArgument": host,
+    const dataReference = {
+        "domainDetails": {},
         "hostname": "",
+        "href": host,
+        "password": "",
         "pathname": "",
-        "port": "80",
+        "port": "",
         "protocol": "",
         "search": "",
-        "type": "invalid"
+        "user": ""
     };
+
+    if (isEmpty(host) === false) {
+
+        const details = urlDetails(host);
+
+        dataReference.protocol = details.protocol;
+        dataReference.hostname = details.hostname;
+        dataReference.pathname = details.pathname;
+        dataReference.user = details.user;
+        dataReference.password = details.password;
+
+        dataReference.search = details.search;
+        dataReference.hash = details.hash;
+
+        dataReference.domainDetails = getDomainDetails(details.hostnamePort);
+        dataReference.port = details.port;
+
+    }
+
+    return dataReference;
 
 }
 
@@ -296,4 +296,4 @@ function isUrlExtValid (host, ext) {
 
 }
 
-export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat};
+export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer};
