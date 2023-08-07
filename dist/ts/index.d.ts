@@ -18,7 +18,7 @@
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
- *          "port": 43,
+ *          "port": '',
  *          "hash": ''
  *          "user": ''
  *          "protocol": https,
@@ -139,10 +139,11 @@ export function isUrlValidFormat(domain: string): boolean;
  * @since 1.1.0
  * @category environment
  * @param {string} domain Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * data = urlComposer('https://example.com')
+ * data.getToString()
+ *=> 'https://example.com'
  */
-export function urlComposer(domain: string): boolean;
+export function urlComposer(domain: string): any;

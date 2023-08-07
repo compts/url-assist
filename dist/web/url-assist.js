@@ -54,6 +54,99 @@ var parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
+ * Compose your url structure in string
+ * @category Seq
+ * @since 1.1.0
+ * @class UrlComposerInit
+ * @param {object} config Passing the completet domain url
+ * @param {object} defaultConfig Passing the completet domain url
+ * @name urlCompose
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function UrlComposerInit (config, defaultConfig) {
+
+    this.variableProtocol = _stk.isEmpty(config.protocol)
+        ? defaultConfig.protocol
+        :config.protocol;
+    this.variablePort = config.port;
+    this.variablePath = config.pathname;
+    this.variableDomain = config.domainDetails.domain;
+    this.variableDomainTld = config.domainDetails.tld;
+    this.variableDomainSubdomain = config.domainDetails.subdomain;
+
+}
+
+UrlComposerInit.prototype.setProtocol = function (data) {
+
+    this.variableProtocol = data;
+
+};
+UrlComposerInit.prototype.setPort = function (data) {
+
+    this.variablePort = data;
+
+};
+UrlComposerInit.prototype.setPath = function (data) {
+
+    this.variablePath = data;
+
+};
+UrlComposerInit.prototype.setDomain = function (data) {
+
+    this.variableDomain = data;
+
+};
+UrlComposerInit.prototype.setDomainTld = function (data) {
+
+    this.variableDomainTld = data;
+
+};
+UrlComposerInit.prototype.setDomainSubdomain = function (data) {
+
+    this.variableDomainSubdomain = data;
+
+};
+
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getToString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getToString = function () {
+
+    var urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !>';
+
+    return _stk.templateValue(urlFormat, {
+        "domain": this.variableDomain,
+        "path": _stk.isEmpty(this.variablePath)
+            ? ''
+            : '/'+this.variablePath
+                .replace(/^(\/)/, "")
+                .replace(/(\/)$/, ""),
+        "port": _stk.isEmpty(this.variablePort)
+            ? ''
+            : ':'+this.variablePort,
+        "protocol": this.variableProtocol,
+        "subdomain": _stk.isEmpty(this.variableDomainSubdomain)
+            ? ''
+            :this.variableDomainSubdomain+'.',
+        "tld": this.variableDomainTld
+    });
+
+};
+
+/**
  * Get if domain segmet details
  *
  * @since 1.1.0
@@ -550,15 +643,20 @@ var one =1;
  * @since 1.1.0
  * @category environment
  * @param {string} domain Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * data = urlComposer('https://example.com')
+ * data.getToString()
+ *=> 'https://example.com'
  */
 function urlComposer (domain) {
 
-    return isUrlValidFormatVerifier(domain);
+    var defaultConfig = {
+        "protocol": "https"
+    };
+
+    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
 
 }
 
@@ -684,7 +782,7 @@ function isHttps (host) {
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
- *          "port": 43,
+ *          "port": '',
  *          "hash": ''
  *          "user": ''
  *          "protocol": https,

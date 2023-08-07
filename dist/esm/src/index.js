@@ -2,6 +2,8 @@ import {configQueryString} from './lib/config';
 
 import {parseStringConvert} from './lib/queryString';
 
+import {UrlComposerInit} from './lib/urlComposerInit';
+
 import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
 
 import {parseObjectConvert, qsParseCallback, parseObjectSchema} from './lib/queryObject';
@@ -16,15 +18,20 @@ const one =1;
  * @since 1.1.0
  * @category environment
  * @param {string} domain Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * data = urlComposer('https://example.com')
+ * data.getToString()
+ *=> 'https://example.com'
  */
 function urlComposer (domain) {
 
-    return isUrlValidFormatVerifier(domain);
+    const defaultConfig = {
+        "protocol": "https"
+    };
+
+    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
 
 }
 
@@ -148,7 +155,7 @@ function isHttps (host) {
  *          "hostArgument": host,
  *          "hostname": 'example.com',
  *          "pathname": /,
- *          "port": 43,
+ *          "port": '',
  *          "hash": ''
  *          "user": ''
  *          "protocol": https,

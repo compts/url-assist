@@ -1,5 +1,4 @@
-const {templateValue, isEmpty} = require("structkit");
-
+import {templateValue, isEmpty} from 'structkit';
 
 /**
  * Compose your url structure in string
@@ -29,7 +28,6 @@ function UrlComposerInit (config, defaultConfig) {
 
 }
 
-
 UrlComposerInit.prototype.setProtocol = function (data) {
 
     this.variableProtocol = data;
@@ -39,30 +37,25 @@ UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
 
-
 };
 UrlComposerInit.prototype.setPath = function (data) {
 
     this.variablePath = data;
-
 
 };
 UrlComposerInit.prototype.setDomain = function (data) {
 
     this.variableDomain = data;
 
-
 };
 UrlComposerInit.prototype.setDomainTld = function (data) {
 
     this.variableDomainTld = data;
 
-
 };
 UrlComposerInit.prototype.setDomainSubdomain = function (data) {
 
     this.variableDomainSubdomain = data;
-
 
 };
 
@@ -100,4 +93,4 @@ UrlComposerInit.prototype.getToString = function () {
 
 };
 
-exports.UrlComposerInit = UrlComposerInit;
+export {UrlComposerInit};
