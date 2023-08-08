@@ -67,23 +67,24 @@ isUrlExtValid('https://example.com/example.js', 'css')// false
 ```
 [get the domain or url details:](#get-domain-details)
 ``` javascript
-getHostDetails('https://example.com')
+getHostDetails('https://www.example.com')
 // => {
-//          "domainDetails": {
-//              "domain": "example",
-//              "domainWithTld": "example.com",
-//               "subdomain": "",
-//               "tld": "com"
-//           },
-//          "hostArgument": host,
-//          "hostname": 'example.com',
-//          "pathname": /,
-//          "port": '',
-//          "hash": ''
-//          "user": ''
-//          "protocol": https,
-//          "search": ''
-//     }
+//            "domainDetails": {
+//                "domain": "example",
+//                "domainWithTld": "example.com",
+//                "subdomain": "www",
+//                "tld": "com"
+//            },
+//            "hash": "",
+//            "hostname": 'www.example.com',
+//            "href": 'https://www.example.com',
+//            "password": "",
+//            "pathname": "",
+//            "port": "",
+//            "protocol": "https",
+//            "search": '',
+//            "user": ''
+//        }
 ```
 
 [check if url is valid https:](#check-valid-https)

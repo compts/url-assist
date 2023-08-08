@@ -141,22 +141,23 @@ function isHttps (host) {
  * @example
  *
  * getHostDetails('https://example.com')
- * => {
- *          "domainDetails": {
- *              "domain": "example",
- *              "domainWithTld": "example.com",
- *               "subdomain": "",
- *               "tld": "com"
- *           },
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": '',
- *          "hash": ''
- *          "user": ''
- *          "protocol": https,
- *          "search": ''
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 function getHostDetails (host) {
 
