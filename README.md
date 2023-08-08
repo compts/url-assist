@@ -57,3 +57,48 @@ isUrlExtValid('https://example.com/example.js', 'js')
 
 [npm-url]: https://www.npmjs.com/package/url-assist
 [npm-image]: https://img.shields.io/badge/url_assist-1.1.0-brightgreen
+
+## List of method you can use to check your url
+
+[match pattern against extension in url:](#match-pattern-extension-url)
+``` javascript
+isUrlExtValid('https://example.com/example.js', 'js')// true
+isUrlExtValid('https://example.com/example.js', 'css')// false
+```
+[get the domain or url details:](#get-domain-details)
+``` javascript
+getHostDetails('https://example.com')
+// => {
+//          "domainDetails": {
+//              "domain": "example",
+//              "domainWithTld": "example.com",
+//               "subdomain": "",
+//               "tld": "com"
+//           },
+//          "hostArgument": host,
+//          "hostname": 'example.com',
+//          "pathname": /,
+//          "port": '',
+//          "hash": ''
+//          "user": ''
+//          "protocol": https,
+//          "search": ''
+//     }
+```
+
+[check if url is valid https:](#check-valid-https)
+``` javascript
+isHttps('https://example.com')// true
+```
+
+[Compose your url structure:](#check-valid-https)
+``` javascript
+data = urlComposer('https://example.com')  
+data.getToString() // 'https://example.com'
+data.setDomainSubdomain("api")
+data.getToString() // 'https://api.example.com'
+data.setProtocol("http")
+data.getToString() // http://api.example.com/
+
+```
+
