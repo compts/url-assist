@@ -240,6 +240,17 @@ var getDomainDetails=function (domain) {
     var domainSplit = domain.split(".");
     var getTLD = _stk.last(domainSplit).split(":");
 
+    if (_stk.count(domainSplit) === one) {
+
+        domainDetails = {
+            "domain": _stk.first(getTLD),
+            "domainWithTld": _stk.first(getTLD),
+            "subdomain": "",
+            "tld": ""
+        };
+
+    }
+
     if (_stk.count(domainSplit) === two) {
 
         domainDetails = {

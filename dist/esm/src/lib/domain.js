@@ -94,6 +94,17 @@ const getDomainDetails=function (domain) {
     const domainSplit = domain.split(".");
     const getTLD = last(domainSplit).split(":");
 
+    if (count(domainSplit) === one) {
+
+        domainDetails = {
+            "domain": first(getTLD),
+            "domainWithTld": first(getTLD),
+            "subdomain": "",
+            "tld": ""
+        };
+
+    }
+
     if (count(domainSplit) === two) {
 
         domainDetails = {
