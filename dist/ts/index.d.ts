@@ -8,22 +8,23 @@
  * @example
  *
  * getHostDetails('https://example.com')
- * => {
- *          "domainDetails": {
- *              "domain": "example",
- *              "domainWithTld": "example.com",
- *               "subdomain": "",
- *               "tld": "com"
- *           },
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": '',
- *          "hash": ''
- *          "user": ''
- *          "protocol": https,
- *          "search": ''
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 export function getHostDetails(host: string): any;
 /**
@@ -50,7 +51,7 @@ export function qsStringify(value: any, config?: any | undefined): any;
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
 export function qsParse(value: string, config?: any | undefined): any;

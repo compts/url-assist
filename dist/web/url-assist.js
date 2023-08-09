@@ -172,7 +172,7 @@ var getDomain =function (domain) {
 
     var splitDomain = referenceDomain.split("/");
 
-    var pathValueDetails = _stk.delimiter(splitDomain, one).join("/");
+    var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
 
     var pathValue = pathValueDetails;
     var hashValue = "";
@@ -408,7 +408,7 @@ var urlDetails=function (domain) {
 
     } else {
 
-        dataReference.hostname = _stk.delimiter(splitPort, zero, _stk.count(splitPort) - two).join(":");
+        dataReference.hostname = _stk.arraySlice(splitPort, zero, _stk.count(splitPort) - two).join(":");
 
     }
     var splitUsernameDomain = dataReference.hostname.split("@");
@@ -611,7 +611,7 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
         var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+        var getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
         if (getKeyAndValue.length > zero) {
 
@@ -706,7 +706,7 @@ function joinUrlPath () {
     var ags=arguments;
 
     var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
-    var replacePath = _stk.delimiter(ags, one);
+    var replacePath = _stk.arraySlice(ags, one);
     var cleanReplacePath = [];
 
     _stk.each(replacePath, function (key, value) {
@@ -783,22 +783,23 @@ function isHttps (host) {
  * @example
  *
  * getHostDetails('https://example.com')
- * => {
- *          "domainDetails": {
- *              "domain": "example",
- *              "domainWithTld": "example.com",
- *               "subdomain": "",
- *               "tld": "com"
- *           },
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": '',
- *          "hash": ''
- *          "user": ''
- *          "protocol": https,
- *          "search": ''
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 function getHostDetails (host) {
 
@@ -883,7 +884,7 @@ function qsStringify (value, config) {
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {

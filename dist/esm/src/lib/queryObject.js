@@ -1,4 +1,4 @@
-import {isEmpty, has, getTypeof, first, clone, each, delimiter, filter} from 'structkit';
+import {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} from 'structkit';
 
 const zero =0;
 const one =1;
@@ -178,7 +178,7 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
         const getKeyOnly = first(getKeyAndValue);
-        const getValueOnly = delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+        const getValueOnly = arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
         if (getKeyAndValue.length > zero) {
 

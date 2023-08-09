@@ -8,7 +8,7 @@ import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/doma
 
 import {parseObjectConvert, qsParseCallback, parseObjectSchema} from './lib/queryObject';
 
-import {delimiter, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} from 'structkit';
+import {arraySlice, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} from 'structkit';
 
 const one =1;
 
@@ -68,7 +68,7 @@ function isUrlValidFormat (domain) {
 function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
-    const replacePath = delimiter(ags, one);
+    const replacePath = arraySlice(ags, one);
     const cleanReplacePath = [];
 
     each(replacePath, function (key, value) {
@@ -145,22 +145,23 @@ function isHttps (host) {
  * @example
  *
  * getHostDetails('https://example.com')
- * => {
- *          "domainDetails": {
- *              "domain": "example",
- *              "domainWithTld": "example.com",
- *               "subdomain": "",
- *               "tld": "com"
- *           },
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": '',
- *          "hash": ''
- *          "user": ''
- *          "protocol": https,
- *          "search": ''
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 function getHostDetails (host) {
 
@@ -245,7 +246,7 @@ function qsStringify (value, config) {
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
