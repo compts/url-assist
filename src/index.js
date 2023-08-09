@@ -3,7 +3,7 @@ const {parseStringConvert} = require("./lib/queryString");
 const {UrlComposerInit} = require("./lib/urlComposerInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {parseObjectConvert, qsParseCallback, parseObjectSchema} = require("./lib/queryObject");
-const {delimiter, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} = require("structkit");
+const {arraySlice, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} = require("structkit");
 
 const one =1;
 
@@ -64,7 +64,7 @@ function isUrlValidFormat (domain) {
 function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
-    const replacePath = delimiter(ags, one);
+    const replacePath = arraySlice(ags, one);
     const cleanReplacePath = [];
 
     each(replacePath, function (key, value) {
@@ -244,7 +244,7 @@ function qsStringify (value, config) {
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {

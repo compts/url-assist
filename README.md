@@ -60,12 +60,12 @@ isUrlExtValid('https://example.com/example.js', 'js')
 
 ## List of method you can use to check your url
 
-[match pattern against extension in url:](#match-pattern-extension-url)
+[match pattern against extension in url](#match-pattern-extension-url)
 ``` javascript
 isUrlExtValid('https://example.com/example.js', 'js')// true
 isUrlExtValid('https://example.com/example.js', 'css')// false
 ```
-[get the domain or url details:](#get-domain-details)
+[get the domain or url details](#get-domain-details)
 ``` javascript
 getHostDetails('https://www.example.com')
 // => {
@@ -87,12 +87,12 @@ getHostDetails('https://www.example.com')
 //        }
 ```
 
-[check if url is valid https:](#check-valid-https)
+[check if url is valid https](#check-valid-https)
 ``` javascript
 isHttps('https://example.com')// true
 ```
 
-[Compose your url structure:](#check-valid-https)
+[Compose your url structure](#check-valid-https)
 ``` javascript
 data = urlComposer('https://example.com')  
 data.getToString() // 'https://example.com'
@@ -103,3 +103,20 @@ data.getToString() // http://api.example.com/
 
 ```
 
+[Query String parser](#query-string-parser)
+``` javascript
+qsParse("test=1&test2=11") //{"test": 11,"test2": 11}
+
+```
+
+[Query String to Stringify](#query-string-stringify)
+``` javascript
+qsStringify({"test": 11,"test2": 11}) //test=1&test2=11
+
+```
+
+[To join the path](#to-join-path)
+``` javascript
+joinUrlPath('https://example.com','test') //https://example.com/test
+
+```

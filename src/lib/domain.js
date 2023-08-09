@@ -1,4 +1,4 @@
-const {count, first, last, delimiter, isEmpty} = require("structkit");
+const {count, first, last, arraySlice, isEmpty} = require("structkit");
 
 /**
  * Get if domain segmet details
@@ -27,7 +27,7 @@ const getDomain =function (domain) {
     const splitDomain = referenceDomain.split("/");
 
 
-    const pathValueDetails = delimiter(splitDomain, one).join("/");
+    const pathValueDetails = arraySlice(splitDomain, one).join("/");
 
     let pathValue = pathValueDetails;
     let hashValue = "";
@@ -265,7 +265,7 @@ const urlDetails=function (domain) {
 
     } else {
 
-        dataReference.hostname = delimiter(splitPort, zero, count(splitPort) - two).join(":");
+        dataReference.hostname = arraySlice(splitPort, zero, count(splitPort) - two).join(":");
 
     }
     const splitUsernameDomain = dataReference.hostname.split("@");
