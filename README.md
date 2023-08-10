@@ -120,3 +120,21 @@ qsStringify({"test": 11,"test2": 11}) //test=1&test2=11
 joinUrlPath('https://example.com','test') //https://example.com/test
 
 ```
+
+[Check url is valid format](#check-valid-format-url)
+``` javascript
+isUrlValidFormat('https://example.com')// true
+isUrlValidFormat('ftp://example.com')// false
+```
+
+[Check https only](#check-https-url)
+``` javascript
+isHttps('https://example.com')// true
+isHttps('http://example.com')// false
+```
+
+[Check https/http is valid](#check-https-http-valid)
+``` javascript
+isHttpProtocolValid('https://example.com')// true
+isHttpProtocolValid('ftp://example.com')// false
+```
