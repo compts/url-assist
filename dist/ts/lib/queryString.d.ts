@@ -1,5 +1,5 @@
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq
@@ -11,7 +11,7 @@
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 export function parseStringConvert(key: any, value: any, type: any, config: any, reference: any): any;

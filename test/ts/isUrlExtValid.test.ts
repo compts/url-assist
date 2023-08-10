@@ -1,7 +1,8 @@
-const {isUrlExtValid} = require("../../src/index");
-const assert = require("assert");
+import {isUrlExtValid} from "../../dist/esm/src/index";
+import assert from 'assert';
+import {expectType} from 'tsd';
 
-describe('CJS: isUrlExtValid method', function () {
+describe('TS: isUrlExtValid method', function () {
 
     it('check isUrlExtValid extension is valid js', function () {
 
@@ -15,11 +16,14 @@ describe('CJS: isUrlExtValid method', function () {
 
     });
 
-
     it('check isUrlExtValid extension with argument', function () {
 
         assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1', 'js'), true);
 
     });
-
+    it('check expected type', function () {
+       
+        expectType<boolean>(isUrlExtValid('https://example.com', 'js'));
+  
+    });
 });

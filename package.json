@@ -1,7 +1,7 @@
 {
   "name": "url-assist",
-  "version": "1.0.2",
-  "description": "HTTP base promised and callback and User agent",
+  "version": "1.1.0",
+  "description": "URL library at your ease",
   "main": "src/index.js",
   "module": "dist/esm/src/index.js",
   "types": "dist/ts/index.d.ts",
@@ -9,6 +9,7 @@
     "es_linter": "eslint src/lib/*.js src/*.js --fix",
     "test_esm": "mocha -r esm test/esm/*.test.js",
     "test_cjs": "mocha test/cjs/*.test.js",
+    "test_ts": "mocha --require ts-node/register test/ts/*.test.ts",
     "validate": "npm run style && npm run test"
   },
   "repository": {
@@ -16,7 +17,12 @@
     "url": "git+https://github.com/compts/url-assist.git"
   },
   "keywords": [
-    "compt"
+    "compt",
+    "url",
+    "parse",
+    "node",
+    "href",
+    "git"
   ],
   "tsd": {
     "directory": "test/ts"
@@ -26,22 +32,27 @@
   "bugs": {
     "url": "https://github.com/compts/url-assist/issues"
   },
-  "homepage": "https://github.com/compts/url-assist#readme",
+  "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
     "tsd": "^0.19.1",
-    "structkit": "^1.3.1"
+    "structkit": "^1.4.61"
   },
   "devDependencies": {
-    "@types/node": "^17.0.22",
-    "eslint": "^7.13.0",
+    "@types/assert": "^1.5.6",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.4.4",
+    "eslint": "^7.16.0",
     "eslint-config-strongloop": "^2.1.0",
+    "eslint-plugin-import": "^2.22.1",
     "esm": "^3.2.25",
     "jest": "^27.5.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "ts-node": "^10.9.1"
   },
   "jest": {
     "collectCoverageFrom": [
-      "*.js"
+      "*.js",
+      "*.ts"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",

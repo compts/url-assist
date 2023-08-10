@@ -1,7 +1,9 @@
 import {getHostDetails} from "../../dist/esm/src/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
-describe('ESM: getHostDetails method', function () {
+describe('TS: getHostDetails method', function () {
+
 
     it('check getHostDetails check output', function () {
 
@@ -111,6 +113,7 @@ describe('ESM: getHostDetails method', function () {
             "user": "gituser"});
 
     });
+
     it('check getHostDetails with  username and password in domain', function () {
 
         assert.deepStrictEqual(getHostDetails('git+ssh://gituser:gitpass@host.xz/path/name.git'), {
@@ -131,5 +134,11 @@ describe('ESM: getHostDetails method', function () {
             "user": "gituser"});
 
     });
+    
+    it('check expected type', function () {
+       
+        expectType<any>(getHostDetails('https://example.com'));
+  
+      });
 
 });

@@ -3,7 +3,7 @@ import {each, getTypeof, indexOf} from 'structkit';
 const zero =0;
 
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq
@@ -15,7 +15,7 @@ const zero =0;
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 const parseStringConvert=function (key, value, type, config, reference) {

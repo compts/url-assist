@@ -14,8 +14,15 @@
       // Removing this would place the .d.ts files
       // next to the .js files
       "outDir": "dist/ts",
+      "module": "commonjs",
       // go to js file when using IDE functions like
       // "Go to Definition" in VSCode
-      "declarationMap": true
-    }
-  }
+      "esModuleInterop": true,
+      // go to js file when using IDE functions like
+      // "Go to Definition" in VSCode
+      "declarationMap": true,
+    },
+    "ts-node": {
+      "files": true
+    },
+}

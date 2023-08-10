@@ -10,7 +10,7 @@ configQueryString = {
 var zero =0;
 
 /**
- * Is Exact
+ * Parse query string to object
  *
  * @since 1.0.1
  * @category Seq
@@ -22,7 +22,7 @@ var zero =0;
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
+ * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
 var parseStringConvert=function (key, value, type, config, reference) {
@@ -54,22 +54,411 @@ var parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
- * Is Exact
- *
- * @since 1.0.1
+ * Compose your url structure in string
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
+ * @since 1.1.0
+ * @class UrlComposerInit
+ * @param {object} config Passing the completet domain url
+ * @param {object} defaultConfig Passing the completet domain url
+ * @name urlCompose
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function UrlComposerInit (config, defaultConfig) {
+
+    this.variableProtocol = _stk.isEmpty(config.protocol)
+        ? defaultConfig.protocol
+        :config.protocol;
+    this.variablePort = config.port;
+    this.variablePath = config.pathname;
+    this.variableDomain = config.domainDetails.domain;
+    this.variableDomainTld = config.domainDetails.tld;
+    this.variableDomainSubdomain = config.domainDetails.subdomain;
+
+}
+
+UrlComposerInit.prototype.setProtocol = function (data) {
+
+    this.variableProtocol = data;
+
+};
+UrlComposerInit.prototype.setPort = function (data) {
+
+    this.variablePort = data;
+
+};
+UrlComposerInit.prototype.setPath = function (data) {
+
+    this.variablePath = data;
+
+};
+UrlComposerInit.prototype.setDomain = function (data) {
+
+    this.variableDomain = data;
+
+};
+UrlComposerInit.prototype.setDomainTld = function (data) {
+
+    this.variableDomainTld = data;
+
+};
+UrlComposerInit.prototype.setDomainSubdomain = function (data) {
+
+    this.variableDomainSubdomain = data;
+
+};
+
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getToString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getToString = function () {
+
+    var urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !>';
+
+    return _stk.templateValue(urlFormat, {
+        "domain": this.variableDomain,
+        "path": _stk.isEmpty(this.variablePath)
+            ? ''
+            : '/'+this.variablePath
+                .replace(/^(\/)/, "")
+                .replace(/(\/)$/, ""),
+        "port": _stk.isEmpty(this.variablePort)
+            ? ''
+            : ':'+this.variablePort,
+        "protocol": this.variableProtocol,
+        "subdomain": _stk.isEmpty(this.variableDomainSubdomain)
+            ? ''
+            :this.variableDomainSubdomain+'.',
+        "tld": this.variableDomainTld
+    });
+
+};
+
+/**
+ * Get if domain segmet details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
  * @returns {any} Returns the total.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * getDomain("example.com")
+ * // =>  {
+ *        "hash": "hashValue",
+ *       "path": ""
+ *       "search": "",
+ *       "url": "example.com"
+ *   }
+ *
+ */
+var getDomain =function (domain) {
+
+    var one =1;
+
+    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+
+    var splitDomain = referenceDomain.split("/");
+
+    var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
+
+    var pathValue = pathValueDetails;
+    var hashValue = "";
+    var queryValue = "";
+
+    var pathSplitHash = pathValue.split("#");
+
+    if (_stk.count(pathSplitHash) > one) {
+
+        pathValue = _stk.first(pathSplitHash);
+        hashValue = _stk.last(pathSplitHash);
+
+    }
+
+    var pathSplitQuery = pathValue.split("?");
+
+    if (_stk.count(pathSplitQuery) > one) {
+
+        pathValue = _stk.first(pathSplitQuery);
+        queryValue = _stk.last(pathSplitQuery);
+
+    }
+
+    return {
+        "hash": hashValue,
+        "path": pathValue
+            .replace(/^(\/)/, "")
+            .replace(/(\/)$/, ""),
+        "search": queryValue,
+        "url": _stk.first(splitDomain)
+    };
+
+};
+
+/**
+ * Get Domain Details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * getDomainDetails("example.com")
+ * // =>  domainDetails = {
+ *      "domain": "",
+ *      "domainWithTld": "",
+ *      "subdomain": "",
+ *      "tld": ""
+ *  }
+ */
+var getDomainDetails=function (domain) {
+
+    var one =1;
+    var two =2;
+    var three = 3;
+
+    var domainDetails = {
+        "domain": "",
+        "domainWithTld": "",
+        "subdomain": "",
+        "tld": ""
+    };
+
+    var domainSplit = domain.split(".");
+    var getTLD = _stk.last(domainSplit).split(":");
+
+    if (_stk.count(domainSplit) === one) {
+
+        domainDetails = {
+            "domain": _stk.first(getTLD),
+            "domainWithTld": _stk.first(getTLD),
+            "subdomain": "",
+            "tld": ""
+        };
+
+    }
+
+    if (_stk.count(domainSplit) === two) {
+
+        domainDetails = {
+            "domain": _stk.first(domainSplit),
+            "domainWithTld": _stk.first(domainSplit)+"."+_stk.last(domainSplit),
+            "subdomain": "",
+            "tld": _stk.first(getTLD)
+        };
+
+    }
+
+    if (_stk.count(domainSplit) === three) {
+
+        domainDetails = {
+            "domain": domainSplit[one],
+            "domainWithTld": domainSplit[one]+"."+_stk.last(domainSplit),
+            "subdomain": _stk.first(domainSplit),
+            "tld": _stk.first(getTLD)
+        };
+
+    }
+
+    return domainDetails;
+
+};
+
+/**
+ * Check if domain is valid
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * isUrlValidFormatVerifier("example.com")
+ * // =>  false
+ *
+ */
+var isUrlValidFormatVerifier=function (domain) {
+
+    var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
+    var validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
+
+    var one =1;
+    var two =2;
+    var theee =3;
+    var four = 63;
+
+    if (httpRegExp.test(domain)) {
+
+        var cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+        var cleanUrlSplit = cleanUrl.split(".");
+
+        if (_stk.count(cleanUrlSplit) === two || _stk.count(cleanUrlSplit) === theee) {
+
+            var getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
+
+            if (getTLD > one && getTLD <= four) {
+
+                if (_stk.count(cleanUrlSplit) === two) {
+
+                    return validDomainRegExp.test(_stk.first(cleanUrlSplit));
+
+                }
+
+                if (_stk.count(cleanUrlSplit) === theee) {
+
+                    var regSubDomain =validDomainRegExp.test(_stk.first(cleanUrlSplit));
+                    var regDomain = (/^([\w\d-]{1,})$/g).test(cleanUrlSplit[one].toString());
+
+                    return regSubDomain && regDomain;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    return false;
+
+};
+
+/**
+ * Get domain details
+ *
+ * @since 1.1.0
+ * @category Seq
+ * @param {string} domain The first number in an addition.
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * urlDetails("example.com")
+ * // =>  dataReference = {
+ *      "hash": "",
+ *      "hostname": "",
+ *      "hostnamePort": "",
+ *      "pathname": "",
+ *       "port": "",
+ *      "protocol": "",
+ *      "search": ""
+ *  }
+ *
+ */
+var urlDetails=function (domain) {
+
+    var dataReference = {
+        "hash": "",
+        "hostname": "",
+        "hostnamePort": "",
+        "password": "",
+        "pathname": "",
+        "port": "",
+        "protocol": "",
+        "search": "",
+        "user": ""
+    };
+
+    var zero =0;
+    var one =1;
+    var two =2;
+
+    domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
+
+        dataReference.protocol = s1;
+
+        return "";
+
+    });
+
+    var hostname = getDomain(domain);
+
+    var splitPort = hostname.url.split(":");
+
+    dataReference.hostnamePort = hostname.url;
+    dataReference.search = hostname.search;
+    dataReference.hash = hostname.hash;
+    dataReference.pathname = hostname.path;
+    dataReference.hostname = _stk.first(splitPort);
+    dataReference.port = _stk.count(splitPort) > one
+        ? _stk.last(splitPort)
+        : "";
+
+    if ((/^([\d]{1,})$/g).test(dataReference.port) === false) {
+
+        dataReference.port ="";
+
+    }
+
+    if (_stk.isEmpty(dataReference.port)) {
+
+        dataReference.hostname = hostname.url;
+
+    } else {
+
+        dataReference.hostname = _stk.arraySlice(splitPort, zero, _stk.count(splitPort) - two).join(":");
+
+    }
+    var splitUsernameDomain = dataReference.hostname.split("@");
+
+    if (_stk.count(splitUsernameDomain) === two) {
+
+        dataReference.user = _stk.first(splitUsernameDomain);
+        dataReference.hostname = _stk.last(splitUsernameDomain);
+
+        var usernameAndPassword = dataReference.user.split(":");
+
+        if (_stk.count(usernameAndPassword) === two) {
+
+            dataReference.user = _stk.first(usernameAndPassword);
+            dataReference.password = _stk.last(usernameAndPassword);
+
+        }
+
+    }
+
+    return dataReference;
+
+};
+
+var zero =0;
+var one =1;
+
+/**
+ * Parsing query string into JSON object
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
  */
 var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+
+    var filterKeyList = _stk.filter(keyList, function (ke, value) {
+
+        return _stk.isEmpty(value)===false;
+
+    });
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
 
@@ -79,35 +468,78 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
 
-        referenceValue[keyOnly].push(getValueOnly);
+        var firstKey = _stk.first(filterKeyList);
+        var referenceData = {};
+
+        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
+        referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
+            ? getValueOnly
+            : referenceData);
 
     }
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
 
-        var firstKey = _stk.first(keyList).value;
-
-        referenceValue[keyOnly][firstKey]=getValueOnly;
+        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
 
     }
 
 };
 
 /**
- * Is Exact
+ * Parsing nested object
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
+ */
+var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
+
+    var keyListClone = _stk.clone(keyList);
+
+    keyList.shift();
+    if (_stk.isEmpty(keyList)) {
+
+        if (_stk.getTypeof(referenceValue[_stk.first(keyListClone)]) === "array") {
+
+            referenceValue[_stk.first(keyListClone)].push(getValueOnly);
+
+        } else {
+
+            referenceValue[_stk.first(keyListClone)] = getValueOnly;
+
+        }
+
+    } else {
+
+        objectMultipleKey(referenceValue[_stk.first(keyListClone)], keyList, getValueOnly);
+
+    }
+
+};
+
+/**
+ * Parsing JSON object into query string
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
+ * // => null
  */
 var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
@@ -115,11 +547,15 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         if (_stk.isEmpty(keyList)) {
 
-            referenceValue[keyOnly]="";
+            if (_stk.isEmpty(keyOnly) ===false) {
+
+                referenceValue[keyOnly]="";
+
+            }
 
         } else {
 
-            var firstKey = _stk.first(keyList).value;
+            var firstKey = _stk.first(keyList);
 
             if (_stk.isEmpty(firstKey)) {
 
@@ -130,10 +566,14 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
                 referenceValue[keyOnly] = {};
 
             }
-            keyList.shift();
+
             if (_stk.isEmpty(keyList) ===false) {
 
-                parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+                var keyListClone = _stk.clone(keyList);
+
+                keyList.shift();
+
+                parseObjectSchema(referenceValue[keyOnly], defaultConfig, _stk.first(keyListClone), keyList, getValueOnly);
 
             }
 
@@ -151,29 +591,131 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
 };
 
-var zero =0;
+/**
+ * Parsing JSON object callback
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} defaultConfig config defalut value
+ * @param {any} defaultSplit Key in array
+ * @param {any} callbacks array of keys in array argument
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
+ * // => true
+ */
+var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
+
+    _stk.each(defaultSplit, function (key, val) {
+
+        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            var keyOnly = "";
+            var keyList = [];
+
+            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (_stk.isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+
+            callbacks(keyOnly, keyList, getValueOnly);
+
+        }
+
+    });
+
+};
+
 var one =1;
-var minusone =-1;
+
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlComposer('https://example.com')
+ * data.getToString()
+ *=> 'https://example.com'
+ */
+function urlComposer (domain) {
+
+    var defaultConfig = {
+        "protocol": "https"
+    };
+
+    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
+
+}
+
+/**
+ * Check url is valid format
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlValidFormat('https://example.com')
+ *=> true
+ */
+function isUrlValidFormat (domain) {
+
+    return isUrlValidFormatVerifier(domain);
+
+}
 
 /**
  * To join the domain and path
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The Domain url
- * @param {string} path The Url path
+ * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-function joinUrlPath (domain, path) {
+function joinUrlPath () {
 
-    var replaceDomain = domain.replace(/(\/)$/, "");
-    var replacePath = path.replace(/^(\/)/, "");
+    var ags=arguments;
 
-    return replaceDomain+"/"+replacePath;
+    var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
+    var replacePath = _stk.arraySlice(ags, one);
+    var cleanReplacePath = [];
+
+    _stk.each(replacePath, function (key, value) {
+
+        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+
+    });
+
+    return replaceDomain+"/"+cleanReplacePath.join("/");
 
 }
 
@@ -192,6 +734,24 @@ function joinUrlPath (domain, path) {
 function isHttpProtocolValid (host) {
 
     return (/^(https|http):\/\//g).test(host);
+
+}
+
+/**
+ * Check url has valid ws/wss websocket protocol
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isWebSocketProtocolValid('wss://example.com')
+ *=> true
+ */
+function isWebSocketProtocolValid (host) {
+
+    return (/^(wss|ws):\/\//g).test(host);
 
 }
 
@@ -216,68 +776,64 @@ function isHttps (host) {
 /**
  * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category Seq
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
- *=> {
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": 43,
- *          "protocol": https,
- *          "search": '',
- *          "type": "ajax"
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 function getHostDetails (host) {
 
-    if (typeof document !== "undefined") {
-
-        var urlAjax = document.createElement('a');
-
-        urlAjax.setAttribute('href', host);
-
-        return {
-            "hostArgument": host,
-            "hostname": urlAjax.hostname,
-            "pathname": urlAjax.pathname,
-            "port": urlAjax.port,
-            "protocol": urlAjax.protocol.replace(/[:]/g, ""),
-            "search": urlAjax.search,
-            "type": "ajax"
-        };
-
-    }
-
-    if (typeof process !== "undefined") {
-
-        var urlHttp = new url.URL(host);
-
-        return {
-            "hostArgument": host,
-            "hostname": urlHttp.hostname,
-            "pathname": urlHttp.pathname,
-            "port": urlHttp.port,
-            "protocol": urlHttp.protocol.replace(/[:]/g, ""),
-            "search": urlHttp.search,
-            "type": "http"
-        };
-
-    }
-
-    return {
-        "hostArgument": host,
+    var dataReference = {
+        "domainDetails": {},
         "hostname": "",
+        "href": host,
+        "password": "",
         "pathname": "",
-        "port": "80",
+        "port": "",
         "protocol": "",
         "search": "",
-        "type": "invalid"
+        "user": ""
     };
+
+    if (_stk.isEmpty(host) === false) {
+
+        var details = urlDetails(host);
+
+        dataReference.protocol = details.protocol;
+        dataReference.hostname = details.hostname;
+        dataReference.pathname = details.pathname;
+        dataReference.user = details.user;
+        dataReference.password = details.password;
+
+        dataReference.search = details.search;
+        dataReference.hash = details.hash;
+
+        dataReference.domainDetails = getDomainDetails(details.hostnamePort);
+        dataReference.port = details.port;
+
+    }
+
+    return dataReference;
 
 }
 
@@ -287,7 +843,7 @@ function getHostDetails (host) {
  * @since 1.0.0
  * @category Seq
  * @param {any} value Passing object to convert string
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
@@ -296,10 +852,10 @@ function getHostDetails (host) {
  */
 function qsStringify (value, config) {
 
-    if (_stk.indexOf([
+    if (_stk.indexOfNotExist([
         "json",
         "array"
-    ], _stk.getTypeof(value)) === minusone) {
+    ], _stk.getTypeof(value))) {
 
         return "";
 
@@ -324,16 +880,16 @@ function qsStringify (value, config) {
  * @since 1.0.0
  * @category Seq
  * @param {string} value Passing string to convert to object
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
 function qsParse (value, config) {
 
-    if (_stk.indexOf(["string"], _stk.getTypeof(value)) === minusone) {
+    if (_stk.indexOfNotExist(["string"], _stk.getTypeof(value))) {
 
         return {};
 
@@ -348,78 +904,16 @@ function qsParse (value, config) {
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
-    _stk.each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            var keyOnly = "";
-            var keyList = [];
-
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (_stk.isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
+        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
     // Value for its data
-    _stk.each(defaultSplit, function (key, val) {
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.delimiter(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            var keyOnly = "";
-            var keyList = [];
-
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (_stk.isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-        }
+        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
@@ -442,7 +936,7 @@ function qsParse (value, config) {
  */
 function isUrlExtValid (host, ext) {
 
-    var regularExpression = new RegExp("(."+ext+")$");
+    var regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return regularExpression.test(host);
 
@@ -455,5 +949,8 @@ urs.isHttps=isHttps
 urs.isHttpProtocolValid=isHttpProtocolValid
 urs.joinUrlPath=joinUrlPath
 urs.isUrlExtValid=isUrlExtValid
+urs.isWebSocketProtocolValid=isWebSocketProtocolValid
+urs.isUrlValidFormat=isUrlValidFormat
+urs.urlComposer=urlComposer
 
 })(typeof window !== "undefined" ? window : this);

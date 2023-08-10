@@ -1,22 +1,31 @@
-import {isEmpty, has, getTypeof, first} from 'structkit';
+import {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} from 'structkit';
+
+const zero =0;
+const one =1;
 
 /**
- * Is Exact
+ * Parsing query string into JSON object
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
  */
 const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+
+    const filterKeyList = filter(keyList, function (ke, value) {
+
+        return isEmpty(value)===false;
+
+    });
 
     if (getTypeof(referenceValue[keyOnly]) === "string") {
 
@@ -26,35 +35,78 @@ const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, key
 
     if (getTypeof(referenceValue[keyOnly]) === "array") {
 
-        referenceValue[keyOnly].push(getValueOnly);
+        const firstKey = first(filterKeyList);
+        const referenceData = {};
+
+        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
+        referenceValue[keyOnly].push(isEmpty(firstKey)
+            ? getValueOnly
+            : referenceData);
 
     }
 
     if (getTypeof(referenceValue[keyOnly]) === "json") {
 
-        const firstKey = first(keyList).value;
-
-        referenceValue[keyOnly][firstKey]=getValueOnly;
+        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
 
     }
 
 };
 
 /**
- * Is Exact
+ * Parsing nested object
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} referenceValue The first number in an addition.
- * @param {any} defaultConfig The first number in an addition.
- * @param {any} keyOnly The first number in an addition.
- * @param {any} keyList The first number in an addition.
- * @param {any} getValueOnly The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
  * @example
  *
- * isExact({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
+ */
+const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
+
+    const keyListClone = clone(keyList);
+
+    keyList.shift();
+    if (isEmpty(keyList)) {
+
+        if (getTypeof(referenceValue[first(keyListClone)]) === "array") {
+
+            referenceValue[first(keyListClone)].push(getValueOnly);
+
+        } else {
+
+            referenceValue[first(keyListClone)] = getValueOnly;
+
+        }
+
+    } else {
+
+        objectMultipleKey(referenceValue[first(keyListClone)], keyList, getValueOnly);
+
+    }
+
+};
+
+/**
+ * Parsing JSON object into query string
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
+ * // => null
  */
 const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
@@ -62,11 +114,15 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
         if (isEmpty(keyList)) {
 
-            referenceValue[keyOnly]="";
+            if (isEmpty(keyOnly) ===false) {
+
+                referenceValue[keyOnly]="";
+
+            }
 
         } else {
 
-            const firstKey = first(keyList).value;
+            const firstKey = first(keyList);
 
             if (isEmpty(firstKey)) {
 
@@ -77,10 +133,14 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
                 referenceValue[keyOnly] = {};
 
             }
-            keyList.shift();
+
             if (isEmpty(keyList) ===false) {
 
-                parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+                const keyListClone = clone(keyList);
+
+                keyList.shift();
+
+                parseObjectSchema(referenceValue[keyOnly], defaultConfig, first(keyListClone), keyList, getValueOnly);
 
             }
 
@@ -98,4 +158,59 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
 };
 
-export {parseObjectConvert,parseObjectSchema};
+/**
+ * Parsing JSON object callback
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} defaultConfig config defalut value
+ * @param {any} defaultSplit Key in array
+ * @param {any} callbacks array of keys in array argument
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
+ * // => true
+ */
+const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
+
+    each(defaultSplit, function (key, val) {
+
+        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        const getKeyOnly = first(getKeyAndValue);
+        const getValueOnly = arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            let keyOnly = "";
+            const keyList = [];
+
+            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+
+            callbacks(keyOnly, keyList, getValueOnly);
+
+        }
+
+    });
+
+};
+
+export {parseObjectConvert,parseObjectSchema,qsParseCallback};

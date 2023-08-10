@@ -1,22 +1,30 @@
 /**
  * Check the domain details and verify it library is access via browser or nodejs
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @category Seq
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
  *
  * getHostDetails('https://example.com')
- *=> {
- *          "hostArgument": host,
- *          "hostname": 'example.com',
- *          "pathname": /,
- *          "port": 43,
- *          "protocol": https,
- *          "search": '',
- *          "type": "ajax"
- *     }
+ *  => {
+ *            "domainDetails": {
+ *                "domain": "example",
+ *                "domainWithTld": "example.com",
+ *               "subdomain": "www",
+ *                 "tld": "com"
+ *            },
+ *            "hash": "",
+ *            "hostname": 'www.example.com',
+ *            "href": 'https://www.example.com',
+ *            "password": "",
+ *            "pathname": "",
+ *            "port": "",
+ *            "protocol": "https",
+ *            "search": '',
+ *            "user": ''
+ *         }
  */
 export function getHostDetails(host: string): any;
 /**
@@ -25,28 +33,28 @@ export function getHostDetails(host: string): any;
  * @since 1.0.0
  * @category Seq
  * @param {any} value Passing object to convert string
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
  * qsStringify({"test": 11,"test2": 11})
  *=> test=1&test2=11
  */
-export function qsStringify(value: any, config: any): any;
+export function qsStringify(value: any, config?: any | undefined): any;
 /**
  * Query String object
  *
  * @since 1.0.0
  * @category Seq
  * @param {string} value Passing string to convert to object
- * @param {any} config Conversion delimeter
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * qsParse(test=1&test2=11)
+ * qsParse("test=1&test2=11")
  *=> {"test": 11,"test2": 11}
  */
-export function qsParse(value: string, config: any): any;
+export function qsParse(value: string, config?: any | undefined): any;
 /**
  * Check if url is valid https
  *
@@ -78,15 +86,14 @@ export function isHttpProtocolValid(host: string): boolean;
  *
  * @since 1.0.0
  * @category environment
- * @param {string} domain The Domain url
- * @param {string} path The Url path
+ * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
  *
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-export function joinUrlPath(domain: string, path: string): string;
+export function joinUrlPath(...ags: any[]): string;
 /**
  * Check if url extenstion,is valid
  *
@@ -101,3 +108,43 @@ export function joinUrlPath(domain: string, path: string): string;
  *=> true
  */
 export function isUrlExtValid(host: string, ext: string): boolean;
+/**
+ * Check url has valid ws/wss websocket protocol
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} host Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isWebSocketProtocolValid('wss://example.com')
+ *=> true
+ */
+export function isWebSocketProtocolValid(host: string): boolean;
+/**
+ * Check url is valid format
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * isUrlValidFormat('https://example.com')
+ *=> true
+ */
+export function isUrlValidFormat(domain: string): boolean;
+/**
+ * Compose your url structure in string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {string} domain Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlComposer('https://example.com')
+ * data.getToString()
+ *=> 'https://example.com'
+ */
+export function urlComposer(domain: string): any;
