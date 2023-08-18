@@ -1,4 +1,4 @@
-import {count, first, last, arraySlice, isEmpty} from 'structkit';
+import {count, first, last, arraySlice, isEmpty, toString} from 'structkit';
 
 /**
  * Get if domain segmet details
@@ -80,6 +80,7 @@ const getDomain =function (domain) {
  */
 const getDomainDetails=function (domain) {
 
+    const zero =0;
     const one =1;
     const two =2;
     const three = 3;
@@ -116,12 +117,14 @@ const getDomainDetails=function (domain) {
 
     }
 
-    if (count(domainSplit) === three) {
+    if (count(domainSplit) >= three) {
+
+        const getDefaultDomain = arraySlice(domainSplit, count(domainSplit) - two, count(domainSplit) - two);
 
         domainDetails = {
-            "domain": domainSplit[one],
-            "domainWithTld": domainSplit[one]+"."+last(domainSplit),
-            "subdomain": first(domainSplit),
+            "domain": toString(getDefaultDomain),
+            "domainWithTld": getDefaultDomain +"."+last(domainSplit),
+            "subdomain": arraySlice(domainSplit, zero, count(domainSplit) - three).join("."),
             "tld": first(getTLD)
         };
 
@@ -152,7 +155,7 @@ const isUrlValidFormatVerifier=function (domain) {
     const one =1;
     const two =2;
     const theee =3;
-    const four = 63;
+    const validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
@@ -163,7 +166,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
             const getTLD = count(first(last(cleanUrlSplit).split("/")).split(""));
 
-            if (getTLD > one && getTLD <= four) {
+            if (getTLD > one && getTLD <= validTLDlen) {
 
                 if (count(cleanUrlSplit) === two) {
 

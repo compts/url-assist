@@ -226,6 +226,7 @@ var getDomain =function (domain) {
  */
 var getDomainDetails=function (domain) {
 
+    var zero =0;
     var one =1;
     var two =2;
     var three = 3;
@@ -262,12 +263,14 @@ var getDomainDetails=function (domain) {
 
     }
 
-    if (_stk.count(domainSplit) === three) {
+    if (_stk.count(domainSplit) >= three) {
+
+        var getDefaultDomain = _stk.arraySlice(domainSplit, _stk.count(domainSplit) - two, _stk.count(domainSplit) - two);
 
         domainDetails = {
-            "domain": domainSplit[one],
-            "domainWithTld": domainSplit[one]+"."+_stk.last(domainSplit),
-            "subdomain": _stk.first(domainSplit),
+            "domain": _stk.toString(getDefaultDomain),
+            "domainWithTld": getDefaultDomain +"."+_stk.last(domainSplit),
+            "subdomain": _stk.arraySlice(domainSplit, zero, _stk.count(domainSplit) - three).join("."),
             "tld": _stk.first(getTLD)
         };
 
@@ -298,7 +301,7 @@ var isUrlValidFormatVerifier=function (domain) {
     var one =1;
     var two =2;
     var theee =3;
-    var four = 63;
+    var validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
@@ -309,7 +312,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
             var getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
 
-            if (getTLD > one && getTLD <= four) {
+            if (getTLD > one && getTLD <= validTLDlen) {
 
                 if (_stk.count(cleanUrlSplit) === two) {
 
@@ -733,7 +736,7 @@ function joinUrlPath () {
  */
 function isHttpProtocolValid (host) {
 
-    return (/^(https|http):\/\//g).test(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormatVerifier(host);
 
 }
 
@@ -769,7 +772,7 @@ function isWebSocketProtocolValid (host) {
  */
 function isHttps (host) {
 
-    return (/^(https):\/\/\b/g).test(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormatVerifier(host);
 
 }
 
