@@ -74,10 +74,10 @@ const getDomain =function (domain) {
  *
  * getDomainDetails("example.com")
  * // =>  domainDetails = {
- *      "domain": "",
+ *      "domain": "example",
  *      "domainWithTld": "",
  *      "subdomain": "",
- *      "tld": ""
+ *      "tld": "com"
  *  }
  */
 const getDomainDetails=function (domain) {
@@ -164,7 +164,7 @@ const isUrlValidFormatVerifier=function (domain) {
         const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
         const cleanUrlSplit = cleanUrl.split(".");
 
-        if (count(cleanUrlSplit) === two || count(cleanUrlSplit) === theee) {
+        if (count(cleanUrlSplit) >= two) {
 
             const getTLD = count(first(last(cleanUrlSplit).split("/")).split(""));
 
@@ -176,10 +176,12 @@ const isUrlValidFormatVerifier=function (domain) {
 
                 }
 
-                if (count(cleanUrlSplit) === theee) {
+                if (count(cleanUrlSplit) >= theee) {
 
-                    const regSubDomain =validDomainRegExp.test(first(cleanUrlSplit));
-                    const regDomain = (/^([\w\d-]{1,})$/g).test(cleanUrlSplit[one].toString());
+                    const getDomainSplit = getDomainDetails(cleanUrl);
+
+                    const regSubDomain =validDomainRegExp.test(getDomainSplit.subdomain);
+                    const regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;
 
