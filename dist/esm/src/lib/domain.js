@@ -178,7 +178,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
                     const getDomainSplit = getDomainDetails(cleanUrl);
 
-                    const regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
+                    const regSubDomain =validDomainRegExp.test(getDomainSplit.subdomain);
                     const regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;

@@ -324,7 +324,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
                     var getDomainSplit = getDomainDetails(cleanUrl);
 
-                    var regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
+                    var regSubDomain =validDomainRegExp.test(getDomainSplit.subdomain);
                     var regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;
