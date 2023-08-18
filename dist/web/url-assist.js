@@ -738,7 +738,7 @@ function joinUrlPath () {
  */
 function isHttpProtocolValid (host) {
 
-    return (/^(https|http):\/\//g).test(host) && isUrlValidFormatVerifier(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
 
 }
 
@@ -774,7 +774,7 @@ function isWebSocketProtocolValid (host) {
  */
 function isHttps (host) {
 
-    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormatVerifier(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
 
 }
 
