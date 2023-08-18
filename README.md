@@ -13,12 +13,6 @@ Using npm:
 ```shell
 $ npm i url-assist
 ```
-## Requirement
-You need to install this in your machine to compile in your machine
-```bash
-npm install grasseum -g
-```
-
 
 ## How to import the Library
 
