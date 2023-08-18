@@ -300,7 +300,7 @@ function isUrlExtValid (host, ext) {
 
     const regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
-    return regularExpression.test(host);
+    return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
