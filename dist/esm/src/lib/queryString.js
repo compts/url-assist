@@ -1,6 +1,45 @@
-import {each, getTypeof, indexOf} from 'structkit';
+import {each, varExtend, getTypeof, indexOfNotExist, indexOf} from 'structkit';
+
+import {configQueryString} from './config';
 
 const zero =0;
+
+/**
+ * Query String stringify
+ *
+ * @since 1.0.0
+ * @category Seq
+ * @param {any} value Passing object to convert string
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * qsStringify({"test": 11,"test2": 11})
+ *=> test=1&test2=11
+ */
+function qsStringify (value, config) {
+
+    if (indexOfNotExist([
+        "json",
+        "array"
+    ], getTypeof(value))) {
+
+        return "";
+
+    }
+
+    const referenceValue = [];
+    const defaultConfig = varExtend(configQueryString, config);
+
+    each(value, function (key, val) {
+
+        parseStringConvert(key, val, getTypeof(val), defaultConfig, referenceValue);
+
+    });
+
+    return referenceValue.join(defaultConfig.newLineSeparator);
+
+}
 
 /**
  * Parse query string to object
@@ -46,4 +85,4 @@ const parseStringConvert=function (key, value, type, config, reference) {
 
 };
 
-export {parseStringConvert};
+export {qsStringify};

@@ -21,7 +21,7 @@ describe('CJS: urlComposer method', function () {
 
     it('check if subdomain has change', function () {
 
-        data.setDomainSubdomain("service");
+        data.setSubdomain("service");
         assert.deepStrictEqual(data.getToString(), 'https://service.example.com/v2/gundam');
 
     });

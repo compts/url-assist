@@ -36,13 +36,15 @@ export class UrlComposerInit {
     variablePath: any;
     variableDomain: any;
     variableDomainTld: any;
-    variableDomainSubdomain: any;
+    variableSubdomain: any;
+    variableQueryString: any;
     setProtocol(data: any): void;
     setPort(data: any): void;
     setPath(data: any): void;
     setDomain(data: any): void;
     setDomainTld(data: any): void;
-    setDomainSubdomain(data: any): void;
+    setSubdomain(data: any): void;
+    setQueryString(data: any): void;
     /**
      * Compose your url structure in string
      *

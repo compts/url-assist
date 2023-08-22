@@ -1,14 +1,12 @@
-import {configQueryString} from './lib/config';
-
-import {parseStringConvert} from './lib/queryString';
+import {qsStringify} from './lib/queryString';
 
 import {UrlComposerInit} from './lib/urlComposerInit';
 
 import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
 
-import {parseObjectConvert, qsParseCallback, parseObjectSchema} from './lib/queryObject';
+import {qsParse} from './lib/queryObject';
 
-import {arraySlice, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} from 'structkit';
+import {arraySlice, each, first, isEmpty} from 'structkit';
 
 const one =1;
 
@@ -196,90 +194,6 @@ function getHostDetails (host) {
     }
 
     return dataReference;
-
-}
-
-/**
- * Query String stringify
- *
- * @since 1.0.0
- * @category Seq
- * @param {any} value Passing object to convert string
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsStringify({"test": 11,"test2": 11})
- *=> test=1&test2=11
- */
-function qsStringify (value, config) {
-
-    if (indexOfNotExist([
-        "json",
-        "array"
-    ], getTypeof(value))) {
-
-        return "";
-
-    }
-
-    const referenceValue = [];
-    const defaultConfig = varExtend(configQueryString, config);
-
-    each(value, function (key, val) {
-
-        parseStringConvert(key, val, getTypeof(val), defaultConfig, referenceValue);
-
-    });
-
-    return referenceValue.join(defaultConfig.newLineSeparator);
-
-}
-
-/**
- * Query String object
- *
- * @since 1.0.0
- * @category Seq
- * @param {string} value Passing string to convert to object
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsParse("test=1&test2=11")
- *=> {"test": 11,"test2": 11}
- */
-function qsParse (value, config) {
-
-    if (indexOfNotExist(["string"], getTypeof(value))) {
-
-        return {};
-
-    }
-
-    value = value.trim().replace(/^[?#&]/, '');
-
-    const referenceValue = {};
-    const defaultConfig = varExtend(configQueryString, config);
-    const defaultSplit = value.split(defaultConfig.newLineSeparator);
-
-    // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-
-    // Schema for data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    return referenceValue;
 
 }
 

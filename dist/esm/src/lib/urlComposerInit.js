@@ -1,5 +1,28 @@
 import {templateValue, isEmpty} from 'structkit';
 
+import {qsParse} from './queryObject';
+
+import {qsStringify} from './queryString';
+
+/**
+ * Remove slash first and last
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {string} data Passing the completet domain url
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function removeSlash (data) {
+
+    return data.replace(/^(\/)/, "").replace(/(\/)$/, "");
+
+}
+
 /**
  * Compose your url structure in string
  * @category Seq
@@ -24,7 +47,8 @@ function UrlComposerInit (config, defaultConfig) {
     this.variablePath = config.pathname;
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
-    this.variableDomainSubdomain = config.domainDetails.subdomain;
+    this.variableSubdomain = config.domainDetails.subdomain;
+    this.variableQueryString = qsParse(config.search);
 
 }
 
@@ -40,7 +64,7 @@ UrlComposerInit.prototype.setPort = function (data) {
 };
 UrlComposerInit.prototype.setPath = function (data) {
 
-    this.variablePath = data;
+    this.variablePath = removeSlash(data);
 
 };
 UrlComposerInit.prototype.setDomain = function (data) {
@@ -53,9 +77,15 @@ UrlComposerInit.prototype.setDomainTld = function (data) {
     this.variableDomainTld = data;
 
 };
-UrlComposerInit.prototype.setDomainSubdomain = function (data) {
+UrlComposerInit.prototype.setSubdomain = function (data) {
 
-    this.variableDomainSubdomain = data;
+    this.variableSubdomain = data;
+
+};
+
+UrlComposerInit.prototype.setQueryString = function (data) {
+
+    this.variableQueryString = data;
 
 };
 
@@ -72,7 +102,7 @@ UrlComposerInit.prototype.setDomainSubdomain = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
-    const urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !>';
+    const urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !><!- queryString !>';
 
     return templateValue(urlFormat, {
         "domain": this.variableDomain,
@@ -85,9 +115,12 @@ UrlComposerInit.prototype.getToString = function () {
             ? ''
             : ':'+this.variablePort,
         "protocol": this.variableProtocol,
-        "subdomain": isEmpty(this.variableDomainSubdomain)
+        "queryString": isEmpty(this.variableQueryString)
             ? ''
-            :this.variableDomainSubdomain+'.',
+            : '?'+qsStringify(this.variableQueryString),
+        "subdomain": isEmpty(this.variableSubdomain)
+            ? ''
+            :this.variableSubdomain+'.',
         "tld": this.variableDomainTld
     });
 

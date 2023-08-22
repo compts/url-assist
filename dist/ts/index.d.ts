@@ -27,34 +27,8 @@
  *         }
  */
 export function getHostDetails(host: string): any;
-/**
- * Query String stringify
- *
- * @since 1.0.0
- * @category Seq
- * @param {any} value Passing object to convert string
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsStringify({"test": 11,"test2": 11})
- *=> test=1&test2=11
- */
-export function qsStringify(value: any, config?: any | undefined): any;
-/**
- * Query String object
- *
- * @since 1.0.0
- * @category Seq
- * @param {string} value Passing string to convert to object
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsParse("test=1&test2=11")
- *=> {"test": 11,"test2": 11}
- */
-export function qsParse(value: string, config?: any | undefined): any;
+import { qsStringify } from './lib/queryString';
+import { qsParse } from './lib/queryObject';
 /**
  * Check if url is valid https
  *
@@ -148,3 +122,4 @@ export function isUrlValidFormat(domain: string): boolean;
  *=> 'https://example.com'
  */
 export function urlComposer(domain: string): any;
+export { qsStringify, qsParse };

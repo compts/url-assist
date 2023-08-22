@@ -1,5 +1,6 @@
 (function(global){
 global.urs={}
+
 configQueryString = {
 
     "arrayFormat": "[]",
@@ -8,6 +9,43 @@ configQueryString = {
 };
 
 var zero =0;
+
+/**
+ * Query String stringify
+ *
+ * @since 1.0.0
+ * @category Seq
+ * @param {any} value Passing object to convert string
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * qsStringify({"test": 11,"test2": 11})
+ *=> test=1&test2=11
+ */
+function qsStringify (value, config) {
+
+    if (_stk.indexOfNotExist([
+        "json",
+        "array"
+    ], _stk.getTypeof(value))) {
+
+        return "";
+
+    }
+
+    var referenceValue = [];
+    var defaultConfig = _stk.varExtend(configQueryString, config);
+
+    _stk.each(value, function (key, val) {
+
+        parseStringConvert(key, val, _stk.getTypeof(val), defaultConfig, referenceValue);
+
+    });
+
+    return referenceValue.join(defaultConfig.newLineSeparator);
+
+}
 
 /**
  * Parse query string to object
@@ -53,6 +91,285 @@ var parseStringConvert=function (key, value, type, config, reference) {
 
 };
 
+var zero =0;
+var one =1;
+
+/**
+ * Query String object
+ *
+ * @since 1.0.0
+ * @category Seq
+ * @param {string} value Passing string to convert to object
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * qsParse("test=1&test2=11")
+ *=> {"test": 11,"test2": 11}
+ */
+function qsParse (value, config) {
+
+    if (_stk.indexOfNotExist(["string"], _stk.getTypeof(value))) {
+
+        return {};
+
+    }
+
+    value = value.trim().replace(/^[?#&]/, '');
+
+    var referenceValue = {};
+    var defaultConfig = _stk.varExtend(configQueryString, config);
+    var defaultSplit = value.split(defaultConfig.newLineSeparator);
+
+    // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+
+    // Schema for data
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+
+        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+    });
+
+    // Value for its data
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+
+        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+    });
+
+    return referenceValue;
+
+}
+
+/**
+ * Parsing query string into JSON object
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
+ */
+var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+
+    var filterKeyList = _stk.filter(keyList, function (ke, value) {
+
+        return _stk.isEmpty(value)===false;
+
+    });
+
+    if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
+
+        referenceValue[keyOnly] = getValueOnly;
+
+    }
+
+    if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
+
+        var firstKey = _stk.first(filterKeyList);
+        var referenceData = {};
+
+        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
+        referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
+            ? getValueOnly
+            : referenceData);
+
+    }
+
+    if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
+
+        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
+
+    }
+
+};
+
+/**
+ * Parsing nested object
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
+ * // => null
+ */
+var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
+
+    var keyListClone = _stk.clone(keyList);
+
+    keyList.shift();
+    if (_stk.isEmpty(keyList)) {
+
+        if (_stk.getTypeof(referenceValue[_stk.first(keyListClone)]) === "array") {
+
+            referenceValue[_stk.first(keyListClone)].push(getValueOnly);
+
+        } else {
+
+            referenceValue[_stk.first(keyListClone)] = getValueOnly;
+
+        }
+
+    } else {
+
+        objectMultipleKey(referenceValue[_stk.first(keyListClone)], keyList, getValueOnly);
+
+    }
+
+};
+
+/**
+ * Parsing JSON object into query string
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} referenceValue reference from main function to recursive
+ * @param {any} defaultConfig config defalut value
+ * @param {any} keyOnly Key in array
+ * @param {any} keyList array of keys in array argument
+ * @param {any} getValueOnly Value to replace
+ * @returns {null} Returns the null.
+ * @example
+ *
+ * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
+ * // => null
+ */
+var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+
+    if (_stk.has(referenceValue, keyOnly) ===false) {
+
+        if (_stk.isEmpty(keyList)) {
+
+            if (_stk.isEmpty(keyOnly) ===false) {
+
+                referenceValue[keyOnly]="";
+
+            }
+
+        } else {
+
+            var firstKey = _stk.first(keyList);
+
+            if (_stk.isEmpty(firstKey)) {
+
+                referenceValue[keyOnly] = [];
+
+            } else {
+
+                referenceValue[keyOnly] = {};
+
+            }
+
+            if (_stk.isEmpty(keyList) ===false) {
+
+                var keyListClone = _stk.clone(keyList);
+
+                keyList.shift();
+
+                parseObjectSchema(referenceValue[keyOnly], defaultConfig, _stk.first(keyListClone), keyList, getValueOnly);
+
+            }
+
+        }
+
+    } else {
+
+        if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
+
+            referenceValue[keyOnly] = [];
+
+        }
+
+    }
+
+};
+
+/**
+ * Parsing JSON object callback
+ *
+ * @since 1.0.1
+ * @category Seq
+ * @param {any} defaultConfig config defalut value
+ * @param {any} defaultSplit Key in array
+ * @param {any} callbacks array of keys in array argument
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
+ * // => true
+ */
+var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
+
+    _stk.each(defaultSplit, function (key, val) {
+
+        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        var getKeyOnly = _stk.first(getKeyAndValue);
+        var getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+
+        if (getKeyAndValue.length > zero) {
+
+            var keyOnly = "";
+            var keyList = [];
+
+            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+
+                keyOnly=sub1;
+
+                return "[";
+
+            });
+
+            if (_stk.isEmpty(keyOnly)) {
+
+                keyOnly=getKeyOnly;
+
+            }
+
+            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
+
+                keyList.push(sub1.replace(/[[\]]/g, ""));
+
+            });
+
+            callbacks(keyOnly, keyList, getValueOnly);
+
+        }
+
+    });
+
+};
+
+/**
+ * Remove slash first and last
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {string} data Passing the completet domain url
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * urlComposer('https://example.com')
+ *=> true
+ */
+function removeSlash (data) {
+
+    return data.replace(/^(\/)/, "").replace(/(\/)$/, "");
+
+}
+
 /**
  * Compose your url structure in string
  * @category Seq
@@ -77,7 +394,8 @@ function UrlComposerInit (config, defaultConfig) {
     this.variablePath = config.pathname;
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
-    this.variableDomainSubdomain = config.domainDetails.subdomain;
+    this.variableSubdomain = config.domainDetails.subdomain;
+    this.variableQueryString = qsParse(config.search);
 
 }
 
@@ -93,7 +411,7 @@ UrlComposerInit.prototype.setPort = function (data) {
 };
 UrlComposerInit.prototype.setPath = function (data) {
 
-    this.variablePath = data;
+    this.variablePath = removeSlash(data);
 
 };
 UrlComposerInit.prototype.setDomain = function (data) {
@@ -106,9 +424,15 @@ UrlComposerInit.prototype.setDomainTld = function (data) {
     this.variableDomainTld = data;
 
 };
-UrlComposerInit.prototype.setDomainSubdomain = function (data) {
+UrlComposerInit.prototype.setSubdomain = function (data) {
 
-    this.variableDomainSubdomain = data;
+    this.variableSubdomain = data;
+
+};
+
+UrlComposerInit.prototype.setQueryString = function (data) {
+
+    this.variableQueryString = data;
 
 };
 
@@ -125,7 +449,7 @@ UrlComposerInit.prototype.setDomainSubdomain = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
-    var urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !>';
+    var urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !><!- queryString !>';
 
     return _stk.templateValue(urlFormat, {
         "domain": this.variableDomain,
@@ -138,9 +462,12 @@ UrlComposerInit.prototype.getToString = function () {
             ? ''
             : ':'+this.variablePort,
         "protocol": this.variableProtocol,
-        "subdomain": _stk.isEmpty(this.variableDomainSubdomain)
+        "queryString": _stk.isEmpty(this.variableQueryString)
             ? ''
-            :this.variableDomainSubdomain+'.',
+            : '?'+qsStringify(this.variableQueryString),
+        "subdomain": _stk.isEmpty(this.variableSubdomain)
+            ? ''
+            :this.variableSubdomain+'.',
         "tld": this.variableDomainTld
     });
 
@@ -438,219 +765,6 @@ var urlDetails=function (domain) {
 
 };
 
-var zero =0;
-var one =1;
-
-/**
- * Parsing query string into JSON object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
-
-    var filterKeyList = _stk.filter(keyList, function (ke, value) {
-
-        return _stk.isEmpty(value)===false;
-
-    });
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
-
-        referenceValue[keyOnly] = getValueOnly;
-
-    }
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
-
-        var firstKey = _stk.first(filterKeyList);
-        var referenceData = {};
-
-        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
-        referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
-            ? getValueOnly
-            : referenceData);
-
-    }
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
-
-        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
-
-    }
-
-};
-
-/**
- * Parsing nested object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
-
-    var keyListClone = _stk.clone(keyList);
-
-    keyList.shift();
-    if (_stk.isEmpty(keyList)) {
-
-        if (_stk.getTypeof(referenceValue[_stk.first(keyListClone)]) === "array") {
-
-            referenceValue[_stk.first(keyListClone)].push(getValueOnly);
-
-        } else {
-
-            referenceValue[_stk.first(keyListClone)] = getValueOnly;
-
-        }
-
-    } else {
-
-        objectMultipleKey(referenceValue[_stk.first(keyListClone)], keyList, getValueOnly);
-
-    }
-
-};
-
-/**
- * Parsing JSON object into query string
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
- * // => null
- */
-var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
-
-    if (_stk.has(referenceValue, keyOnly) ===false) {
-
-        if (_stk.isEmpty(keyList)) {
-
-            if (_stk.isEmpty(keyOnly) ===false) {
-
-                referenceValue[keyOnly]="";
-
-            }
-
-        } else {
-
-            var firstKey = _stk.first(keyList);
-
-            if (_stk.isEmpty(firstKey)) {
-
-                referenceValue[keyOnly] = [];
-
-            } else {
-
-                referenceValue[keyOnly] = {};
-
-            }
-
-            if (_stk.isEmpty(keyList) ===false) {
-
-                var keyListClone = _stk.clone(keyList);
-
-                keyList.shift();
-
-                parseObjectSchema(referenceValue[keyOnly], defaultConfig, _stk.first(keyListClone), keyList, getValueOnly);
-
-            }
-
-        }
-
-    } else {
-
-        if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
-
-            referenceValue[keyOnly] = [];
-
-        }
-
-    }
-
-};
-
-/**
- * Parsing JSON object callback
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} defaultConfig config defalut value
- * @param {any} defaultSplit Key in array
- * @param {any} callbacks array of keys in array argument
- * @returns {any} Returns the null.
- * @example
- *
- * qsParseCallback(defaultConfig, defaultSplit, callbacks)
- * // => true
- */
-var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
-
-    _stk.each(defaultSplit, function (key, val) {
-
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
-
-        if (getKeyAndValue.length > zero) {
-
-            var keyOnly = "";
-            var keyList = [];
-
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
-
-                keyOnly=sub1;
-
-                return "[";
-
-            });
-
-            if (_stk.isEmpty(keyOnly)) {
-
-                keyOnly=getKeyOnly;
-
-            }
-
-            keySubData.replace(/(\[[\s\w\-_\d]{0,}\])/g, function (whole, sub1) {
-
-                keyList.push(sub1.replace(/[[\]]/g, ""));
-
-            });
-
-            callbacks(keyOnly, keyList, getValueOnly);
-
-        }
-
-    });
-
-};
-
 var one =1;
 
 /**
@@ -839,90 +953,6 @@ function getHostDetails (host) {
     }
 
     return dataReference;
-
-}
-
-/**
- * Query String stringify
- *
- * @since 1.0.0
- * @category Seq
- * @param {any} value Passing object to convert string
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsStringify({"test": 11,"test2": 11})
- *=> test=1&test2=11
- */
-function qsStringify (value, config) {
-
-    if (_stk.indexOfNotExist([
-        "json",
-        "array"
-    ], _stk.getTypeof(value))) {
-
-        return "";
-
-    }
-
-    var referenceValue = [];
-    var defaultConfig = _stk.varExtend(configQueryString, config);
-
-    _stk.each(value, function (key, val) {
-
-        parseStringConvert(key, val, _stk.getTypeof(val), defaultConfig, referenceValue);
-
-    });
-
-    return referenceValue.join(defaultConfig.newLineSeparator);
-
-}
-
-/**
- * Query String object
- *
- * @since 1.0.0
- * @category Seq
- * @param {string} value Passing string to convert to object
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsParse("test=1&test2=11")
- *=> {"test": 11,"test2": 11}
- */
-function qsParse (value, config) {
-
-    if (_stk.indexOfNotExist(["string"], _stk.getTypeof(value))) {
-
-        return {};
-
-    }
-
-    value = value.trim().replace(/^[?#&]/, '');
-
-    var referenceValue = {};
-    var defaultConfig = _stk.varExtend(configQueryString, config);
-    var defaultSplit = value.split(defaultConfig.newLineSeparator);
-
-    // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-
-    // Schema for data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    return referenceValue;
 
 }
 
