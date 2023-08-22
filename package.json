@@ -17,7 +17,17 @@
     "url": "git+https://github.com/compts/url-assist.git"
   },
   "keywords": [
-    "compt",
+    "builder",
+    "urlBuilder",
+    "url-builder",
+    "template",
+    "assemble",
+    "assembler",
+    "route",
+    "routing",
+    "parameters",
+    "query-builder",
+    "query",
     "url",
     "parse",
     "node",
