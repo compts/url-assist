@@ -16,7 +16,7 @@ const one =1;
  * @returns {any} Return the boolean.
  * @example
  *
- * data = urlComposer('https://example.com')
+ * data = urlComposer('https://example.com');
  * data.getToString()
  *=> 'https://example.com'
  */
