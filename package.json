@@ -32,7 +32,10 @@
     "parse",
     "node",
     "href",
-    "git"
+    "git",
+    "querystrig",
+    "qs",
+    "stringify"
   ],
   "tsd": {
     "directory": "test/ts"
