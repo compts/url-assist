@@ -4,5 +4,6 @@ const configQueryString = {
     "equalSeparator": "=",
     "newLineSeparator": "&"
 };
+const exemptListOfDomain = ['localhost'];
 
-export {configQueryString};
+export {configQueryString,exemptListOfDomain};

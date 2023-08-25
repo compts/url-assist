@@ -1,4 +1,6 @@
-import {count, first, last, arraySlice, isEmpty, toString} from 'structkit';
+import {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString} from 'structkit';
+
+import {exemptListOfDomain} from './config';
 
 /**
  * Get if domain segmet details
@@ -25,8 +27,15 @@ const getDomain =function (domain) {
     const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
 
     const splitDomain = referenceDomain.split("/");
+    let getDomainFirstSplit = first(splitDomain);
+    let pathValueDetails = arraySlice(splitDomain, one).join("/");
 
-    const pathValueDetails = arraySlice(splitDomain, one).join("/");
+    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+
+        getDomainFirstSplit = '';
+        pathValueDetails = splitDomain.join("/");
+
+    }
 
     let pathValue = pathValueDetails;
     let hashValue = "";
@@ -56,7 +65,7 @@ const getDomain =function (domain) {
             .replace(/^(\/)/, "")
             .replace(/(\/)$/, ""),
         "search": queryValue,
-        "url": first(splitDomain)
+        "url": getDomainFirstSplit
     };
 
 };
@@ -178,7 +187,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
                     const getDomainSplit = getDomainDetails(cleanUrl);
 
-                    const regSubDomain =validDomainRegExp.test(getDomainSplit.subdomain);
+                    const regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
                     const regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;

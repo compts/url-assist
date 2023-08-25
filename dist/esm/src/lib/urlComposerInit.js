@@ -14,8 +14,8 @@ import {qsStringify} from './queryString';
  * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * removeSlash('/example')
+ *=> example
  */
 function removeSlash (data) {
 
@@ -28,8 +28,7 @@ function removeSlash (data) {
  * @category Seq
  * @since 1.1.0
  * @class UrlComposerInit
- * @param {object} config Passing the completet domain url
- * @param {object} defaultConfig Passing the completet domain url
+ * @param {object} config Passing the completet domain url=
  * @name urlCompose
  *
  * @returns {any} Return the boolean.
@@ -38,23 +37,27 @@ function removeSlash (data) {
  * urlComposer('https://example.com')
  *=> true
  */
-function UrlComposerInit (config, defaultConfig) {
+function UrlComposerInit (config) {
 
-    this.variableProtocol = isEmpty(config.protocol)
-        ? defaultConfig.protocol
-        :config.protocol;
+    this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
     this.variableQueryString = qsParse(config.search);
+    this.variableHash = config.hash;
 
 }
 
 UrlComposerInit.prototype.setProtocol = function (data) {
 
     this.variableProtocol = data;
+
+};
+UrlComposerInit.prototype.setHash = function (data) {
+
+    this.variableHash = data;
 
 };
 UrlComposerInit.prototype.setPort = function (data) {
@@ -102,10 +105,13 @@ UrlComposerInit.prototype.setQueryString = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
-    const urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !><!- queryString !>';
+    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
 
     return templateValue(urlFormat, {
         "domain": this.variableDomain,
+        "hash": isEmpty(this.variableHash)
+            ? ''
+            : '#'+this.variableHash,
         "path": isEmpty(this.variablePath)
             ? ''
             : '/'+removeSlash(this.variablePath)
@@ -114,14 +120,18 @@ UrlComposerInit.prototype.getToString = function () {
         "port": isEmpty(this.variablePort)
             ? ''
             : ':'+this.variablePort,
-        "protocol": this.variableProtocol,
+        "protocol": isEmpty(this.variableProtocol)
+            ? ''
+            : this.variableProtocol+"://",
         "queryString": isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
         "subdomain": isEmpty(this.variableSubdomain)
             ? ''
             :this.variableSubdomain+'.',
-        "tld": this.variableDomainTld
+        "tld": isEmpty(this.variableDomainTld)
+            ? ''
+            : '.'+this.variableDomainTld
     });
 
 };

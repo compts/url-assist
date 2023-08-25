@@ -7,6 +7,7 @@ configQueryString = {
     "equalSeparator": "=",
     "newLineSeparator": "&"
 };
+var exemptListOfDomain = ['localhost'];
 
 var zero =0;
 
@@ -361,8 +362,8 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * removeSlash('/example')
+ *=> example
  */
 function removeSlash (data) {
 
@@ -375,8 +376,7 @@ function removeSlash (data) {
  * @category Seq
  * @since 1.1.0
  * @class UrlComposerInit
- * @param {object} config Passing the completet domain url
- * @param {object} defaultConfig Passing the completet domain url
+ * @param {object} config Passing the completet domain url=
  * @name urlCompose
  *
  * @returns {any} Return the boolean.
@@ -385,23 +385,27 @@ function removeSlash (data) {
  * urlComposer('https://example.com')
  *=> true
  */
-function UrlComposerInit (config, defaultConfig) {
+function UrlComposerInit (config) {
 
-    this.variableProtocol = _stk.isEmpty(config.protocol)
-        ? defaultConfig.protocol
-        :config.protocol;
+    this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
     this.variableQueryString = qsParse(config.search);
+    this.variableHash = config.hash;
 
 }
 
 UrlComposerInit.prototype.setProtocol = function (data) {
 
     this.variableProtocol = data;
+
+};
+UrlComposerInit.prototype.setHash = function (data) {
+
+    this.variableHash = data;
 
 };
 UrlComposerInit.prototype.setPort = function (data) {
@@ -449,10 +453,13 @@ UrlComposerInit.prototype.setQueryString = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
-    var urlFormat = '<!- protocol !>://<!- subdomain !><!- domain !>.<!- tld !><!- port !><!- path !><!- queryString !>';
+    var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
 
     return _stk.templateValue(urlFormat, {
         "domain": this.variableDomain,
+        "hash": _stk.isEmpty(this.variableHash)
+            ? ''
+            : '#'+this.variableHash,
         "path": _stk.isEmpty(this.variablePath)
             ? ''
             : '/'+removeSlash(this.variablePath)
@@ -461,14 +468,18 @@ UrlComposerInit.prototype.getToString = function () {
         "port": _stk.isEmpty(this.variablePort)
             ? ''
             : ':'+this.variablePort,
-        "protocol": this.variableProtocol,
+        "protocol": _stk.isEmpty(this.variableProtocol)
+            ? ''
+            : this.variableProtocol+"://",
         "queryString": _stk.isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
         "subdomain": _stk.isEmpty(this.variableSubdomain)
             ? ''
             :this.variableSubdomain+'.',
-        "tld": this.variableDomainTld
+        "tld": _stk.isEmpty(this.variableDomainTld)
+            ? ''
+            : '.'+this.variableDomainTld
     });
 
 };
@@ -498,8 +509,15 @@ var getDomain =function (domain) {
     var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
 
     var splitDomain = referenceDomain.split("/");
-
+    var getDomainFirstSplit = _stk.first(splitDomain);
     var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
+
+    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+
+        getDomainFirstSplit = '';
+        pathValueDetails = splitDomain.join("/");
+
+    }
 
     var pathValue = pathValueDetails;
     var hashValue = "";
@@ -529,7 +547,7 @@ var getDomain =function (domain) {
             .replace(/^(\/)/, "")
             .replace(/(\/)$/, ""),
         "search": queryValue,
-        "url": _stk.first(splitDomain)
+        "url": getDomainFirstSplit
     };
 
 };
@@ -651,7 +669,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
                     var getDomainSplit = getDomainDetails(cleanUrl);
 
-                    var regSubDomain =validDomainRegExp.test(getDomainSplit.subdomain);
+                    var regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
                     var regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;
@@ -782,11 +800,7 @@ var one =1;
  */
 function urlComposer (domain) {
 
-    var defaultConfig = {
-        "protocol": "https"
-    };
-
-    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
+    return new UrlComposerInit(getHostDetails(domain));
 
 }
 

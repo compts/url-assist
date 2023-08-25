@@ -88,7 +88,7 @@ isHttps('https://example.com')// true
 
 [Compose your url structure](#check-valid-https)
 ``` javascript
-data = urlComposer('https://example.com')  
+data = urlComposer('https://example.com')
 data.getToString() // 'https://example.com'
 data.setDomainSubdomain("api")
 data.getToString() // 'https://api.example.com'

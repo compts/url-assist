@@ -25,11 +25,7 @@ const one =1;
  */
 function urlComposer (domain) {
 
-    const defaultConfig = {
-        "protocol": "https"
-    };
-
-    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
+    return new UrlComposerInit(getHostDetails(domain));
 
 }
 

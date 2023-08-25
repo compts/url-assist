@@ -3,8 +3,7 @@
  * @category Seq
  * @since 1.1.0
  * @class UrlComposerInit
- * @param {object} config Passing the completet domain url
- * @param {object} defaultConfig Passing the completet domain url
+ * @param {object} config Passing the completet domain url=
  * @name urlCompose
  *
  * @returns {any} Return the boolean.
@@ -13,15 +12,14 @@
  * urlComposer('https://example.com')
  *=> true
  */
-export function UrlComposerInit(config: object, defaultConfig: object): any;
+export function UrlComposerInit(config: object): any;
 export class UrlComposerInit {
     /**
      * Compose your url structure in string
      * @category Seq
      * @since 1.1.0
      * @class UrlComposerInit
-     * @param {object} config Passing the completet domain url
-     * @param {object} defaultConfig Passing the completet domain url
+     * @param {object} config Passing the completet domain url=
      * @name urlCompose
      *
      * @returns {any} Return the boolean.
@@ -30,7 +28,7 @@ export class UrlComposerInit {
      * urlComposer('https://example.com')
      *=> true
      */
-    constructor(config: object, defaultConfig: object);
+    constructor(config: object);
     variableProtocol: any;
     variablePort: any;
     variablePath: any;
@@ -38,7 +36,9 @@ export class UrlComposerInit {
     variableDomainTld: any;
     variableSubdomain: any;
     variableQueryString: any;
+    variableHash: any;
     setProtocol(data: any): void;
+    setHash(data: any): void;
     setPort(data: any): void;
     setPath(data: any): void;
     setDomain(data: any): void;

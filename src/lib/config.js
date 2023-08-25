@@ -4,3 +4,6 @@ exports.configQueryString = {
     "equalSeparator": "=",
     "newLineSeparator": "&"
 };
+const exemptListOfDomain = ['localhost'];
+
+exports.exemptListOfDomain = exemptListOfDomain;

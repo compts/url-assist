@@ -3,3 +3,4 @@ export namespace configQueryString {
     let equalSeparator: string;
     let newLineSeparator: string;
 }
+export const exemptListOfDomain: string[];

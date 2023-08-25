@@ -14,9 +14,9 @@ describe('ESM: isUrlValidFormat method', function () {
         assert.deepStrictEqual(isUrlValidFormat("http://www.example.com"), true);
 
     });
-    it('check isUrlValidFormat subdomain is invalid', function () {
+    it('check isUrlValidFormat subdomain is valid', function () {
 
-        assert.deepStrictEqual(isUrlValidFormat("http://ww.www.example.com"), false);
+        assert.deepStrictEqual(isUrlValidFormat("http://ww.www.example.com"), true);
 
     });
 
