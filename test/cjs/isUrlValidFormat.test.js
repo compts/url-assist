@@ -16,9 +16,9 @@ describe('CJS: isUrlValidFormat method', function () {
     });
 
 
-    it('check isUrlValidFormat subdomain is valid', function () {
+    it('check isUrlValidFormat subdomain is invalid', function () {
 
-        assert.deepStrictEqual(isUrlValidFormat("http://ww.www.example.com"), true);
+        assert.deepStrictEqual(isUrlValidFormat("https://@.eq@.com/"), false);
 
     });
 
