@@ -411,7 +411,7 @@ UrlComposerInit.prototype.setPort = function (data) {
 };
 UrlComposerInit.prototype.setPath = function (data) {
 
-    this.variablePath = removeSlash(data);
+    this.variablePath = data;
 
 };
 UrlComposerInit.prototype.setDomain = function (data) {
@@ -455,7 +455,7 @@ UrlComposerInit.prototype.getToString = function () {
         "domain": this.variableDomain,
         "path": _stk.isEmpty(this.variablePath)
             ? ''
-            : '/'+this.variablePath
+            : '/'+removeSlash(this.variablePath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
         "port": _stk.isEmpty(this.variablePort)
@@ -776,7 +776,7 @@ var one =1;
  * @returns {any} Return the boolean.
  * @example
  *
- * data = urlComposer('https://example.com')
+ * data = urlComposer('https://example.com');
  * data.getToString()
  *=> 'https://example.com'
  */
