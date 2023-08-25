@@ -2,7 +2,7 @@
 [![NPM version][npm-image]][npm-url] 
 
 [Site](https://urlassist.codehyouka.xyz/) |
-[Docs](https://urlassist.codehyouka.xyz/docs) |
+[Docs](https://urlassist.codehyouka.xyz/api) |
 
 ## Download
 
