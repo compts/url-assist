@@ -86,6 +86,14 @@ getHostDetails('https://www.example.com')
 isHttps('https://example.com')// true
 ```
 
+[Verify your pattern and url structure](#check-valid-https)
+``` javascript
+data = urs.urlPattern(":id", "1")
+data.isValid() // true
+data.getParam() // {id: '1'}
+
+```
+
 [Compose your url structure](#check-valid-https)
 ``` javascript
 data = urlComposer('https://example.com')
