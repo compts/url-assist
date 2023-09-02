@@ -563,10 +563,10 @@ function validMatchPatternPath (pattern, path) {
 
     if (_stk.has(matchPatternPath)) {
 
-        var firstMatch = _stk.first(matchPatternPath).replace(/^\//g, "")
+        var firstMatch = _stk.toString(_stk.first(matchPatternPath)).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
-        var pathClean = path.replace(/^\//g, "")
+        var pathClean = _stk.toString(path).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
         return firstMatch===pathClean;

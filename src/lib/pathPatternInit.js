@@ -24,10 +24,10 @@ function validMatchPatternPath (pattern, path) {
     if (has(matchPatternPath)) {
 
 
-        const firstMatch = first(matchPatternPath).replace(/^\//g, "")
+        const firstMatch = toString(first(matchPatternPath)).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
-        const pathClean = path.replace(/^\//g, "")
+        const pathClean = toString(path).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
 
