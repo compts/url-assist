@@ -1,4 +1,6 @@
-import {count, first, last, arraySlice, isEmpty} from 'structkit';
+import {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString} from 'structkit';
+
+import {exemptListOfDomain} from './config';
 
 /**
  * Get if domain segmet details
@@ -25,8 +27,15 @@ const getDomain =function (domain) {
     const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
 
     const splitDomain = referenceDomain.split("/");
+    let getDomainFirstSplit = first(splitDomain);
+    let pathValueDetails = arraySlice(splitDomain, one).join("/");
 
-    const pathValueDetails = arraySlice(splitDomain, one).join("/");
+    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+
+        getDomainFirstSplit = '';
+        pathValueDetails = splitDomain.join("/");
+
+    }
 
     let pathValue = pathValueDetails;
     let hashValue = "";
@@ -56,7 +65,7 @@ const getDomain =function (domain) {
             .replace(/^(\/)/, "")
             .replace(/(\/)$/, ""),
         "search": queryValue,
-        "url": first(splitDomain)
+        "url": getDomainFirstSplit
     };
 
 };
@@ -72,14 +81,15 @@ const getDomain =function (domain) {
  *
  * getDomainDetails("example.com")
  * // =>  domainDetails = {
- *      "domain": "",
+ *      "domain": "example",
  *      "domainWithTld": "",
  *      "subdomain": "",
- *      "tld": ""
+ *      "tld": "com"
  *  }
  */
 const getDomainDetails=function (domain) {
 
+    const zero =0;
     const one =1;
     const two =2;
     const three = 3;
@@ -116,12 +126,14 @@ const getDomainDetails=function (domain) {
 
     }
 
-    if (count(domainSplit) === three) {
+    if (count(domainSplit) >= three) {
+
+        const getDefaultDomain = arraySlice(domainSplit, count(domainSplit) - two, count(domainSplit) - two);
 
         domainDetails = {
-            "domain": domainSplit[one],
-            "domainWithTld": domainSplit[one]+"."+last(domainSplit),
-            "subdomain": first(domainSplit),
+            "domain": toString(getDefaultDomain),
+            "domainWithTld": getDefaultDomain +"."+last(domainSplit),
+            "subdomain": arraySlice(domainSplit, zero, count(domainSplit) - three).join("."),
             "tld": first(getTLD)
         };
 
@@ -152,18 +164,18 @@ const isUrlValidFormatVerifier=function (domain) {
     const one =1;
     const two =2;
     const theee =3;
-    const four = 63;
+    const validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
         const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
         const cleanUrlSplit = cleanUrl.split(".");
 
-        if (count(cleanUrlSplit) === two || count(cleanUrlSplit) === theee) {
+        if (count(cleanUrlSplit) >= two) {
 
             const getTLD = count(first(last(cleanUrlSplit).split("/")).split(""));
 
-            if (getTLD > one && getTLD <= four) {
+            if (getTLD > one && getTLD <= validTLDlen) {
 
                 if (count(cleanUrlSplit) === two) {
 
@@ -171,10 +183,12 @@ const isUrlValidFormatVerifier=function (domain) {
 
                 }
 
-                if (count(cleanUrlSplit) === theee) {
+                if (count(cleanUrlSplit) >= theee) {
 
-                    const regSubDomain =validDomainRegExp.test(first(cleanUrlSplit));
-                    const regDomain = (/^([\w\d-]{1,})$/g).test(cleanUrlSplit[one].toString());
+                    const getDomainSplit = getDomainDetails(cleanUrl);
+
+                    const regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
+                    const regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;
 

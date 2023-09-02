@@ -27,34 +27,8 @@
  *         }
  */
 export function getHostDetails(host: string): any;
-/**
- * Query String stringify
- *
- * @since 1.0.0
- * @category Seq
- * @param {any} value Passing object to convert string
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsStringify({"test": 11,"test2": 11})
- *=> test=1&test2=11
- */
-export function qsStringify(value: any, config?: any | undefined): any;
-/**
- * Query String object
- *
- * @since 1.0.0
- * @category Seq
- * @param {string} value Passing string to convert to object
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsParse("test=1&test2=11")
- *=> {"test": 11,"test2": 11}
- */
-export function qsParse(value: string, config?: any | undefined): any;
+import { qsStringify } from './lib/queryString';
+import { qsParse } from './lib/queryObject';
 /**
  * Check if url is valid https
  *
@@ -143,8 +117,24 @@ export function isUrlValidFormat(domain: string): boolean;
  * @returns {any} Return the boolean.
  * @example
  *
- * data = urlComposer('https://example.com')
+ * data = urlComposer('https://example.com');
  * data.getToString()
  *=> 'https://example.com'
  */
 export function urlComposer(domain: string): any;
+/**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category environment
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+export function urlPattern(pattern: string | object, path: string): any;
+export { qsStringify, qsParse };

@@ -1,49 +1,14 @@
 /**
- * Parsing query string into JSON object
+ * Query String object
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
+ * @param {string} value Passing string to convert to object
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
  * @example
  *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
+ * qsParse("test=1&test2=11")
+ *=> {"test": 11,"test2": 11}
  */
-export function parseObjectConvert(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
-/**
- * Parsing JSON object into query string
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
- * // => null
- */
-export function parseObjectSchema(referenceValue: any, defaultConfig: any, keyOnly: any, keyList: any, getValueOnly: any): null;
-/**
- * Parsing JSON object callback
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} defaultConfig config defalut value
- * @param {any} defaultSplit Key in array
- * @param {any} callbacks array of keys in array argument
- * @returns {any} Returns the null.
- * @example
- *
- * qsParseCallback(defaultConfig, defaultSplit, callbacks)
- * // => true
- */
-export function qsParseCallback(defaultConfig: any, defaultSplit: any, callbacks: any): any;
+export function qsParse(value: string, config?: any | undefined): any;

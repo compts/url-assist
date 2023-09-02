@@ -1,17 +1,14 @@
 /**
- * Parse query string to object
+ * Query String stringify
  *
- * @since 1.0.1
+ * @since 1.0.0
  * @category Seq
- * @param {any} key The first number in an addition.
- * @param {any} value The first number in an addition.
- * @param {any} type The first number in an addition.
- * @param {any} config The first number in an addition.
- * @param {any} reference The first number in an addition.
+ * @param {any} value Passing object to convert string
+ * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
  * @example
  *
- * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * qsStringify({"test": 11,"test2": 11})
+ *=> test=1&test2=11
  */
-export function parseStringConvert(key: any, value: any, type: any, config: any, reference: any): any;
+export function qsStringify(value: any, config?: any | undefined): any;

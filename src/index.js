@@ -1,33 +1,51 @@
-const {configQueryString} = require("./lib/config");
-const {parseStringConvert} = require("./lib/queryString");
+const {qsStringify} = require("./lib/queryString");
 const {UrlComposerInit} = require("./lib/urlComposerInit");
+const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
-const {parseObjectConvert, qsParseCallback, parseObjectSchema} = require("./lib/queryObject");
-const {arraySlice, each, first, varExtend, getTypeof, indexOfNotExist, isEmpty} = require("structkit");
+const {qsParse} = require("./lib/queryObject");
+const {arraySlice, each, first, isEmpty} = require("structkit");
 
 const one =1;
 
 
 /**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category Seq
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function urlPattern (pattern, path) {
+
+
+    return new PathPatternInit(pattern, path);
+
+}
+
+/**
  * Compose your url structure in string
  *
  * @since 1.1.0
- * @category environment
+ * @category Seq
  * @param {string} domain Passing the completet domain url
  * @returns {any} Return the boolean.
  * @example
  *
- * data = urlComposer('https://example.com')
+ * data = urlComposer('https://example.com');
  * data.getToString()
  *=> 'https://example.com'
  */
 function urlComposer (domain) {
 
-    const defaultConfig = {
-        "protocol": "https"
-    };
 
-    return new UrlComposerInit(getHostDetails(domain), defaultConfig);
+    return new UrlComposerInit(getHostDetails(domain));
 
 }
 
@@ -35,7 +53,7 @@ function urlComposer (domain) {
  * Check url is valid format
  *
  * @since 1.1.0
- * @category environment
+ * @category Boolean
  * @param {string} domain Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -53,7 +71,7 @@ function isUrlValidFormat (domain) {
  * To join the domain and path
  *
  * @since 1.0.0
- * @category environment
+ * @category String
  * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
@@ -81,7 +99,7 @@ function joinUrlPath (...ags) {
  * Check url has valid https/http protocol
  *
  * @since 1.0.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -91,7 +109,7 @@ function joinUrlPath (...ags) {
  */
 function isHttpProtocolValid (host) {
 
-    return (/^(https|http):\/\//g).test(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
 
 }
 
@@ -99,7 +117,7 @@ function isHttpProtocolValid (host) {
  * Check url has valid ws/wss websocket protocol
  *
  * @since 1.1.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -117,7 +135,7 @@ function isWebSocketProtocolValid (host) {
  * Check if url is valid https
  *
  * @since 1.0.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -127,7 +145,7 @@ function isWebSocketProtocolValid (host) {
  */
 function isHttps (host) {
 
-    return (/^(https):\/\/\b/g).test(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
 
 }
 
@@ -135,7 +153,7 @@ function isHttps (host) {
  * Check the domain details and verify it library is access via browser or nodejs
  *
  * @since 1.1.0
- * @category Seq
+ * @category Collection
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
@@ -197,95 +215,10 @@ function getHostDetails (host) {
 
 
 /**
- * Query String stringify
- *
- * @since 1.0.0
- * @category Seq
- * @param {any} value Passing object to convert string
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsStringify({"test": 11,"test2": 11})
- *=> test=1&test2=11
- */
-function qsStringify (value, config) {
-
-    if (indexOfNotExist([
-        "json",
-        "array"
-    ], getTypeof(value))) {
-
-        return "";
-
-    }
-
-    const referenceValue = [];
-    const defaultConfig = varExtend(configQueryString, config);
-
-    each(value, function (key, val) {
-
-        parseStringConvert(key, val, getTypeof(val), defaultConfig, referenceValue);
-
-    });
-
-    return referenceValue.join(defaultConfig.newLineSeparator);
-
-}
-
-
-/**
- * Query String object
- *
- * @since 1.0.0
- * @category Seq
- * @param {string} value Passing string to convert to object
- * @param {any=} config Conversion delimeter
- * @returns {any} Returns the total.
- * @example
- *
- * qsParse("test=1&test2=11")
- *=> {"test": 11,"test2": 11}
- */
-function qsParse (value, config) {
-
-    if (indexOfNotExist(["string"], getTypeof(value))) {
-
-        return {};
-
-    }
-
-    value = value.trim().replace(/^[?#&]/, '');
-
-    const referenceValue = {};
-    const defaultConfig = varExtend(configQueryString, config);
-    const defaultSplit = value.split(defaultConfig.newLineSeparator);
-
-    // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-
-    // Schema for data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    return referenceValue;
-
-}
-
-/**
  * Check if url extenstion,is valid
  *
  * @since 1.0.2
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @param {string} ext Passing the completet domain url
  * @returns {boolean} Return the boolean.
@@ -296,9 +229,9 @@ function qsParse (value, config) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
-    return regularExpression.test(host);
+    return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
@@ -312,3 +245,4 @@ exports.isUrlExtValid =isUrlExtValid;
 exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
 exports.isUrlValidFormat =isUrlValidFormat;
 exports.urlComposer = urlComposer;
+exports.urlPattern = urlPattern;

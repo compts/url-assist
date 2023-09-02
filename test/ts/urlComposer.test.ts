@@ -22,7 +22,7 @@ describe('TS: urlComposer method', function () {
 
     it('check if subdomain has change', function () {
 
-        data.setDomainSubdomain("service");
+        data.setSubdomain("service");
         assert.deepStrictEqual(data.getToString(), 'https://service.example.com/v2/gundam');
 
     });
@@ -34,9 +34,24 @@ describe('TS: urlComposer method', function () {
 
     });
 
-    it('check expected type', function () {
+    it('check if domain is invalid then path will show', function () {
+
+        const data1 = urlComposer("/v1/test");
+
+        data1.setDomain("youtube");
+        assert.deepStrictEqual(data1.getToString(), '/v1/test');
+
+    });
+
+    it('check expected type any', function () {
 
         expectType<any>(urlComposer("http://www.example.com/v1"));
+
+    });
+
+    it('check expected type string', function () {
+
+        expectType<string>(data.getToString());
 
     });
 

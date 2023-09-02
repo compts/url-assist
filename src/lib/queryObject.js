@@ -1,7 +1,58 @@
 const {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} = require("structkit");
+const {configQueryString} = require("./config");
+
+const {varExtend, indexOfNotExist} = require("structkit");
 
 const zero =0;
 const one =1;
+
+
+/**
+ * Query String object
+ *
+ * @since 1.0.0
+ * @category Collection
+ * @param {string} value Passing string to convert to object
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * qsParse("test=1&test2=11")
+ *=> {"test": 11,"test2": 11}
+ */
+function qsParse (value, config) {
+
+    if (indexOfNotExist(["string"], getTypeof(value))) {
+
+        return {};
+
+    }
+
+    value = value.trim().replace(/^[?#&]/, '');
+
+    const referenceValue = {};
+    const defaultConfig = varExtend(configQueryString, config);
+    const defaultSplit = value.split(defaultConfig.newLineSeparator);
+
+    // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+
+    // Schema for data
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+
+        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+    });
+
+    // Value for its data
+    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
+
+        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+
+    });
+
+    return referenceValue;
+
+}
 
 /**
  * Parsing query string into JSON object
@@ -216,6 +267,4 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 };
 
 
-exports.parseObjectConvert = parseObjectConvert;
-exports.parseObjectSchema = parseObjectSchema;
-exports.qsParseCallback = qsParseCallback;
+exports.qsParse = qsParse;

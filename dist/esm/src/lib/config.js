@@ -4,5 +4,12 @@ const configQueryString = {
     "equalSeparator": "=",
     "newLineSeparator": "&"
 };
+const exemptListOfDomain = ['localhost'];
+const objRegExpKey = {
 
-export {configQueryString};
+    "any": '[a-zA-Z0-9\\-\\_]',
+    "number": '[0-9]',
+    "string": '[a-zA-Z]'
+};
+
+export {configQueryString,exemptListOfDomain,objRegExpKey};

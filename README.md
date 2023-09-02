@@ -2,7 +2,7 @@
 [![NPM version][npm-image]][npm-url] 
 
 [Site](https://urlassist.codehyouka.xyz/) |
-[Docs](https://urlassist.codehyouka.xyz/docs) |
+[Docs](https://urlassist.codehyouka.xyz/api) |
 
 ## Download
 
@@ -13,12 +13,6 @@ Using npm:
 ```shell
 $ npm i url-assist
 ```
-## Requirement
-You need to install this in your machine to compile in your machine
-```bash
-npm install grasseum -g
-```
-
 
 ## How to import the Library
 
@@ -56,7 +50,7 @@ isUrlExtValid('https://example.com/example.js', 'js')
 ```
 
 [npm-url]: https://www.npmjs.com/package/url-assist
-[npm-image]: https://img.shields.io/badge/url_assist-1.1.0-brightgreen
+[npm-image]: https://img.shields.io/badge/url_assist-1.2.1-brightgreen
 
 ## List of method you can use to check your url
 
@@ -92,9 +86,25 @@ getHostDetails('https://www.example.com')
 isHttps('https://example.com')// true
 ```
 
+[Verify your pattern and url structure](#check-valid-https)
+``` javascript
+data = urs.urlPattern("/:id", "/test")
+data.isValid() // true
+data.getParam() // {id: 'test'}
+
+```
+
+[Verify your pattern and url structure only number as parameter](#check-valid-https)
+``` javascript
+data = urs.urlPattern("/:id<number>", "/1")
+data.isValid() // true
+data.getParam() // {id: '1'}
+
+```
+
 [Compose your url structure](#check-valid-https)
 ``` javascript
-data = urlComposer('https://example.com')  
+data = urlComposer('https://example.com')
 data.getToString() // 'https://example.com'
 data.setDomainSubdomain("api")
 data.getToString() // 'https://api.example.com'

@@ -1,6 +1,6 @@
 {
   "name": "url-assist",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "URL library at your ease",
   "main": "src/index.js",
   "module": "dist/esm/src/index.js",
@@ -17,12 +17,25 @@
     "url": "git+https://github.com/compts/url-assist.git"
   },
   "keywords": [
-    "compt",
+    "builder",
+    "urlBuilder",
+    "url-builder",
+    "template",
+    "assemble",
+    "assembler",
+    "route",
+    "routing",
+    "parameters",
+    "query-builder",
+    "query",
     "url",
     "parse",
     "node",
     "href",
-    "git"
+    "git",
+    "querystrig",
+    "qs",
+    "stringify"
   ],
   "tsd": {
     "directory": "test/ts"
@@ -35,7 +48,7 @@
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
     "tsd": "^0.19.1",
-    "structkit": "^1.4.61"
+    "structkit": "^1.4.7"
   },
   "devDependencies": {
     "@types/assert": "^1.5.6",
@@ -48,6 +61,9 @@
     "jest": "^27.5.1",
     "mocha": "^5.2.0",
     "ts-node": "^10.9.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "jest": {
     "collectCoverageFrom": [

@@ -1,0 +1,4 @@
+* text=auto
+test export-ignore
+example export-ignore
+tsgenerate.sh export-ignore

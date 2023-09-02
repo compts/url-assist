@@ -9,10 +9,10 @@
  *
  * getDomainDetails("example.com")
  * // =>  domainDetails = {
- *      "domain": "",
+ *      "domain": "example",
  *      "domainWithTld": "",
  *      "subdomain": "",
- *      "tld": ""
+ *      "tld": "com"
  *  }
  */
 export function getDomainDetails(domain: string): any;
