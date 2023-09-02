@@ -94,7 +94,7 @@ function basePattern (pattern) {
         updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
 
 
-            const replaceSlash = first(ags).replace(/^\//g, "");
+            const replaceSlash = toString(first(ags)).replace(/^\//g, "");
             const replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
             const typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
 
@@ -102,7 +102,7 @@ function basePattern (pattern) {
 
             if (!isEmpty(typeData)) {
 
-                typeRef = typeData[one];
+                typeRef = toString(typeData[one]);
 
             }
 

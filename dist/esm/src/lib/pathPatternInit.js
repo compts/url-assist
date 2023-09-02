@@ -1,4 +1,4 @@
-import {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger, regexCountGroup, range, map, has, getKey, toArray, last} from 'structkit';
+import {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger,toString, regexCountGroup, range, map, has, getKey, toArray, last} from 'structkit';
 
 import {objRegExpKey} from './config';
 
@@ -86,11 +86,11 @@ function basePattern (pattern) {
     if (getTypeof(pattern) ==="string") {
 
         const refRegVal = {};
-        let updPattern = pattern.replace(/([*]{1,})/g, "(.*?)");
+        let updPattern = toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
         updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
 
-            const replaceSlash = first(ags).replace(/^\//g, "");
+            const replaceSlash = toString(first(ags)).replace(/^\//g, "");
             const replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
             const typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
 
@@ -98,7 +98,7 @@ function basePattern (pattern) {
 
             if (!isEmpty(typeData)) {
 
-                typeRef = typeData[one];
+                typeRef = toString(typeData[one]);
 
             }
 

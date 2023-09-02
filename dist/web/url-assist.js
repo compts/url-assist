@@ -627,13 +627,13 @@ function basePattern (pattern) {
     if (_stk.getTypeof(pattern) ==="string") {
 
         var refRegVal = {};
-        var updPattern = pattern.replace(/([*]{1,})/g, "(.*?)");
+        var updPattern = _stk.toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
         updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function () {
 
     var ags=arguments;
 
-            var replaceSlash = _stk.first(ags).replace(/^\//g, "");
+            var replaceSlash = _stk.toString(_stk.first(ags)).replace(/^\//g, "");
             var replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
             var typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
 
@@ -641,7 +641,7 @@ function basePattern (pattern) {
 
             if (!_stk.isEmpty(typeData)) {
 
-                typeRef = typeData[one];
+                typeRef = _stk.toString(typeData[one]);
 
             }
 
