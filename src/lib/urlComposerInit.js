@@ -3,10 +3,64 @@ const {qsParse} = require("./queryObject");
 const {qsStringify} = require("./queryString");
 
 /**
+ * Verify if format is valid
+ * @category Seq
+ * @since 1.2.1
+ * @param {string} domain Passing the completet domain url
+ * @param {string} protocol Passing the completet domain url
+ * @param {string} port Passing the completet domain url
+ * @param {string} subdomain Passing the completet domain url
+ * @param {string} tld Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * removeSlash('/example')
+ *=> example
+ */
+function ifValidHost (domain, protocol, port, subdomain, tld) {
+
+    const data = {
+        "domain": "",
+        "port": "",
+        "protocol": "",
+        "subdomain": "",
+        "tld": ""
+    };
+
+    if (!isEmpty(protocol) && !isEmpty(domain)) {
+
+
+        data.domain= domain;
+        data.protocol= protocol;
+        data.port= port;
+        data.subdomain= subdomain;
+        data.tld= tld;
+
+        return data;
+
+    }
+
+    if (!isEmpty(tld) && !isEmpty(domain)) {
+
+
+        data.domain= domain;
+        data.protocol= protocol;
+        data.port= port;
+        data.subdomain= subdomain;
+        data.tld= tld;
+
+        return data;
+
+    }
+
+    return data;
+
+}
+
+/**
  * Remove slash first and last
  * @category Seq
  * @since 1.2.1
- * @class UrlComposerInit
  * @param {string} data Passing the completet domain url
  *
  * @returns {any} Return the boolean.
@@ -107,10 +161,11 @@ UrlComposerInit.prototype.setQueryString = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
+    const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
     const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
 
     return templateValue(urlFormat, {
-        "domain": this.variableDomain,
+        "domain": urlData.domain,
         "hash": isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
@@ -119,21 +174,21 @@ UrlComposerInit.prototype.getToString = function () {
             : '/'+removeSlash(this.variablePath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
-        "port": isEmpty(this.variablePort)
+        "port": isEmpty(urlData.port)
             ? ''
-            : ':'+this.variablePort,
-        "protocol": isEmpty(this.variableProtocol)
+            : ':'+urlData.port,
+        "protocol": isEmpty(urlData.protocol)
             ? ''
-            : this.variableProtocol+"://",
+            : urlData.protocol+"://",
         "queryString": isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
-        "subdomain": isEmpty(this.variableSubdomain)
+        "subdomain": isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',
-        "tld": isEmpty(this.variableDomainTld)
+        "tld": isEmpty(urlData.tld)
             ? ''
-            : '.'+this.variableDomainTld
+            : '.'+urlData.tld
     });
 
 };

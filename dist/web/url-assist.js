@@ -8,6 +8,12 @@ configQueryString = {
     "newLineSeparator": "&"
 };
 var exemptListOfDomain = ['localhost'];
+var objRegExpKey = {
+
+    "any": '[a-zA-Z0-9\\-\\_]',
+    "number": '[0-9]',
+    "string": '[a-zA-Z]'
+};
 
 var zero =0;
 
@@ -353,10 +359,62 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 };
 
 /**
+ * Verify if format is valid
+ * @category Seq
+ * @since 1.2.1
+ * @param {string} domain Passing the completet domain url
+ * @param {string} protocol Passing the completet domain url
+ * @param {string} port Passing the completet domain url
+ * @param {string} subdomain Passing the completet domain url
+ * @param {string} tld Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * removeSlash('/example')
+ *=> example
+ */
+function ifValidHost (domain, protocol, port, subdomain, tld) {
+
+    var data = {
+        "domain": "",
+        "port": "",
+        "protocol": "",
+        "subdomain": "",
+        "tld": ""
+    };
+
+    if (!_stk.isEmpty(protocol) && !_stk.isEmpty(domain)) {
+
+        data.domain= domain;
+        data.protocol= protocol;
+        data.port= port;
+        data.subdomain= subdomain;
+        data.tld= tld;
+
+        return data;
+
+    }
+
+    if (!_stk.isEmpty(tld) && !_stk.isEmpty(domain)) {
+
+        data.domain= domain;
+        data.protocol= protocol;
+        data.port= port;
+        data.subdomain= subdomain;
+        data.tld= tld;
+
+        return data;
+
+    }
+
+    return data;
+
+}
+
+/**
  * Remove slash first and last
  * @category Seq
  * @since 1.2.1
- * @class UrlComposerInit
  * @param {string} data Passing the completet domain url
  *
  * @returns {any} Return the boolean.
@@ -453,10 +511,11 @@ UrlComposerInit.prototype.setQueryString = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
+    var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
     var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
 
     return _stk.templateValue(urlFormat, {
-        "domain": this.variableDomain,
+        "domain": urlData.domain,
         "hash": _stk.isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
@@ -465,22 +524,310 @@ UrlComposerInit.prototype.getToString = function () {
             : '/'+removeSlash(this.variablePath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
-        "port": _stk.isEmpty(this.variablePort)
+        "port": _stk.isEmpty(urlData.port)
             ? ''
-            : ':'+this.variablePort,
-        "protocol": _stk.isEmpty(this.variableProtocol)
+            : ':'+urlData.port,
+        "protocol": _stk.isEmpty(urlData.protocol)
             ? ''
-            : this.variableProtocol+"://",
+            : urlData.protocol+"://",
         "queryString": _stk.isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
-        "subdomain": _stk.isEmpty(this.variableSubdomain)
+        "subdomain": _stk.isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',
-        "tld": _stk.isEmpty(this.variableDomainTld)
+        "tld": _stk.isEmpty(urlData.tld)
             ? ''
-            : '.'+this.variableDomainTld
+            : '.'+urlData.tld
     });
+
+};
+
+/**
+ * Verify if pattern and path are match
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {any} pattern Passing the completet domain url=
+ * @param {any} path Passing the completet domain url=
+ *
+ * @returns {bool} Return the boolean.
+ * @example
+ *
+ * new PathPatternInit('https://example.com')
+ *=> true
+ */
+function validMatchPatternPath (pattern, path) {
+
+    var matchPatternPath = path.match(pattern.patterns);
+
+    if (_stk.has(matchPatternPath)) {
+
+        var firstMatch = _stk.first(matchPatternPath).replace(/^\//g, "")
+            .replace(/\/$/g, "");
+
+        var pathClean = path.replace(/^\//g, "")
+            .replace(/\/$/g, "");
+
+        return firstMatch===pathClean;
+
+    }
+
+    return false;
+
+}
+
+/**
+ * Compose your url structure in string
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {any} pattern Passing the completet domain url=
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * new PathPatternInit('https://example.com')
+ *=> true
+ */
+function basePattern (pattern) {
+
+    var one = 1;
+    var zero = 0;
+
+    if (_stk.getTypeof(pattern) ==="json") {
+
+        var patternRegexp = _stk.ifUndefined(pattern, "regexp", "--");
+        var listArgument = _stk.ifUndefined(pattern, "arguments", []);
+
+        if (patternRegexp ==="--") {
+
+            throw new Error("`regexp` is missing in parameter");
+
+        }
+
+        if (_stk.getTypeof(new RegExp(patternRegexp)) !=="regexp") {
+
+            throw new Error("`regexp` is must be regular expression format");
+
+        }
+        if (_stk.regexCountGroup(new RegExp(patternRegexp)) !== _stk.count(listArgument)) {
+
+            throw new Error("Regular expression group must be equal to `arguments`");
+
+        }
+
+        return {
+            "arguments": listArgument,
+            "patterns": new RegExp(patternRegexp)
+        };
+
+    }
+
+    if (_stk.getTypeof(pattern) ==="string") {
+
+        var refRegVal = {};
+        var updPattern = pattern.replace(/([*]{1,})/g, "(.*?)");
+
+        updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function () {
+
+    var ags=arguments;
+
+            var replaceSlash = _stk.first(ags).replace(/^\//g, "");
+            var replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
+            var typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
+
+            var typeRef = "any";
+
+            if (!_stk.isEmpty(typeData)) {
+
+                typeRef = typeData[one];
+
+            }
+
+            if ((/^\(\/(.*?)\)$/g).test(replaceSlash)) {
+
+                refRegVal[_stk.count(refRegVal)]= {
+                    "name": replaceSlashClean,
+                    "regexp": "(?:\\/"+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{0,})"
+                };
+
+                return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
+
+            }
+
+            if ((/^\//g).test(_stk.first(ags))) {
+
+                refRegVal[_stk.count(refRegVal)]= {
+                    "name": replaceSlashClean,
+                    "regexp": "/("+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+                };
+
+                return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
+
+            }
+
+            refRegVal[_stk.count(refRegVal)]= {
+                "name": replaceSlashClean,
+                "regexp": "("+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+            };
+
+            return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
+
+        });
+
+        var listArgument = [];
+
+        updPattern = updPattern.replace(/\((.*?)\)/g, function () {
+
+    var arg=arguments;
+
+            var lengthArg = listArgument.length;
+
+            var firstValue = _stk.first(arg);
+
+            if ((/\(@[0-9]{1,}@\)/g).test(firstValue)) {
+
+                listArgument.push({
+                    "index": lengthArg,
+                    "name": refRegVal[_stk.toInteger(firstValue)].name
+                });
+
+                return refRegVal[_stk.toInteger(firstValue)].regexp;
+
+            }
+
+            listArgument.push({
+                "index": lengthArg,
+                "name": "arg"+lengthArg
+            });
+
+            return firstValue;
+
+        });
+
+        return {
+            "arguments": listArgument,
+            "patterns": new RegExp(updPattern)
+        };
+
+    }
+
+    if (_stk.getTypeof(pattern) ==="regexp") {
+
+        var listArgument = _stk.map(_stk.range(_stk.regexCountGroup(pattern)-one, zero), function (value) {
+
+            return {
+                "index": value,
+                "name": "arg"+value
+
+            };
+
+        });
+
+        return {
+            "arguments": listArgument,
+            "patterns": pattern
+        };
+
+    }
+
+    return null;
+
+}
+
+/**
+ * Compose your url structure in string
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {object} path Passing the completet domain url=
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * new PathPatternInit('https://example.com')
+ *=> true
+ */
+function basePath (path) {
+
+    return path;
+
+}
+
+/**
+ * Details of your path
+ * @category Seq
+ * @since 1.2.1
+ * @class UrlComposerInit
+ * @param {object} pattern Passing the completet domain url=
+ * @param {object} path Passing the completet domain url=
+ * @name urlCompose
+ *
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * new PathPatternInit('https://example.com')
+ *=> true
+ */
+function PathPatternInit (pattern, path) {
+
+    this.pattern = pattern;
+    this.path = path;
+
+}
+
+/**
+ * Check if pattern and path is match
+ *
+ * @since 1.2.1
+ * @category environment
+ * @returns {boolean} Return the boolean.
+ * @example
+ *
+ * urlPattern(":id", "1").isValid()
+ *=> true
+ */
+PathPatternInit.prototype.isValid = function () {
+
+    var refPattern = basePattern(this.pattern);
+    var refPath = basePath(this.path);
+
+    return validMatchPatternPath(refPattern, refPath);
+
+};
+
+/**
+ * Check if pattern and path is match
+ *
+ * @since 1.2.1
+ * @category environment
+ * @returns {any} Return the object.
+ * @example
+ *
+ * urlPattern(":id", "1").getParam()
+ *=> {"id": '1'}
+ */
+PathPatternInit.prototype.getParam = function () {
+
+    var refParam = {};
+
+    var refPattern = basePattern(this.pattern);
+    var refPath = basePath(this.path);
+
+    if (validMatchPatternPath(refPattern, refPath)) {
+
+        var matchPatternPath = refPath.match(refPattern.patterns);
+
+        _stk.each(refPattern.arguments, function (key, value) {
+
+            refParam[value.name] = matchPatternPath[value.index + (_stk.count(matchPatternPath)-_stk.count(refPattern.arguments))];
+
+        });
+
+    }
+
+    return refParam;
 
 };
 
@@ -786,6 +1133,26 @@ var urlDetails=function (domain) {
 var one =1;
 
 /**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category environment
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function urlPattern (pattern, path) {
+
+    return new PathPatternInit(pattern, path);
+
+}
+
+/**
  * Compose your url structure in string
  *
  * @since 1.1.0
@@ -985,7 +1352,7 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    var regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    var regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
@@ -1001,5 +1368,6 @@ urs.isUrlExtValid=isUrlExtValid
 urs.isWebSocketProtocolValid=isWebSocketProtocolValid
 urs.isUrlValidFormat=isUrlValidFormat
 urs.urlComposer=urlComposer
+urs.urlPattern=urlPattern
 
 })(typeof window !== "undefined" ? window : this);

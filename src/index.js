@@ -1,11 +1,33 @@
 const {qsStringify} = require("./lib/queryString");
 const {UrlComposerInit} = require("./lib/urlComposerInit");
+const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {qsParse} = require("./lib/queryObject");
 const {arraySlice, each, first, isEmpty} = require("structkit");
 
 const one =1;
 
+
+/**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category environment
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function urlPattern (pattern, path) {
+
+
+    return new PathPatternInit(pattern, path);
+
+}
 
 /**
  * Compose your url structure in string
@@ -207,7 +229,7 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
@@ -223,3 +245,4 @@ exports.isUrlExtValid =isUrlExtValid;
 exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
 exports.isUrlValidFormat =isUrlValidFormat;
 exports.urlComposer = urlComposer;
+exports.urlPattern = urlPattern;

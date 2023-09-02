@@ -2,6 +2,8 @@ import {qsStringify} from './lib/queryString';
 
 import {UrlComposerInit} from './lib/urlComposerInit';
 
+import {PathPatternInit} from './lib/pathPatternInit';
+
 import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
 
 import {qsParse} from './lib/queryObject';
@@ -9,6 +11,26 @@ import {qsParse} from './lib/queryObject';
 import {arraySlice, each, first, isEmpty} from 'structkit';
 
 const one =1;
+
+/**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category environment
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function urlPattern (pattern, path) {
+
+    return new PathPatternInit(pattern, path);
+
+}
 
 /**
  * Compose your url structure in string
@@ -208,10 +230,10 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
-export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer};
+export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern};

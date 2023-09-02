@@ -122,4 +122,19 @@ export function isUrlValidFormat(domain: string): boolean;
  *=> 'https://example.com'
  */
 export function urlComposer(domain: string): any;
+/**
+ * In url or path, you now verified the format of your url
+ *
+ * @since 1.2.1
+ * @category environment
+ * @param {string|object} pattern Passing the completet domain url
+ * @param {string} path Passing the completet domain url
+ * @returns {any} Return the boolean.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+export function urlPattern(pattern: string | object, path: string): any;
 export { qsStringify, qsParse };
