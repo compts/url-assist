@@ -1,4 +1,4 @@
-const {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
+const {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger,toString, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
 
 const {objRegExpKey} = require("./config");
 
@@ -89,7 +89,7 @@ function basePattern (pattern) {
     if (getTypeof(pattern) ==="string") {
 
         const refRegVal = {};
-        let updPattern = pattern.replace(/([*]{1,})/g, "(.*?)");
+        let updPattern = toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
         updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
 
