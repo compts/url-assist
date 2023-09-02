@@ -62,9 +62,6 @@
     "mocha": "^5.2.0",
     "ts-node": "^10.9.1"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "jest": {
     "collectCoverageFrom": [
       "*.js",
