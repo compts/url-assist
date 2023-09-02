@@ -12,7 +12,7 @@ const one =1;
  * In url or path, you now verified the format of your url
  *
  * @since 1.2.1
- * @category environment
+ * @category Seq
  * @param {string|object} pattern Passing the completet domain url
  * @param {string} path Passing the completet domain url
  * @returns {any} Return the boolean.
@@ -33,7 +33,7 @@ function urlPattern (pattern, path) {
  * Compose your url structure in string
  *
  * @since 1.1.0
- * @category environment
+ * @category Seq
  * @param {string} domain Passing the completet domain url
  * @returns {any} Return the boolean.
  * @example
@@ -53,7 +53,7 @@ function urlComposer (domain) {
  * Check url is valid format
  *
  * @since 1.1.0
- * @category environment
+ * @category Boolean
  * @param {string} domain Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -71,7 +71,7 @@ function isUrlValidFormat (domain) {
  * To join the domain and path
  *
  * @since 1.0.0
- * @category environment
+ * @category String
  * @param {...any} ags The Domain url
  * @returns {string} Return the boolean.
  * @example
@@ -99,7 +99,7 @@ function joinUrlPath (...ags) {
  * Check url has valid https/http protocol
  *
  * @since 1.0.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -117,7 +117,7 @@ function isHttpProtocolValid (host) {
  * Check url has valid ws/wss websocket protocol
  *
  * @since 1.1.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -135,7 +135,7 @@ function isWebSocketProtocolValid (host) {
  * Check if url is valid https
  *
  * @since 1.0.0
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
@@ -153,7 +153,7 @@ function isHttps (host) {
  * Check the domain details and verify it library is access via browser or nodejs
  *
  * @since 1.1.0
- * @category Seq
+ * @category Collection
  * @param {string} host Passing the completet domain url
  * @returns {any} Returns the object details.
  * @example
@@ -218,7 +218,7 @@ function getHostDetails (host) {
  * Check if url extenstion,is valid
  *
  * @since 1.0.2
- * @category environment
+ * @category Boolean
  * @param {string} host Passing the completet domain url
  * @param {string} ext Passing the completet domain url
  * @returns {boolean} Return the boolean.

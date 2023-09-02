@@ -88,7 +88,15 @@ isHttps('https://example.com')// true
 
 [Verify your pattern and url structure](#check-valid-https)
 ``` javascript
-data = urs.urlPattern(":id", "1")
+data = urs.urlPattern("/:id", "/test")
+data.isValid() // true
+data.getParam() // {id: 'test'}
+
+```
+
+[Verify your pattern and url structure only number as parameter](#check-valid-https)
+``` javascript
+data = urs.urlPattern("/:id<number>", "/1")
 data.isValid() // true
 data.getParam() // {id: '1'}
 

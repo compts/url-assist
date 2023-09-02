@@ -7,7 +7,7 @@ const zero =0;
  * Query String stringify
  *
  * @since 1.0.0
- * @category Seq
+ * @category Collection
  * @param {any} value Passing object to convert string
  * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.
