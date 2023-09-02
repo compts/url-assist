@@ -1,4 +1,4 @@
-const {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger,toString, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
+const {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger, toString, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
 
 const {objRegExpKey} = require("./config");
 
@@ -31,7 +31,7 @@ function validMatchPatternPath (pattern, path) {
             .replace(/\/$/g, "");
 
 
-        return firstMatch===pathClean;
+        return toString(firstMatch)===toString(pathClean);
 
     }
 
@@ -91,12 +91,13 @@ function basePattern (pattern) {
         const refRegVal = {};
         let updPattern = toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
-        updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
+        updPattern = toString(updPattern).replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
 
 
             const replaceSlash = toString(first(ags)).replace(/^\//g, "");
-            const replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
-            const typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
+            const replaceSlashClean = toString(replaceSlash).replace(/[:()/]{0,}/g, "")
+                .replace(/<(.*?)>/g, "");
+            const typeData = toString(replaceSlash).match(/<([a-zA-Z]{1,})>/i);
 
             let typeRef = "any";
 

@@ -569,7 +569,7 @@ function validMatchPatternPath (pattern, path) {
         var pathClean = _stk.toString(path).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
-        return firstMatch===pathClean;
+        return _stk.toString(firstMatch)===_stk.toString(pathClean);
 
     }
 
@@ -629,13 +629,14 @@ function basePattern (pattern) {
         var refRegVal = {};
         var updPattern = _stk.toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
-        updPattern = updPattern.replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function () {
+        updPattern = _stk.toString(updPattern).replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function () {
 
     var ags=arguments;
 
             var replaceSlash = _stk.toString(_stk.first(ags)).replace(/^\//g, "");
-            var replaceSlashClean = replaceSlash.replace(/[:()/]{0,}/g, "").replace(/<(.*?)>/g, "");
-            var typeData = replaceSlash.match(/<([a-zA-Z]{1,})>/i);
+            var replaceSlashClean = _stk.toString(replaceSlash).replace(/[:()/]{0,}/g, "")
+                .replace(/<(.*?)>/g, "");
+            var typeData = _stk.toString(replaceSlash).match(/<([a-zA-Z]{1,})>/i);
 
             var typeRef = "any";
 
