@@ -19,7 +19,7 @@ jobs:
     - run: npm install
     - run: npm install -g eslint          
     - run: npm run es_linter
+    - run: npm run test_cjs    
     - run: npm run test_esm
-    - run: npm run test_cjs
     - run: npm install -g typescript
     - run: npm run test_ts    
