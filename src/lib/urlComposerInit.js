@@ -149,7 +149,7 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 };
 
 /**
- * Compose your url structure in string
+ * Get your url structure in string
  *
  * @since 1.1.0
  * @category environment
@@ -183,6 +183,41 @@ UrlComposerInit.prototype.getToString = function () {
         "queryString": isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
+        "subdomain": isEmpty(urlData.subdomain)
+            ? ''
+            :this.variableSubdomain+'.',
+        "tld": isEmpty(urlData.tld)
+            ? ''
+            : '.'+urlData.tld
+    });
+
+};
+
+
+/**
+ * Get your domain only  in string
+ *
+ * @since 1.2.6
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getDomainString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getDomainString = function () {
+
+    const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
+    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
+
+    return templateValue(urlFormat, {
+        "domain": urlData.domain,
+        "port": isEmpty(urlData.port)
+            ? ''
+            : ':'+urlData.port,
+        "protocol": isEmpty(urlData.protocol)
+            ? ''
+            : urlData.protocol+"://",
         "subdomain": isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',
