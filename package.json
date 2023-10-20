@@ -48,7 +48,7 @@
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
     "tsd": "^0.19.1",
-    "structkit": "^1.4.7"
+    "structkit": "^1.4.8"
   },
   "devDependencies": {
     "@types/assert": "^1.5.6",
