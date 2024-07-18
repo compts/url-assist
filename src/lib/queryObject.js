@@ -2,7 +2,7 @@ const {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} = requir
 const {configQueryString} = require("./config");
 const {zero, one} = require("./variable");
 const {varExtend, indexOfNotExist} = require("structkit");
-
+const {decodeStr} = require("./format");
 
 /**
  * Query String object
@@ -26,7 +26,7 @@ function qsParse (value, config) {
     }
 
     value = value.trim().replace(/^[?#&]/, '');
-
+    value = decodeStr(value);
     const referenceValue = {};
     const defaultConfig = varExtend(configQueryString, config);
     const defaultSplit = value.split(defaultConfig.newLineSeparator);
@@ -223,7 +223,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
  */
 const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    each(defaultSplit, function (key, val) {
+    each(defaultSplit, function (__, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
         const getKeyOnly = first(getKeyAndValue);
@@ -262,6 +262,5 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
     });
 
 };
-
 
 exports.qsParse = qsParse;

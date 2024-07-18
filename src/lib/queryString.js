@@ -35,7 +35,7 @@ function qsStringify (value, config) {
 
     });
 
-    return referenceValue.join(defaultConfig.newLineSeparator);
+    return defaultConfig.startWith+referenceValue.join(defaultConfig.newLineSeparator);
 
 }
 

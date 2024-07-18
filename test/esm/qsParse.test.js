@@ -44,4 +44,19 @@ describe('ESM: qsParse method', function () {
 
     });
 
+    it('check qsParse put space if had +', function () {
+
+        assert.deepStrictEqual(qsParse("test+key=test+value"), {"test key": 'test value'});
+
+    });
+
+    it('check qsParse argument to use URI component', function () {
+
+        assert.deepStrictEqual(
+            qsParse("a%5Bb%5D=c"),
+            {"a": {"b": "c"}}
+        );
+
+    });
+
 });

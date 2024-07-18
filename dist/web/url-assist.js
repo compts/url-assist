@@ -5,7 +5,8 @@ configQueryString = {
 
     "arrayFormat": "[]",
     "equalSeparator": "=",
-    "newLineSeparator": "&"
+    "newLineSeparator": "&",
+    "startWith": ""
 };
 const exemptListOfDomain = ['localhost'];
 const objRegExpKey = {
@@ -51,7 +52,7 @@ function qsStringify (value, config) {
 
     });
 
-    return referenceValue.join(defaultConfig.newLineSeparator);
+    return defaultConfig.startWith+referenceValue.join(defaultConfig.newLineSeparator);
 
 }
 
@@ -100,6 +101,36 @@ const parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
+ * Decoding URI component
+ *
+ * @since 1.2.6
+ * @category Seq
+ * @param {any} value config defalut value
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * decodeStr("tests+test")
+ * // => tests test
+ */
+const decodeStr = function (value) {
+
+    let updateValue = value.replace(/\+/g, ' ');
+
+    try {
+
+        updateValue = decodeURIComponent(updateValue);
+
+        return updateValue;
+
+    } catch (err) {
+
+        return updateValue;
+
+    }
+
+};
+
+/**
  * Query String object
  *
  * @since 1.0.0
@@ -121,7 +152,7 @@ function qsParse (value, config) {
     }
 
     value = value.trim().replace(/^[?#&]/, '');
-
+    value = decodeStr(value);
     const referenceValue = {};
     const defaultConfig = _stk.varExtend(configQueryString, config);
     const defaultSplit = value.split(defaultConfig.newLineSeparator);
@@ -317,7 +348,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
  */
 const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    _stk.each(defaultSplit, function (key, val) {
+    _stk.each(defaultSplit, function (__, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
         const getKeyOnly = _stk.first(getKeyAndValue);

@@ -6,6 +6,8 @@ import {zero, one} from './variable.js';
 
 import {varExtend, indexOfNotExist} from 'structkit';
 
+import {decodeStr} from './format.js';
+
 /**
  * Query String object
  *
@@ -28,7 +30,7 @@ function qsParse (value, config) {
     }
 
     value = value.trim().replace(/^[?#&]/, '');
-
+    value = decodeStr(value);
     const referenceValue = {};
     const defaultConfig = varExtend(configQueryString, config);
     const defaultSplit = value.split(defaultConfig.newLineSeparator);
@@ -224,7 +226,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
  */
 const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    each(defaultSplit, function (key, val) {
+    each(defaultSplit, function (__, val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
         const getKeyOnly = first(getKeyAndValue);

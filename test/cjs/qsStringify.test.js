@@ -4,10 +4,17 @@ const assert = require("assert");
 
 describe('CJS: qsStringify method', function () {
 
-    it('check qsStringify argument oobject to string', function () {
+    it('check qsStringify argument object to string', function () {
 
         assert.deepStrictEqual(qsStringify({"test": 11,
             "test2": 11}), "test=11&test2=11");
+
+    });
+
+    it('check qsStringify argument startWith with ?', function () {
+
+        assert.deepStrictEqual(qsStringify({"test": 11,
+            "test2": 11}, {"startWith": "?"}), "?test=11&test2=11");
 
     });
 

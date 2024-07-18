@@ -2,7 +2,8 @@ exports.configQueryString = {
 
     "arrayFormat": "[]",
     "equalSeparator": "=",
-    "newLineSeparator": "&"
+    "newLineSeparator": "&",
+    "startWith": ""
 };
 const exemptListOfDomain = ['localhost'];
 const objRegExpKey = {
