@@ -18,6 +18,8 @@ const objRegExpKey = {
 
 const zero = 0;
 const one =1;
+const two =2;
+const three = 3;
 
 /**
  * Query String stringify
@@ -921,8 +923,6 @@ PathPatternInit.prototype.getParam = function () {
  */
 const getDomain =function (domain) {
 
-    const one =1;
-
     const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
 
     const splitDomain = referenceDomain.split("/");
@@ -987,11 +987,6 @@ const getDomain =function (domain) {
  *  }
  */
 const getDomainDetails=function (domain) {
-
-    const zero =0;
-    const one =1;
-    const two =2;
-    const three = 3;
 
     let domainDetails = {
         "domain": "",
@@ -1060,9 +1055,6 @@ const isUrlValidFormatVerifier=function (domain) {
     const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
     const validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
-    const one =1;
-    const two =2;
-    const theee =3;
     const validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
@@ -1082,7 +1074,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
                 }
 
-                if (_stk.count(cleanUrlSplit) >= theee) {
+                if (_stk.count(cleanUrlSplit) >= three) {
 
                     const getDomainSplit = getDomainDetails(cleanUrl);
 
@@ -1137,10 +1129,6 @@ const urlDetails=function (domain) {
         "search": "",
         "user": ""
     };
-
-    const zero =0;
-    const one =1;
-    const two =2;
 
     domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
 
