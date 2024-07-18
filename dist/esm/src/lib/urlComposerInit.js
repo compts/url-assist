@@ -1,8 +1,8 @@
 import {templateValue, isEmpty} from 'structkit';
 
-import {qsParse} from './queryObject';
+import {qsParse} from './queryObject.js';
 
-import {qsStringify} from './queryString';
+import {qsStringify} from './queryString.js';
 
 /**
  * Verify if format is valid
@@ -94,6 +94,7 @@ function UrlComposerInit (config) {
     this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
+    this.variablePathPrefix = "";
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
@@ -115,6 +116,11 @@ UrlComposerInit.prototype.setHash = function (data) {
 UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
+
+};
+UrlComposerInit.prototype.setPathPrefix = function (data) {
+
+    this.variablePathPrefix = data;
 
 };
 UrlComposerInit.prototype.setPath = function (data) {
@@ -145,7 +151,7 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 };
 
 /**
- * Compose your url structure in string
+ * Get your url structure in string
  *
  * @since 1.1.0
  * @category environment
@@ -159,15 +165,19 @@ UrlComposerInit.prototype.getToString = function () {
 
     const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
     const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    const joinPath = [
+        this.variablePathPrefix,
+        this.variablePath
+    ].join("/");
 
     return templateValue(urlFormat, {
         "domain": urlData.domain,
         "hash": isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
-        "path": isEmpty(this.variablePath)
+        "path": isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(this.variablePath)
+            : '/'+removeSlash(joinPath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
         "port": isEmpty(urlData.port)
@@ -179,6 +189,40 @@ UrlComposerInit.prototype.getToString = function () {
         "queryString": isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
+        "subdomain": isEmpty(urlData.subdomain)
+            ? ''
+            :this.variableSubdomain+'.',
+        "tld": isEmpty(urlData.tld)
+            ? ''
+            : '.'+urlData.tld
+    });
+
+};
+
+/**
+ * Get your domain only  in string
+ *
+ * @since 1.2.6
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getDomainString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getDomainString = function () {
+
+    const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
+    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
+
+    return templateValue(urlFormat, {
+        "domain": urlData.domain,
+        "port": isEmpty(urlData.port)
+            ? ''
+            : ':'+urlData.port,
+        "protocol": isEmpty(urlData.protocol)
+            ? ''
+            : urlData.protocol+"://",
         "subdomain": isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',

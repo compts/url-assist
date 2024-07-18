@@ -1,16 +1,16 @@
-import {qsStringify} from './lib/queryString';
+import {qsStringify} from './lib/queryString.js';
 
-import {UrlComposerInit} from './lib/urlComposerInit';
+import {UrlComposerInit} from './lib/urlComposerInit.js';
 
-import {PathPatternInit} from './lib/pathPatternInit';
+import {PathPatternInit} from './lib/pathPatternInit.js';
 
-import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
+import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain.js';
 
-import {qsParse} from './lib/queryObject';
+import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, each, first, isEmpty} from 'structkit';
+import {arraySlice, first, isEmpty, reduce} from 'structkit';
 
-const one =1;
+import {one} from './lib/variable.js';
 
 /**
  * In url or path, you now verified the format of your url
@@ -85,15 +85,18 @@ function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
     const replacePath = arraySlice(ags, one);
-    const cleanReplacePath = [];
+    const cleanReplacePath = reduce([], replacePath, function (grand, value) {
 
-    each(replacePath, function (key, value) {
+        grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
-        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+        return grand;
 
     });
 
-    return replaceDomain+"/"+cleanReplacePath.join("/");
+    return [
+        replaceDomain,
+        cleanReplacePath.join("/")
+    ].join("/");
 
 }
 

@@ -1,11 +1,10 @@
 import {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} from 'structkit';
 
-import {configQueryString} from './config';
+import {configQueryString} from './config.js';
+
+import {zero, one} from './variable.js';
 
 import {varExtend, indexOfNotExist} from 'structkit';
-
-const zero =0;
-const one =1;
 
 /**
  * Query String object

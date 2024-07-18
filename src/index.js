@@ -3,9 +3,8 @@ const {UrlComposerInit} = require("./lib/urlComposerInit");
 const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {qsParse} = require("./lib/queryObject");
-const {arraySlice, each, first, isEmpty} = require("structkit");
-
-const one =1;
+const {arraySlice, first, isEmpty, reduce} = require("structkit");
+const {one} = require("./lib/variable");
 
 
 /**
@@ -83,15 +82,18 @@ function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
     const replacePath = arraySlice(ags, one);
-    const cleanReplacePath = [];
+    const cleanReplacePath = reduce([], replacePath, function (grand, value) {
 
-    each(replacePath, function (key, value) {
+        grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
-        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+        return grand;
 
     });
 
-    return replaceDomain+"/"+cleanReplacePath.join("/");
+    return [
+        replaceDomain,
+        cleanReplacePath.join("/")
+    ].join("/");
 
 }
 

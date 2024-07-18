@@ -1,10 +1,7 @@
 const {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} = require("structkit");
 const {configQueryString} = require("./config");
-
+const {zero, one} = require("./variable");
 const {varExtend, indexOfNotExist} = require("structkit");
-
-const zero =0;
-const one =1;
 
 
 /**

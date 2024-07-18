@@ -94,6 +94,7 @@ function UrlComposerInit (config) {
     this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
+    this.variablePathPrefix = "";
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
@@ -116,6 +117,12 @@ UrlComposerInit.prototype.setHash = function (data) {
 UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
+
+};
+UrlComposerInit.prototype.setPathPrefix = function (data) {
+
+    this.variablePathPrefix = data;
+
 
 };
 UrlComposerInit.prototype.setPath = function (data) {
@@ -163,15 +170,19 @@ UrlComposerInit.prototype.getToString = function () {
 
     const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
     const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    const joinPath = [
+        this.variablePathPrefix,
+        this.variablePath
+    ].join("/");
 
     return templateValue(urlFormat, {
         "domain": urlData.domain,
         "hash": isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
-        "path": isEmpty(this.variablePath)
+        "path": isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(this.variablePath)
+            : '/'+removeSlash(joinPath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
         "port": isEmpty(urlData.port)

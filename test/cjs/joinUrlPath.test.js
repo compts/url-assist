@@ -27,4 +27,10 @@ describe('CJS: joinUrlPath method', function () {
 
     });
 
+    it('check joinUrlPath url, path/ and id/', function () {
+
+        assert.deepStrictEqual(joinUrlPath("https://example.com", "/test/", "id/"), "https://example.com/test/id");
+
+    });
+
 });

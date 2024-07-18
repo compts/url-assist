@@ -1,7 +1,6 @@
 const {each, varExtend, getTypeof, indexOfNotExist, indexOf} = require("structkit");
 const {configQueryString} = require("./config");
-const zero =0;
-
+const {zero} = require("./variable");
 
 /**
  * Query String stringify

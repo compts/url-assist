@@ -1,6 +1,6 @@
 import {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString} from 'structkit';
 
-import {exemptListOfDomain} from './config';
+import {exemptListOfDomain} from './config.js';
 
 /**
  * Get if domain segmet details

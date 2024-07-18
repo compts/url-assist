@@ -1,6 +1,6 @@
 import {getTypeof, each, first, isEmpty, ifUndefined, count, toInteger, toString, regexCountGroup, range, map, has, getKey, toArray, last} from 'structkit';
 
-import {objRegExpKey} from './config';
+import {objRegExpKey} from './config.js';
 
 /**
  * Verify if pattern and path are match

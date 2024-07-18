@@ -1,8 +1,8 @@
 import {each, varExtend, getTypeof, indexOfNotExist, indexOf} from 'structkit';
 
-import {configQueryString} from './config';
+import {configQueryString} from './config.js';
 
-const zero =0;
+import {zero} from './variable.js';
 
 /**
  * Query String stringify

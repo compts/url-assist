@@ -32,6 +32,7 @@ export class UrlComposerInit {
     variableProtocol: any;
     variablePort: any;
     variablePath: any;
+    variablePathPrefix: string;
     variableDomain: any;
     variableDomainTld: any;
     variableSubdomain: any;
@@ -40,13 +41,14 @@ export class UrlComposerInit {
     setProtocol(data: any): void;
     setHash(data: any): void;
     setPort(data: any): void;
+    setPathPrefix(data: any): void;
     setPath(data: any): void;
     setDomain(data: any): void;
     setDomainTld(data: any): void;
     setSubdomain(data: any): void;
     setQueryString(data: any): void;
     /**
-     * Compose your url structure in string
+     * Get your url structure in string
      *
      * @since 1.1.0
      * @category environment
@@ -57,4 +59,16 @@ export class UrlComposerInit {
      *=> 'www.example.com'
      */
     getToString(): string;
+    /**
+     * Get your domain only  in string
+     *
+     * @since 1.2.6
+     * @category environment
+     * @returns {string} Return the boolean.
+     * @example
+     *
+     * getDomainString()
+     *=> 'www.example.com'
+     */
+    getDomainString(): string;
 }

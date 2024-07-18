@@ -1,5 +1,5 @@
 (function(global){
-global.urs={}
+global.urs={};
 
 configQueryString = {
 
@@ -7,15 +7,16 @@ configQueryString = {
     "equalSeparator": "=",
     "newLineSeparator": "&"
 };
-var exemptListOfDomain = ['localhost'];
-var objRegExpKey = {
+const exemptListOfDomain = ['localhost'];
+const objRegExpKey = {
 
     "any": '[a-zA-Z0-9\\-\\_]',
     "number": '[0-9]',
     "string": '[a-zA-Z]'
 };
 
-var zero =0;
+const zero = 0;
+const one =1;
 
 /**
  * Query String stringify
@@ -41,8 +42,8 @@ function qsStringify (value, config) {
 
     }
 
-    var referenceValue = [];
-    var defaultConfig = _stk.varExtend(configQueryString, config);
+    const referenceValue = [];
+    const defaultConfig = _stk.varExtend(configQueryString, config);
 
     _stk.each(value, function (key, val) {
 
@@ -70,7 +71,7 @@ function qsStringify (value, config) {
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
  * // => true
  */
-var parseStringConvert=function (key, value, type, config, reference) {
+const parseStringConvert=function (key, value, type, config, reference) {
 
     if (_stk.indexOf([
         "json",
@@ -79,7 +80,7 @@ var parseStringConvert=function (key, value, type, config, reference) {
 
         _stk.each(value, function (ky, vl) {
 
-            var keyVal = _stk.indexOf([
+            const keyVal = _stk.indexOf([
                 "number",
                 "array"
             ], type) >=zero
@@ -97,9 +98,6 @@ var parseStringConvert=function (key, value, type, config, reference) {
     }
 
 };
-
-var zero =0;
-var one =1;
 
 /**
  * Query String object
@@ -124,9 +122,9 @@ function qsParse (value, config) {
 
     value = value.trim().replace(/^[?#&]/, '');
 
-    var referenceValue = {};
-    var defaultConfig = _stk.varExtend(configQueryString, config);
-    var defaultSplit = value.split(defaultConfig.newLineSeparator);
+    const referenceValue = {};
+    const defaultConfig = _stk.varExtend(configQueryString, config);
+    const defaultSplit = value.split(defaultConfig.newLineSeparator);
 
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
@@ -164,9 +162,9 @@ function qsParse (value, config) {
  * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
  * // => null
  */
-var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
-    var filterKeyList = _stk.filter(keyList, function (ke, value) {
+    const filterKeyList = _stk.filter(keyList, function (ke, value) {
 
         return _stk.isEmpty(value)===false;
 
@@ -180,8 +178,8 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
 
     if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
 
-        var firstKey = _stk.first(filterKeyList);
-        var referenceData = {};
+        const firstKey = _stk.first(filterKeyList);
+        const referenceData = {};
 
         objectMultipleKey(referenceData, filterKeyList, getValueOnly);
         referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
@@ -212,9 +210,9 @@ var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyLi
  * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
  * // => null
  */
-var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
+const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
 
-    var keyListClone = _stk.clone(keyList);
+    const keyListClone = _stk.clone(keyList);
 
     keyList.shift();
     if (_stk.isEmpty(keyList)) {
@@ -253,7 +251,7 @@ var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => null
  */
-var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
 
     if (_stk.has(referenceValue, keyOnly) ===false) {
 
@@ -267,7 +265,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         } else {
 
-            var firstKey = _stk.first(keyList);
+            const firstKey = _stk.first(keyList);
 
             if (_stk.isEmpty(firstKey)) {
 
@@ -281,7 +279,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
             if (_stk.isEmpty(keyList) ===false) {
 
-                var keyListClone = _stk.clone(keyList);
+                const keyListClone = _stk.clone(keyList);
 
                 keyList.shift();
 
@@ -317,20 +315,20 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
  * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
-var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
+const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
     _stk.each(defaultSplit, function (key, val) {
 
-        var getKeyAndValue = val.split(defaultConfig.equalSeparator);
-        var getKeyOnly = _stk.first(getKeyAndValue);
-        var getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
+        const getKeyAndValue = val.split(defaultConfig.equalSeparator);
+        const getKeyOnly = _stk.first(getKeyAndValue);
+        const getValueOnly = _stk.arraySlice(getKeyAndValue, one).join(defaultConfig.equalSeparator);
 
         if (getKeyAndValue.length > zero) {
 
-            var keyOnly = "";
-            var keyList = [];
+            let keyOnly = "";
+            const keyList = [];
 
-            var keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
+            const keySubData = getKeyOnly.replace(/^([\w\-_\d]{1,})\[/g, function (whole, sub1) {
 
                 keyOnly=sub1;
 
@@ -375,7 +373,7 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  */
 function ifValidHost (domain, protocol, port, subdomain, tld) {
 
-    var data = {
+    const data = {
         "domain": "",
         "port": "",
         "protocol": "",
@@ -448,6 +446,7 @@ function UrlComposerInit (config) {
     this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
+    this.variablePathPrefix = "";
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
@@ -469,6 +468,11 @@ UrlComposerInit.prototype.setHash = function (data) {
 UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
+
+};
+UrlComposerInit.prototype.setPathPrefix = function (data) {
+
+    this.variablePathPrefix = data;
 
 };
 UrlComposerInit.prototype.setPath = function (data) {
@@ -499,7 +503,7 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 };
 
 /**
- * Compose your url structure in string
+ * Get your url structure in string
  *
  * @since 1.1.0
  * @category environment
@@ -511,17 +515,21 @@ UrlComposerInit.prototype.setQueryString = function (data) {
  */
 UrlComposerInit.prototype.getToString = function () {
 
-    var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
-    var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
+    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    const joinPath = [
+        this.variablePathPrefix,
+        this.variablePath
+    ].join("/");
 
     return _stk.templateValue(urlFormat, {
         "domain": urlData.domain,
         "hash": _stk.isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
-        "path": _stk.isEmpty(this.variablePath)
+        "path": _stk.isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(this.variablePath)
+            : '/'+removeSlash(joinPath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
         "port": _stk.isEmpty(urlData.port)
@@ -533,6 +541,40 @@ UrlComposerInit.prototype.getToString = function () {
         "queryString": _stk.isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
+        "subdomain": _stk.isEmpty(urlData.subdomain)
+            ? ''
+            :this.variableSubdomain+'.',
+        "tld": _stk.isEmpty(urlData.tld)
+            ? ''
+            : '.'+urlData.tld
+    });
+
+};
+
+/**
+ * Get your domain only  in string
+ *
+ * @since 1.2.6
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getDomainString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getDomainString = function () {
+
+    const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
+    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
+
+    return _stk.templateValue(urlFormat, {
+        "domain": urlData.domain,
+        "port": _stk.isEmpty(urlData.port)
+            ? ''
+            : ':'+urlData.port,
+        "protocol": _stk.isEmpty(urlData.protocol)
+            ? ''
+            : urlData.protocol+"://",
         "subdomain": _stk.isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',
@@ -559,14 +601,14 @@ UrlComposerInit.prototype.getToString = function () {
  */
 function validMatchPatternPath (pattern, path) {
 
-    var matchPatternPath = path.match(pattern.patterns);
+    const matchPatternPath = path.match(pattern.patterns);
 
     if (_stk.has(matchPatternPath)) {
 
-        var firstMatch = _stk.toString(_stk.first(matchPatternPath)).replace(/^\//g, "")
+        const firstMatch = _stk.toString(_stk.first(matchPatternPath)).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
-        var pathClean = _stk.toString(path).replace(/^\//g, "")
+        const pathClean = _stk.toString(path).replace(/^\//g, "")
             .replace(/\/$/g, "");
 
         return _stk.toString(firstMatch)===_stk.toString(pathClean);
@@ -592,13 +634,13 @@ function validMatchPatternPath (pattern, path) {
  */
 function basePattern (pattern) {
 
-    var one = 1;
-    var zero = 0;
+    const one = 1;
+    const zero = 0;
 
     if (_stk.getTypeof(pattern) ==="json") {
 
-        var patternRegexp = _stk.ifUndefined(pattern, "regexp", "--");
-        var listArgument = _stk.ifUndefined(pattern, "arguments", []);
+        const patternRegexp = _stk.ifUndefined(pattern, "regexp", "--");
+        const listArgument = _stk.ifUndefined(pattern, "arguments", []);
 
         if (patternRegexp ==="--") {
 
@@ -626,19 +668,17 @@ function basePattern (pattern) {
 
     if (_stk.getTypeof(pattern) ==="string") {
 
-        var refRegVal = {};
-        var updPattern = _stk.toString(pattern).replace(/([*]{1,})/g, "(.*?)");
+        const refRegVal = {};
+        let updPattern = _stk.toString(pattern).replace(/([*]{1,})/g, "(.*?)");
 
-        updPattern = _stk.toString(updPattern).replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function () {
+        updPattern = _stk.toString(updPattern).replace(/([(]{0,1}[/]{0,1}:[a-zA-Z9-_<>]{1,}[)]{0,1})/g, function (...ags) {
 
-    var ags=arguments;
-
-            var replaceSlash = _stk.toString(_stk.first(ags)).replace(/^\//g, "");
-            var replaceSlashClean = _stk.toString(replaceSlash).replace(/[:()/]{0,}/g, "")
+            const replaceSlash = _stk.toString(_stk.first(ags)).replace(/^\//g, "");
+            const replaceSlashClean = _stk.toString(replaceSlash).replace(/[:()/]{0,}/g, "")
                 .replace(/<(.*?)>/g, "");
-            var typeData = _stk.toString(replaceSlash).match(/<([a-zA-Z]{1,})>/i);
+            const typeData = _stk.toString(replaceSlash).match(/<([a-zA-Z]{1,})>/i);
 
-            var typeRef = "any";
+            let typeRef = "any";
 
             if (!_stk.isEmpty(typeData)) {
 
@@ -677,15 +717,13 @@ function basePattern (pattern) {
 
         });
 
-        var listArgument = [];
+        const listArgument = [];
 
-        updPattern = updPattern.replace(/\((.*?)\)/g, function () {
+        updPattern = updPattern.replace(/\((.*?)\)/g, function (...arg) {
 
-    var arg=arguments;
+            const lengthArg = listArgument.length;
 
-            var lengthArg = listArgument.length;
-
-            var firstValue = _stk.first(arg);
+            const firstValue = _stk.first(arg);
 
             if ((/\(@[0-9]{1,}@\)/g).test(firstValue)) {
 
@@ -716,7 +754,7 @@ function basePattern (pattern) {
 
     if (_stk.getTypeof(pattern) ==="regexp") {
 
-        var listArgument = _stk.map(_stk.range(_stk.regexCountGroup(pattern)-one, zero), function (value) {
+        const listArgument = _stk.map(_stk.range(_stk.regexCountGroup(pattern)-one, zero), function (value) {
 
             return {
                 "index": value,
@@ -791,8 +829,8 @@ function PathPatternInit (pattern, path) {
  */
 PathPatternInit.prototype.isValid = function () {
 
-    var refPattern = basePattern(this.pattern);
-    var refPath = basePath(this.path);
+    const refPattern = basePattern(this.pattern);
+    const refPath = basePath(this.path);
 
     return validMatchPatternPath(refPattern, refPath);
 
@@ -811,14 +849,14 @@ PathPatternInit.prototype.isValid = function () {
  */
 PathPatternInit.prototype.getParam = function () {
 
-    var refParam = {};
+    const refParam = {};
 
-    var refPattern = basePattern(this.pattern);
-    var refPath = basePath(this.path);
+    const refPattern = basePattern(this.pattern);
+    const refPath = basePath(this.path);
 
     if (validMatchPatternPath(refPattern, refPath)) {
 
-        var matchPatternPath = refPath.match(refPattern.patterns);
+        const matchPatternPath = refPath.match(refPattern.patterns);
 
         _stk.each(refPattern.arguments, function (key, value) {
 
@@ -850,15 +888,15 @@ PathPatternInit.prototype.getParam = function () {
  *   }
  *
  */
-var getDomain =function (domain) {
+const getDomain =function (domain) {
 
-    var one =1;
+    const one =1;
 
-    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+    const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
 
-    var splitDomain = referenceDomain.split("/");
-    var getDomainFirstSplit = _stk.first(splitDomain);
-    var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
+    const splitDomain = referenceDomain.split("/");
+    let getDomainFirstSplit = _stk.first(splitDomain);
+    let pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
 
     if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
 
@@ -867,11 +905,11 @@ var getDomain =function (domain) {
 
     }
 
-    var pathValue = pathValueDetails;
-    var hashValue = "";
-    var queryValue = "";
+    let pathValue = pathValueDetails;
+    let hashValue = "";
+    let queryValue = "";
 
-    var pathSplitHash = pathValue.split("#");
+    const pathSplitHash = pathValue.split("#");
 
     if (_stk.count(pathSplitHash) > one) {
 
@@ -880,7 +918,7 @@ var getDomain =function (domain) {
 
     }
 
-    var pathSplitQuery = pathValue.split("?");
+    const pathSplitQuery = pathValue.split("?");
 
     if (_stk.count(pathSplitQuery) > one) {
 
@@ -917,22 +955,22 @@ var getDomain =function (domain) {
  *      "tld": "com"
  *  }
  */
-var getDomainDetails=function (domain) {
+const getDomainDetails=function (domain) {
 
-    var zero =0;
-    var one =1;
-    var two =2;
-    var three = 3;
+    const zero =0;
+    const one =1;
+    const two =2;
+    const three = 3;
 
-    var domainDetails = {
+    let domainDetails = {
         "domain": "",
         "domainWithTld": "",
         "subdomain": "",
         "tld": ""
     };
 
-    var domainSplit = domain.split(".");
-    var getTLD = _stk.last(domainSplit).split(":");
+    const domainSplit = domain.split(".");
+    const getTLD = _stk.last(domainSplit).split(":");
 
     if (_stk.count(domainSplit) === one) {
 
@@ -958,7 +996,7 @@ var getDomainDetails=function (domain) {
 
     if (_stk.count(domainSplit) >= three) {
 
-        var getDefaultDomain = _stk.arraySlice(domainSplit, _stk.count(domainSplit) - two, _stk.count(domainSplit) - two);
+        const getDefaultDomain = _stk.arraySlice(domainSplit, _stk.count(domainSplit) - two, _stk.count(domainSplit) - two);
 
         domainDetails = {
             "domain": _stk.toString(getDefaultDomain),
@@ -986,24 +1024,24 @@ var getDomainDetails=function (domain) {
  * // =>  false
  *
  */
-var isUrlValidFormatVerifier=function (domain) {
+const isUrlValidFormatVerifier=function (domain) {
 
-    var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
-    var validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
+    const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
+    const validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
-    var one =1;
-    var two =2;
-    var theee =3;
-    var validTLDlen = 63;
+    const one =1;
+    const two =2;
+    const theee =3;
+    const validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
-        var cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
-        var cleanUrlSplit = cleanUrl.split(".");
+        const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+        const cleanUrlSplit = cleanUrl.split(".");
 
         if (_stk.count(cleanUrlSplit) >= two) {
 
-            var getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
+            const getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
 
             if (getTLD > one && getTLD <= validTLDlen) {
 
@@ -1015,10 +1053,10 @@ var isUrlValidFormatVerifier=function (domain) {
 
                 if (_stk.count(cleanUrlSplit) >= theee) {
 
-                    var getDomainSplit = getDomainDetails(cleanUrl);
+                    const getDomainSplit = getDomainDetails(cleanUrl);
 
-                    var regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
-                    var regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
+                    const regSubDomain =(/^([\w\d-.]{1,})$/g).test(getDomainSplit.subdomain);
+                    const regDomain = (/^([\w\d-]{1,})$/g).test(getDomainSplit.domain);
 
                     return regSubDomain && regDomain;
 
@@ -1055,9 +1093,9 @@ var isUrlValidFormatVerifier=function (domain) {
  *  }
  *
  */
-var urlDetails=function (domain) {
+const urlDetails=function (domain) {
 
-    var dataReference = {
+    const dataReference = {
         "hash": "",
         "hostname": "",
         "hostnamePort": "",
@@ -1069,9 +1107,9 @@ var urlDetails=function (domain) {
         "user": ""
     };
 
-    var zero =0;
-    var one =1;
-    var two =2;
+    const zero =0;
+    const one =1;
+    const two =2;
 
     domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
 
@@ -1081,9 +1119,9 @@ var urlDetails=function (domain) {
 
     });
 
-    var hostname = getDomain(domain);
+    const hostname = getDomain(domain);
 
-    var splitPort = hostname.url.split(":");
+    const splitPort = hostname.url.split(":");
 
     dataReference.hostnamePort = hostname.url;
     dataReference.search = hostname.search;
@@ -1109,14 +1147,14 @@ var urlDetails=function (domain) {
         dataReference.hostname = _stk.arraySlice(splitPort, zero, _stk.count(splitPort) - two).join(":");
 
     }
-    var splitUsernameDomain = dataReference.hostname.split("@");
+    const splitUsernameDomain = dataReference.hostname.split("@");
 
     if (_stk.count(splitUsernameDomain) === two) {
 
         dataReference.user = _stk.first(splitUsernameDomain);
         dataReference.hostname = _stk.last(splitUsernameDomain);
 
-        var usernameAndPassword = dataReference.user.split(":");
+        const usernameAndPassword = dataReference.user.split(":");
 
         if (_stk.count(usernameAndPassword) === two) {
 
@@ -1130,8 +1168,6 @@ var urlDetails=function (domain) {
     return dataReference;
 
 };
-
-var one =1;
 
 /**
  * In url or path, you now verified the format of your url
@@ -1202,21 +1238,22 @@ function isUrlValidFormat (domain) {
  * joinUrlPath('https://example.com','test')
  *=> https://example.com/test
  */
-function joinUrlPath () {
+function joinUrlPath (...ags) {
 
-    var ags=arguments;
+    const replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
+    const replacePath = _stk.arraySlice(ags, one);
+    const cleanReplacePath = _stk.reduce([], replacePath, function (grand, value) {
 
-    var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
-    var replacePath = _stk.arraySlice(ags, one);
-    var cleanReplacePath = [];
+        grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
-    _stk.each(replacePath, function (key, value) {
-
-        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+        return grand;
 
     });
 
-    return replaceDomain+"/"+cleanReplacePath.join("/");
+    return [
+        replaceDomain,
+        cleanReplacePath.join("/")
+    ].join("/");
 
 }
 
@@ -1304,7 +1341,7 @@ function isHttps (host) {
  */
 function getHostDetails (host) {
 
-    var dataReference = {
+    const dataReference = {
         "domainDetails": {},
         "hostname": "",
         "href": host,
@@ -1318,7 +1355,7 @@ function getHostDetails (host) {
 
     if (_stk.isEmpty(host) === false) {
 
-        var details = urlDetails(host);
+        const details = urlDetails(host);
 
         dataReference.protocol = details.protocol;
         dataReference.hostname = details.hostname;
@@ -1353,22 +1390,22 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    var regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
-urs.getHostDetails=getHostDetails
-urs.qsStringify=qsStringify
-urs.qsParse=qsParse
-urs.isHttps=isHttps
-urs.isHttpProtocolValid=isHttpProtocolValid
-urs.joinUrlPath=joinUrlPath
-urs.isUrlExtValid=isUrlExtValid
-urs.isWebSocketProtocolValid=isWebSocketProtocolValid
-urs.isUrlValidFormat=isUrlValidFormat
-urs.urlComposer=urlComposer
-urs.urlPattern=urlPattern
+urs.getHostDetails=getHostDetails;
+urs.qsStringify=qsStringify;
+urs.qsParse=qsParse;
+urs.isHttps=isHttps;
+urs.isHttpProtocolValid=isHttpProtocolValid;
+urs.joinUrlPath=joinUrlPath;
+urs.isUrlExtValid=isUrlExtValid;
+urs.isWebSocketProtocolValid=isWebSocketProtocolValid;
+urs.isUrlValidFormat=isUrlValidFormat;
+urs.urlComposer=urlComposer;
+urs.urlPattern=urlPattern;
 
 })(typeof window !== "undefined" ? window : this);
