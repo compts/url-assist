@@ -33,7 +33,7 @@
     "node",
     "href",
     "git",
-    "querystrig",
+    "querystring",
     "qs",
     "stringify"
   ],

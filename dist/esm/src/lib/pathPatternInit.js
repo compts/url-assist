@@ -248,7 +248,7 @@ PathPatternInit.prototype.isValid = function () {
 
     const refPattern = basePattern(this.pattern);
     const refPath = basePath(this.path);
-
+    console.log(refPattern, refPath,"::refPattern, refPath");
     return validMatchPatternPath(refPattern, refPath);
 
 };

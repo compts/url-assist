@@ -11,9 +11,9 @@ configQueryString = {
 const exemptListOfDomain = ['localhost'];
 const objRegExpKey = {
 
-    "any": '[a-zA-Z0-9\\-\\_]',
+    "any": '[a-zA-Z0-9\\-\\_.]',
     "number": '[0-9]',
-    "string": '[a-zA-Z]'
+    "string": '[a-zA-Z0-9]'
 };
 
 const zero = 0;
@@ -874,7 +874,7 @@ PathPatternInit.prototype.isValid = function () {
 
     const refPattern = basePattern(this.pattern);
     const refPath = basePath(this.path);
-
+    console.log(refPattern, refPath,"::refPattern, refPath");
     return validMatchPatternPath(refPattern, refPath);
 
 };
