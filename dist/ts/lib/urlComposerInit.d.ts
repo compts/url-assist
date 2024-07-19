@@ -38,15 +38,114 @@ export class UrlComposerInit {
     variableSubdomain: any;
     variableQueryString: any;
     variableHash: any;
-    setProtocol(data: any): void;
-    setHash(data: any): void;
-    setPort(data: any): void;
-    setPathPrefix(data: any): void;
-    setPath(data: any): void;
-    setDomain(data: any): void;
-    setDomainTld(data: any): void;
-    setSubdomain(data: any): void;
-    setQueryString(data: any): void;
+    /**
+     * Set HTTP protocol
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setProtocol('http')
+     */
+    setProtocol(data: any): undefined;
+    /**
+     * Set HTTP hash
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setHash('http')
+     */
+    setHash(data: any): undefined;
+    /**
+     * Set HTTP port
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setPort(8080)
+     */
+    setPort(data: any): undefined;
+    /**
+     * Set HTTP prefix path
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setPathPrefix('v1')
+     */
+    setPathPrefix(data: any): undefined;
+    /**
+     * Set HTTP path
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setPath('id')
+     */
+    setPath(data: any): undefined;
+    /**
+     * Set HTTP domain name
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setDomain('example')
+     */
+    setDomain(data: any): undefined;
+    /**
+     * Set HTTP TLD
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setDomainTld('com')
+     */
+    setDomainTld(data: any): undefined;
+    /**
+     * Set HTTP subdomain
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setSubdomain('www')
+     */
+    setSubdomain(data: any): undefined;
+    /**
+     * Set HTTP query string
+     *
+     * @since 1.1.0
+     * @category environment
+     * @param {any} data Passing object to convert string
+     * @returns {undefined} Return the boolean.
+     * @example
+     *
+     * setQueryString('a=1')
+     */
+    setQueryString(data: any): undefined;
     /**
      * Get your url structure in string
      *

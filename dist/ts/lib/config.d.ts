@@ -6,6 +6,7 @@ export namespace configQueryString {
 }
 export const exemptListOfDomain: string[];
 export namespace objRegExpKey {
+    let alpha: string;
     let any: string;
     let number: string;
     let string: string;

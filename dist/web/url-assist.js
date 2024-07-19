@@ -11,6 +11,7 @@ configQueryString = {
 const exemptListOfDomain = ['localhost'];
 const objRegExpKey = {
 
+    "alpha": '[a-zA-Z]',
     "any": '[a-zA-Z0-9\\-\\_.]',
     "number": '[0-9]',
     "string": '[a-zA-Z0-9]'
@@ -498,47 +499,153 @@ function UrlComposerInit (config) {
 
 }
 
+/**
+ * Set HTTP protocol
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setProtocol('http')
+ */
 UrlComposerInit.prototype.setProtocol = function (data) {
 
     this.variableProtocol = data;
 
 };
+
+/**
+ * Set HTTP hash
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setHash('http')
+ */
 UrlComposerInit.prototype.setHash = function (data) {
 
     this.variableHash = data;
 
 };
+
+/**
+ * Set HTTP port
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPort(8080)
+ */
 UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
 
 };
+
+/**
+ * Set HTTP prefix path
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPathPrefix('v1')
+ */
 UrlComposerInit.prototype.setPathPrefix = function (data) {
 
     this.variablePathPrefix = data;
 
 };
+
+/**
+ * Set HTTP path
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPath('id')
+ */
 UrlComposerInit.prototype.setPath = function (data) {
 
     this.variablePath = data;
 
 };
+
+/**
+ * Set HTTP domain name
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setDomain('example')
+ */
 UrlComposerInit.prototype.setDomain = function (data) {
 
     this.variableDomain = data;
 
 };
+
+/**
+ * Set HTTP TLD
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setDomainTld('com')
+ */
 UrlComposerInit.prototype.setDomainTld = function (data) {
 
     this.variableDomainTld = data;
 
 };
+
+/**
+ * Set HTTP subdomain
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setSubdomain('www')
+ */
 UrlComposerInit.prototype.setSubdomain = function (data) {
 
     this.variableSubdomain = data;
 
 };
 
+/**
+ * Set HTTP query string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setQueryString('a=1')
+ */
 UrlComposerInit.prototype.setQueryString = function (data) {
 
     this.variableQueryString = data;
@@ -874,7 +981,7 @@ PathPatternInit.prototype.isValid = function () {
 
     const refPattern = basePattern(this.pattern);
     const refPath = basePath(this.path);
-    console.log(refPattern, refPath,"::refPattern, refPath");
+
     return validMatchPatternPath(refPattern, refPath);
 
 };
