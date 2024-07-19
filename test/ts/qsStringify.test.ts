@@ -48,4 +48,24 @@ describe('TS: qsStringify method', function () {
         "test2": "11"}));
 
     });
+
+    it('check qsStringify argument with key [g][h][j]', function () {
+
+        assert.deepStrictEqual(qsStringify({
+            "a": {
+                "b": {
+                    "c": {
+                        "d": {
+                            "e": {
+                                "f": {
+                                    '[g][h][i]': 'j'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }), "a[b][c][d][e][f][g][h][i]=j");
+
+    });
 });

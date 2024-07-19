@@ -38,4 +38,24 @@ describe('ESM: qsStringify method', function () {
 
     });
 
+    it('check qsStringify argument with key [g][h][j]', function () {
+
+        assert.deepStrictEqual(qsStringify({
+            "a": {
+                "b": {
+                    "c": {
+                        "d": {
+                            "e": {
+                                "f": {
+                                    '[g][h][i]': 'j'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }), "a[b][c][d][e][f][g][h][i]=j");
+
+    });
+
 });

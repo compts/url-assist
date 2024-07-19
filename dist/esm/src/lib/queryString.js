@@ -73,7 +73,17 @@ const parseStringConvert=function (key, value, type, config, reference) {
                 ?config.arrayFormat
                 :"["+ky+"]";
 
-            parseStringConvert(key+keyVal, vl, getTypeof(vl), config, reference);
+            let defineKey = keyVal;
+
+            if ((/^\[(.*?)\]$/g).test(ky) && indexOfNotExist([
+                "number",
+                "array"
+            ], type)) {
+
+                defineKey = ky;
+
+            }
+            parseStringConvert(key+""+defineKey, vl, getTypeof(vl), config, reference);
 
         });
 
