@@ -33,6 +33,23 @@ describe('TS: isHttpProtocolValid method', function () {
   
       });
 
+    it('check isHttpProtocolValid ip is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://127.0.0.1"), true);
+
+    });
+
+    it('check isHttpProtocolValid ip with port is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://127.0.0.1:8000"), true);
+
+    });
+
+    it('check isHttpProtocolValid localhost is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost"), true);
+
+    });
 
 
 });

@@ -1177,6 +1177,17 @@ const isUrlValidFormatVerifier=function (domain) {
     if (httpRegExp.test(domain)) {
 
         const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+
+        if (_stk.indexOfExist(["localhost"], cleanUrl)) {
+
+            return true;
+
+        }
+        if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(cleanUrl)) {
+
+            return true;
+
+        }
         const cleanUrlSplit = cleanUrl.split(".");
 
         if (_stk.count(cleanUrlSplit) >= two) {
