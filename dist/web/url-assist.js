@@ -1537,9 +1537,39 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
+
+}
+
+/**
+ * Create url slug from words
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * slugify('hello world')
+ *=> hello-world
+ */
+function slugify (pattern, ext) {
+
+    let strPattern = _stk.stringLowerCase(pattern);
+
+    const varExt = _stk.varExtend({
+        "delimiter": "-"
+    }, ext);
+
+    strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+    strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+    strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    return strPattern;
 
 }
 
@@ -1554,5 +1584,6 @@ urs.isWebSocketProtocolValid=isWebSocketProtocolValid;
 urs.isUrlValidFormat=isUrlValidFormat;
 urs.urlComposer=urlComposer;
 urs.urlPattern=urlPattern;
+urs.slugify=slugify;
 
 })(typeof window !== "undefined" ? window : this);

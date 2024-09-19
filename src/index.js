@@ -3,7 +3,7 @@ const {UrlComposerInit} = require("./lib/urlComposerInit");
 const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {qsParse} = require("./lib/queryObject");
-const {arraySlice, first, isEmpty, reduce} = require("structkit");
+const {arraySlice, first, isEmpty, reduce, stringLowerCase, varExtend} = require("structkit");
 const {one} = require("./lib/variable");
 
 
@@ -231,9 +231,39 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
+
+}
+
+/**
+ * Create url slug from words
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * slugify('hello world')
+ *=> hello-world
+ */
+function slugify (pattern, ext) {
+
+    let strPattern = stringLowerCase(pattern);
+
+    const varExt = varExtend({
+        "delimiter": "-"
+    }, ext);
+
+    strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+    strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+    strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    return strPattern;
 
 }
 
@@ -248,3 +278,4 @@ exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
 exports.isUrlValidFormat =isUrlValidFormat;
 exports.urlComposer = urlComposer;
 exports.urlPattern = urlPattern;
+exports.slugify = slugify;

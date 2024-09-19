@@ -137,4 +137,18 @@ export function urlComposer(domain: string): any;
  *=> true
  */
 export function urlPattern(pattern: string | object, path: string): any;
+/**
+ * Create url slug from words
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * slugify('hello world')
+ *=> hello-world
+ */
+export function slugify(pattern: string, ext?: any | undefined): string;
 export { qsStringify, qsParse };

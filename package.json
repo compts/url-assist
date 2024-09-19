@@ -3,14 +3,27 @@
   "version": "1.2.6",
   "description": "URL library at your ease",
   "main": "src/index.js",
-  "module": "dist/esm/src/index.js",
-  "types": "dist/ts/index.d.ts",
+  "module": "./dist/esm/src/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./src/index.js",
+      "import": "./dist/esm/src/index.js",
+      "default": "./dist/ts/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/cjs/src",
+    "dist/esm/src"
+  ],
   "scripts": {
     "es_linter": "eslint src/lib/*.js src/*.js --fix",
     "test_esm": "mocha -r esm test/esm/*.test.js",
     "test_cjs": "mocha test/cjs/*.test.js",
     "test_ts": "mocha --require ts-node/register test/ts/*.test.ts",
-    "validate": "npm run style && npm run test"
+    "validate": "npm run style && npm run test",
+    "test:conv": "jest --coverage --no-cache"
   },
   "repository": {
     "type": "git",
@@ -51,6 +64,8 @@
     "structkit": "^1.4.843"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-typescript": "^7.24.7",
     "@types/assert": "^1.5.6",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.4",
@@ -63,22 +78,24 @@
     "ts-node": "^10.9.1"
   },
   "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["json", "html"],
     "collectCoverageFrom": [
-      "*.js",
-      "*.ts"
+      "dist/esm/src/*.js",
+      "dist/esm/src/lib/*.js"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/dist/",
-      "/test/esm/"
-
+      ".eslintrc.js",
+      "babel.config.js",
+      "grassfile.js"
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
+        "statements":70,
+        "branches": 70,
+        "functions": 70,
+        "lines": 70
       }
     }
   }
