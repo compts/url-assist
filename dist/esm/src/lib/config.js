@@ -1,5 +1,4 @@
 const configQueryString = {
-
     "arrayFormat": "[]",
     "equalSeparator": "=",
     "newLineSeparator": "&",

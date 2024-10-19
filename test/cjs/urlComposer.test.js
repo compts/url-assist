@@ -1,4 +1,4 @@
-const {urlComposer} = require("../../src/index");
+const {urlComposer} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 const data = urlComposer("http://www.example.com/v1");

@@ -1,4 +1,4 @@
-const {joinUrlPath} = require("../../src/index");
+const {joinUrlPath} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: joinUrlPath method', function () {

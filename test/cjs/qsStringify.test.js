@@ -1,4 +1,4 @@
-const {qsStringify} = require("../../src/index");
+const {qsStringify} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 

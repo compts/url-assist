@@ -1,4 +1,4 @@
-const {isHttpProtocolValid} = require("../../src/index");
+const {isHttpProtocolValid} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: isHttpProtocolValid method', function () {

@@ -1,4 +1,4 @@
-const {urlPattern} = require("../../src/index");
+const {urlPattern} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 

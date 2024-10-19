@@ -1,4 +1,4 @@
-const {isUrlExtValid} = require("../../src/index");
+const {isUrlExtValid} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: isUrlExtValid method', function () {

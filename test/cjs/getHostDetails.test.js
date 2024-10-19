@@ -1,4 +1,4 @@
-const {getHostDetails} = require("../../src/index");
+const {getHostDetails} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 

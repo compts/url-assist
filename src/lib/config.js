@@ -1,5 +1,4 @@
-exports.configQueryString = {
-
+const configQueryString = {
     "arrayFormat": "[]",
     "equalSeparator": "=",
     "newLineSeparator": "&",
@@ -14,6 +13,7 @@ const objRegExpKey = {
     "string": '[a-zA-Z0-9]'
 };
 
+exports.configQueryString = configQueryString;
 exports.exemptListOfDomain = exemptListOfDomain;
 
 exports.objRegExpKey = objRegExpKey;

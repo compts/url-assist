@@ -1,4 +1,4 @@
-const {qsParse} = require("../../src/index");
+const {qsParse} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 

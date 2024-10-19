@@ -1,4 +1,4 @@
-const {slugify} = require("../../src/index");
+const {slugify} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 
