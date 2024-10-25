@@ -49,4 +49,5 @@ describe('CJS: urlComposer method', function () {
         assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam');
 
     });
+
 });
