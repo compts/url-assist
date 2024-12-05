@@ -51,5 +51,10 @@ describe('TS: isHttpProtocolValid method', function () {
 
     });
 
+    it('check isHttpProtocolValid localhost:8080 is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost:8080"), true);
+
+    });
 
 });

@@ -1043,13 +1043,31 @@ PathPatternInit.prototype.getParam = function () {
  */
 var getDomain =function (domain) {
 
-    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2,})\b/g, "");
 
     var splitDomain = referenceDomain.split("/");
     var getDomainFirstSplit = _stk.first(splitDomain);
     var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
 
-    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+    var validUrl = true;
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
@@ -1115,6 +1133,22 @@ var getDomainDetails=function (domain) {
         "tld": ""
     };
 
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
     var domainSplit = domain.split(".");
     var getTLD = _stk.last(domainSplit).split(":");
 
@@ -1163,6 +1197,7 @@ var getDomainDetails=function (domain) {
  * @since 1.1.0
  * @category Seq
  * @param {string} domain The first number in an addition.
+ * @param {object?} config Passing the completet domain url
  * @returns {any} Returns the total.
  * @example
  *
@@ -1170,8 +1205,12 @@ var getDomainDetails=function (domain) {
  * // =>  false
  *
  */
-var isUrlValidFormatVerifier=function (domain) {
+var isUrlValidFormatVerifier=function (domain, config) {
 
+    var validConfig = _stk.varExtend({
+        "allowIP": true,
+        "allowLocalhost": true
+    }, config);
     var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
     var validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
@@ -1181,7 +1220,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
         var cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
 
-        if (_stk.indexOfExist(["localhost"], cleanUrl)) {
+        if ((/^(localhost|localhost:[0-9]{2,})$/g).test(cleanUrl) && validConfig.allowLocalhost) {
 
             return true;
 
@@ -1364,15 +1403,16 @@ function urlComposer (domain) {
  * @since 1.1.0
  * @category Boolean
  * @param {string} domain Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isUrlValidFormat('https://example.com')
  *=> true
  */
-function isUrlValidFormat (domain) {
+function isUrlValidFormat (domain, config) {
 
-    return isUrlValidFormatVerifier(domain);
+    return isUrlValidFormatVerifier(domain, config);
 
 }
 
@@ -1415,15 +1455,16 @@ function joinUrlPath () {
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  *=> true
  */
-function isHttpProtocolValid (host) {
+function isHttpProtocolValid (host, config) {
 
-    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -1451,15 +1492,16 @@ function isWebSocketProtocolValid (host) {
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttps('https://example.com')
  *=> true
  */
-function isHttps (host) {
+function isHttps (host, config) {
 
-    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host, config);
 
 }
 

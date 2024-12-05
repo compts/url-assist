@@ -35,26 +35,28 @@ import { qsParse } from './lib/queryObject.js';
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttps('https://example.com')
  *=> true
  */
-export function isHttps(host: string): boolean;
+export function isHttps(host: string, config?: object | undefined): boolean;
 /**
  * Check url has valid https/http protocol
  *
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  *=> true
  */
-export function isHttpProtocolValid(host: string): boolean;
+export function isHttpProtocolValid(host: string, config?: object | undefined): boolean;
 /**
  * To join the domain and path
  *
@@ -101,13 +103,14 @@ export function isWebSocketProtocolValid(host: string): boolean;
  * @since 1.1.0
  * @category Boolean
  * @param {string} domain Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isUrlValidFormat('https://example.com')
  *=> true
  */
-export function isUrlValidFormat(domain: string): boolean;
+export function isUrlValidFormat(domain: string, config?: object | undefined): boolean;
 /**
  * Compose your url structure in string
  *

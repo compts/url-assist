@@ -1,4 +1,4 @@
-import {count, first, last, arraySlice, indexOfExist, indexOfNotExist, isEmpty, toString} from 'structkit';
+import {count, first, last, arraySlice, indexOfExist, indexOfNotExist, isEmpty, toString, varExtend} from 'structkit';
 
 import {exemptListOfDomain} from './config.js';
 
@@ -24,13 +24,31 @@ import {zero, one, two, three} from './variable.js';
  */
 const getDomain =function (domain) {
 
-    const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+    const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2,})\b/g, "");
 
     const splitDomain = referenceDomain.split("/");
     let getDomainFirstSplit = first(splitDomain);
     let pathValueDetails = arraySlice(splitDomain, one).join("/");
 
-    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+    let validUrl = true;
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
@@ -96,6 +114,22 @@ const getDomainDetails=function (domain) {
         "tld": ""
     };
 
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
     const domainSplit = domain.split(".");
     const getTLD = last(domainSplit).split(":");
 
@@ -144,6 +178,7 @@ const getDomainDetails=function (domain) {
  * @since 1.1.0
  * @category Seq
  * @param {string} domain The first number in an addition.
+ * @param {object?} config Passing the completet domain url
  * @returns {any} Returns the total.
  * @example
  *
@@ -151,8 +186,12 @@ const getDomainDetails=function (domain) {
  * // =>  false
  *
  */
-const isUrlValidFormatVerifier=function (domain) {
+const isUrlValidFormatVerifier=function (domain, config) {
 
+    const validConfig = varExtend({
+        "allowIP": true,
+        "allowLocalhost": true
+    }, config);
     const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
     const validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
@@ -162,7 +201,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
         const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
 
-        if (indexOfExist(["localhost"], cleanUrl)) {
+        if ((/^(localhost|localhost:[0-9]{2,})$/g).test(cleanUrl) && validConfig.allowLocalhost) {
 
             return true;
 

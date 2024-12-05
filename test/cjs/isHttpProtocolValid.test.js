@@ -45,4 +45,16 @@ describe('CJS: isHttpProtocolValid method', function () {
 
     });
 
+    it('check isHttpProtocolValid localhost is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost"), true);
+
+    });
+
+    it('check isHttpProtocolValid localhost:8080 is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost:8080"), true);
+
+    });
+
 });

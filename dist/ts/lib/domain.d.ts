@@ -22,6 +22,7 @@ export function getDomainDetails(domain: string): any;
  * @since 1.1.0
  * @category Seq
  * @param {string} domain The first number in an addition.
+ * @param {object?} config Passing the completet domain url
  * @returns {any} Returns the total.
  * @example
  *
@@ -29,7 +30,7 @@ export function getDomainDetails(domain: string): any;
  * // =>  false
  *
  */
-export function isUrlValidFormatVerifier(domain: string): any;
+export function isUrlValidFormatVerifier(domain: string, config: object | null): any;
 /**
  * Get domain details
  *

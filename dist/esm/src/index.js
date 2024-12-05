@@ -57,15 +57,16 @@ function urlComposer (domain) {
  * @since 1.1.0
  * @category Boolean
  * @param {string} domain Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isUrlValidFormat('https://example.com')
  *=> true
  */
-function isUrlValidFormat (domain) {
+function isUrlValidFormat (domain, config) {
 
-    return isUrlValidFormatVerifier(domain);
+    return isUrlValidFormatVerifier(domain, config);
 
 }
 
@@ -106,15 +107,16 @@ function joinUrlPath (...ags) {
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  *=> true
  */
-function isHttpProtocolValid (host) {
+function isHttpProtocolValid (host, config) {
 
-    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -142,15 +144,16 @@ function isWebSocketProtocolValid (host) {
  * @since 1.0.0
  * @category Boolean
  * @param {string} host Passing the completet domain url
+ * @param {object=} config Passing the completet domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttps('https://example.com')
  *=> true
  */
-function isHttps (host) {
+function isHttps (host, config) {
 
-    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host, config);
 
 }
 
