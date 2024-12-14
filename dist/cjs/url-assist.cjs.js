@@ -1599,16 +1599,30 @@ function isUrlExtValid (host, ext) {
  */
 function slugify (pattern, ext) {
 
-    let strPattern = _stk.stringLowerCase(pattern);
+    let strPattern = pattern;
 
     const varExt = _stk.varExtend({
-        "delimiter": "-"
+        "delimiter": "-",
+        "lower": true,
+        "remove": null
     }, ext);
 
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
     strPattern = strPattern.replace(/[\s]{2,}/g, " ");
     strPattern = strPattern.replace(/[^\w\d\s]/g, "");
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    if (varExt.lower) {
+
+        strPattern = _stk.stringLowerCase(strPattern);
+
+    }
+
+    if (_stk.getTypeof(varExt.remove)==="regexp") {
+
+        strPattern = strPattern.replace(varExt.remove, "");
+
+    }
 
     return strPattern;
 

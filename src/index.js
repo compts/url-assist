@@ -3,7 +3,7 @@ const {UrlComposerInit} = require("./lib/urlComposerInit");
 const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {qsParse} = require("./lib/queryObject");
-const {arraySlice, first, isEmpty, reduce, stringLowerCase, varExtend} = require("structkit");
+const {arraySlice, first, isEmpty, reduce, getTypeof, stringLowerCase, varExtend} = require("structkit");
 const {one} = require("./lib/variable");
 
 
@@ -255,16 +255,30 @@ function isUrlExtValid (host, ext) {
  */
 function slugify (pattern, ext) {
 
-    let strPattern = stringLowerCase(pattern);
+    let strPattern = pattern;
 
     const varExt = varExtend({
-        "delimiter": "-"
+        "delimiter": "-",
+        "lower": true,
+        "remove": null
     }, ext);
 
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
     strPattern = strPattern.replace(/[\s]{2,}/g, " ");
     strPattern = strPattern.replace(/[^\w\d\s]/g, "");
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    if (varExt.lower) {
+
+        strPattern = stringLowerCase(strPattern);
+
+    }
+
+    if (getTypeof(varExt.remove)==="regexp") {
+
+        strPattern = strPattern.replace(varExt.remove, "");
+
+    }
 
     return strPattern;
 
