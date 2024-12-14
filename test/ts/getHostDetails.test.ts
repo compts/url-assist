@@ -134,6 +134,28 @@ describe('TS: getHostDetails method', function () {
             "user": "gituser"});
 
     });
+
+    it('check getHostDetails check IP address', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://127.0.0.1/test'), {
+            "domainDetails": {
+                "domain": "127.0.0.1",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": '127.0.0.1',
+            "href": 'https://127.0.0.1/test',
+            "password": "",
+            "pathname": "test",
+            "port": "",
+            "protocol": "https",
+            "search": '',
+            "user": ''
+        });
+
+    });
     
     it('check expected type', function () {
        

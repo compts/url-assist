@@ -1057,7 +1057,13 @@ const getDomain =function (domain) {
     if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
 
         validUrl = false;
-        pathValueDetails = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+        const getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        if (_stk.ifUndefined(getPath) === false) {
+
+            pathValueDetails = getPath;
+
+        }
 
         getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
 

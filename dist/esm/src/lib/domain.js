@@ -1,4 +1,4 @@
-import {count, first, last, arraySlice, indexOfExist, indexOfNotExist, isEmpty, toString, varExtend} from 'structkit';
+import {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString, varExtend, ifUndefined} from 'structkit';
 
 import {exemptListOfDomain} from './config.js';
 
@@ -42,7 +42,13 @@ const getDomain =function (domain) {
     if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
 
         validUrl = false;
-        pathValueDetails = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+        const getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        if (ifUndefined(getPath) === false) {
+
+            pathValueDetails = getPath;
+
+        }
 
         getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
 

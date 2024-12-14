@@ -8,7 +8,7 @@ import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/doma
 
 import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, first, isEmpty, reduce,getTypeof, stringLowerCase, varExtend} from 'structkit';
+import {arraySlice, first, isEmpty, reduce, getTypeof, stringLowerCase, varExtend} from 'structkit';
 
 import {one} from './lib/variable.js';
 
