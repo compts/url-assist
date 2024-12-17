@@ -9,8 +9,8 @@
  * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * UrlComposerInit('https://example.com')
+ *=> https://example.com
  */
 export function UrlComposerInit(config: object): any;
 export class UrlComposerInit {
@@ -25,8 +25,8 @@ export class UrlComposerInit {
      * @returns {any} Return the boolean.
      * @example
      *
-     * urlComposer('https://example.com')
-     *=> true
+     * UrlComposerInit('https://example.com')
+     *=> https://example.com
      */
     constructor(config: object);
     variableProtocol: any;
@@ -48,6 +48,7 @@ export class UrlComposerInit {
      * @example
      *
      * setProtocol('http')
+     *  http://example.com
      */
     setProtocol(data: any): undefined;
     /**
@@ -59,7 +60,8 @@ export class UrlComposerInit {
      * @returns {undefined} Return the boolean.
      * @example
      *
-     * setHash('http')
+     * setHash('test')
+     *  http://example.com#test
      */
     setHash(data: any): undefined;
     /**
@@ -72,6 +74,7 @@ export class UrlComposerInit {
      * @example
      *
      * setPort(8080)
+     * http://example.com:8080#test
      */
     setPort(data: any): undefined;
     /**
@@ -84,6 +87,7 @@ export class UrlComposerInit {
      * @example
      *
      * setPathPrefix('v1')
+     * http://example.com:8080/v1#test
      */
     setPathPrefix(data: any): undefined;
     /**
@@ -96,6 +100,7 @@ export class UrlComposerInit {
      * @example
      *
      * setPath('id')
+     * http://example.com:8080/v1/id#test
      */
     setPath(data: any): undefined;
     /**
@@ -104,10 +109,11 @@ export class UrlComposerInit {
      * @since 1.1.0
      * @category environment
      * @param {any} data Passing object to convert string
-     * @returns {undefined} Return the boolean.
+     * @returns {undefined} Return the undefined.
      * @example
      *
-     * setDomain('example')
+     * setDomain('helloworld')
+     * http://helloworld.com:8080/v1/id#test
      */
     setDomain(data: any): undefined;
     /**
@@ -119,7 +125,8 @@ export class UrlComposerInit {
      * @returns {undefined} Return the boolean.
      * @example
      *
-     * setDomainTld('com')
+     * setDomainTld('xyz')
+     * http://helloworld.xyz:8080/v1/id#test
      */
     setDomainTld(data: any): undefined;
     /**
@@ -132,6 +139,7 @@ export class UrlComposerInit {
      * @example
      *
      * setSubdomain('www')
+     * http://www.helloworld.xyz:8080/v1/id#test
      */
     setSubdomain(data: any): undefined;
     /**
@@ -144,6 +152,7 @@ export class UrlComposerInit {
      * @example
      *
      * setQueryString('a=1')
+     * http://www.helloworld.xyz:8080/v1/id?a=1#test
      */
     setQueryString(data: any): undefined;
     /**

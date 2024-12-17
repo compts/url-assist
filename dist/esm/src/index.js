@@ -8,17 +8,21 @@ import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/doma
 
 import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, first, isEmpty, reduce, getTypeof, stringLowerCase, varExtend} from 'structkit';
+import {arraySlice, first, has, isEmpty, reduce, getTypeof, stringLowerCase, varExtend, mergeWithKey} from 'structkit';
 
 import {one} from './lib/variable.js';
+
+import {formatUrlInit} from './lib/formatUrlInit.js';
+
+import {charMap} from './lib/slugConfig.js';
 
 /**
  * In url or path, you now verified the format of your url
  *
  * @since 1.2.1
  * @category Seq
- * @param {string|object} pattern Passing the completet domain url
- * @param {string} path Passing the completet domain url
+ * @param {string|object} pattern Path format you can use to control like `/:id<number>`
+ * @param {string} path Passing url path like `/12`
  * @returns {any} Return the boolean.
  * @example
  *
@@ -261,13 +265,36 @@ function slugify (pattern, ext) {
 
     const varExt = varExtend({
         "delimiter": "-",
+        "dictStrictMap": {},
         "lower": true,
-        "remove": null
+        "remove": null,
+        "replaceStrictMap": false,
+        "strict": false
     }, ext);
 
+    if (varExt.replaceStrictMap) {
+
+        const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
+
+        strPattern = reduce("", strPattern.split(""), function (sums, value) {
+
+            sums+= has(refCharMap, value)
+                ?refCharMap[value]
+                :value;
+
+            return sums;
+
+        });
+
+    }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+
+    }
+
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
-    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
-    strPattern = strPattern.replace(/[^\w\d\s]/g, "");
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
 
     if (varExt.lower) {
@@ -286,4 +313,39 @@ function slugify (pattern, ext) {
 
 }
 
-export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify};
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+function formatUrl (pattern, ext) {
+
+    const varExt = varExtend({
+        "slash": true,
+        "stripHash": false
+    }, ext);
+
+    if ((/\s/g).test(pattern)) {
+
+        throw new Error('The Url must remove the space');
+
+    }
+    if ((/[^\w\d\-_#@?/:.=%[\]+&]/g).test(pattern)) {
+
+        throw new Error('The Url must remove special charaster');
+
+    }
+
+    return formatUrlInit(pattern, varExt);
+
+}
+
+export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify};

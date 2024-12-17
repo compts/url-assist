@@ -86,8 +86,8 @@ function removeSlash (data) {
  * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * UrlComposerInit('https://example.com')
+ *=> https://example.com
  */
 function UrlComposerInit (config) {
 
@@ -113,6 +113,7 @@ function UrlComposerInit (config) {
  * @example
  *
  * setProtocol('http')
+ *  http://example.com
  */
 UrlComposerInit.prototype.setProtocol = function (data) {
 
@@ -129,7 +130,8 @@ UrlComposerInit.prototype.setProtocol = function (data) {
  * @returns {undefined} Return the boolean.
  * @example
  *
- * setHash('http')
+ * setHash('test')
+ *  http://example.com#test
  */
 UrlComposerInit.prototype.setHash = function (data) {
 
@@ -147,6 +149,7 @@ UrlComposerInit.prototype.setHash = function (data) {
  * @example
  *
  * setPort(8080)
+ * http://example.com:8080#test
  */
 UrlComposerInit.prototype.setPort = function (data) {
 
@@ -164,6 +167,7 @@ UrlComposerInit.prototype.setPort = function (data) {
  * @example
  *
  * setPathPrefix('v1')
+ * http://example.com:8080/v1#test
  */
 UrlComposerInit.prototype.setPathPrefix = function (data) {
 
@@ -182,6 +186,7 @@ UrlComposerInit.prototype.setPathPrefix = function (data) {
  * @example
  *
  * setPath('id')
+ * http://example.com:8080/v1/id#test
  */
 UrlComposerInit.prototype.setPath = function (data) {
 
@@ -196,10 +201,11 @@ UrlComposerInit.prototype.setPath = function (data) {
  * @since 1.1.0
  * @category environment
  * @param {any} data Passing object to convert string
- * @returns {undefined} Return the boolean.
+ * @returns {undefined} Return the undefined.
  * @example
  *
- * setDomain('example')
+ * setDomain('helloworld')
+ * http://helloworld.com:8080/v1/id#test
  */
 UrlComposerInit.prototype.setDomain = function (data) {
 
@@ -217,7 +223,8 @@ UrlComposerInit.prototype.setDomain = function (data) {
  * @returns {undefined} Return the boolean.
  * @example
  *
- * setDomainTld('com')
+ * setDomainTld('xyz')
+ * http://helloworld.xyz:8080/v1/id#test
  */
 UrlComposerInit.prototype.setDomainTld = function (data) {
 
@@ -236,6 +243,7 @@ UrlComposerInit.prototype.setDomainTld = function (data) {
  * @example
  *
  * setSubdomain('www')
+ * http://www.helloworld.xyz:8080/v1/id#test
  */
 UrlComposerInit.prototype.setSubdomain = function (data) {
 
@@ -253,6 +261,7 @@ UrlComposerInit.prototype.setSubdomain = function (data) {
  * @example
  *
  * setQueryString('a=1')
+ * http://www.helloworld.xyz:8080/v1/id?a=1#test
  */
 UrlComposerInit.prototype.setQueryString = function (data) {
 

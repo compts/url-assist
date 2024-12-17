@@ -27,6 +27,20 @@
  *         }
  */
 export function getHostDetails(host: string): any;
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+export function formatUrl(pattern: string, ext?: any | undefined): string;
 import { qsStringify } from './lib/queryString.js';
 import { qsParse } from './lib/queryObject.js';
 /**
@@ -130,8 +144,8 @@ export function urlComposer(domain: string): any;
  *
  * @since 1.2.1
  * @category Seq
- * @param {string|object} pattern Passing the completet domain url
- * @param {string} path Passing the completet domain url
+ * @param {string|object} pattern Path format you can use to control like `/:id<number>`
+ * @param {string} path Passing url path like `/12`
  * @returns {any} Return the boolean.
  * @example
  *

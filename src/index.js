@@ -3,8 +3,10 @@ const {UrlComposerInit} = require("./lib/urlComposerInit");
 const {PathPatternInit} = require("./lib/pathPatternInit");
 const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/domain");
 const {qsParse} = require("./lib/queryObject");
-const {arraySlice, first, isEmpty, reduce, getTypeof, stringLowerCase, varExtend} = require("structkit");
+const {arraySlice, first, has, isEmpty, reduce, getTypeof, stringLowerCase, varExtend, mergeWithKey} = require("structkit");
 const {one} = require("./lib/variable");
+const {formatUrlInit} = require("./lib/formatUrlInit");
+const {charMap} = require("./lib/slugConfig");
 
 
 /**
@@ -12,8 +14,8 @@ const {one} = require("./lib/variable");
  *
  * @since 1.2.1
  * @category Seq
- * @param {string|object} pattern Passing the completet domain url
- * @param {string} path Passing the completet domain url
+ * @param {string|object} pattern Path format you can use to control like `/:id<number>`
+ * @param {string} path Passing url path like `/12`
  * @returns {any} Return the boolean.
  * @example
  *
@@ -259,14 +261,38 @@ function slugify (pattern, ext) {
 
     const varExt = varExtend({
         "delimiter": "-",
+        "dictStrictMap": {},
         "lower": true,
-        "remove": null
+        "remove": null,
+        "replaceStrictMap": false,
+        "strict": false
     }, ext);
 
+    if (varExt.replaceStrictMap) {
+
+        const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
+
+        strPattern = reduce("", strPattern.split(""), function (sums, value) {
+
+            sums+= has(refCharMap, value)
+                ?refCharMap[value]
+                :value;
+
+            return sums;
+
+        });
+
+    }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+
+    }
+
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
-    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
-    strPattern = strPattern.replace(/[^\w\d\s]/g, "");
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
 
     if (varExt.lower) {
 
@@ -284,7 +310,43 @@ function slugify (pattern, ext) {
 
 }
 
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+function formatUrl (pattern, ext) {
+
+    const varExt = varExtend({
+        "slash": true,
+        "stripHash": false
+    }, ext);
+
+
+    if ((/\s/g).test(pattern)) {
+
+        throw new Error('The Url must remove the space');
+
+    }
+    if ((/[^\w\d\-_#@?/:.=%[\]+&]/g).test(pattern)) {
+
+        throw new Error('The Url must remove special charaster');
+
+    }
+
+    return formatUrlInit(pattern, varExt);
+
+}
 exports.getHostDetails=getHostDetails;
+exports.formatUrl=formatUrl;
 exports.qsStringify=qsStringify;
 exports.qsParse=qsParse;
 exports.isHttps=isHttps;
