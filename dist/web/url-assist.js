@@ -63,16 +63,16 @@ function qsStringify (value, config) {
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} key The first number in an addition.
- * @param {any} value The first number in an addition.
- * @param {any} type The first number in an addition.
- * @param {any} config The first number in an addition.
- * @param {any} reference The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} key The index of array or object
+ * @param {any} value The passing value from either array or object
+ * @param {any} type The the type of argument
+ * @param {any} config Options of function
+ * @param {any} reference The value that you pass from outside
+ * @returns {null} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 var parseStringConvert=function (key, value, type, config, reference) {
 
@@ -117,8 +117,8 @@ var parseStringConvert=function (key, value, type, config, reference) {
  *
  * @since 1.2.6
  * @category Seq
- * @param {any} value config defalut value
- * @returns {any} Returns the null.
+ * @param {any} value URI string that you want to convert
+ * @returns {any} Returns the string of querystring.
  * @example
  *
  * decodeStr("tests+test")
@@ -1037,8 +1037,8 @@ PathPatternInit.prototype.getParam = function () {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Options of function
  * @example
  *
  * getDomain("example.com")
@@ -1127,8 +1127,8 @@ var getDomain =function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * getDomainDetails("example.com")
@@ -1211,9 +1211,9 @@ var getDomainDetails=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @param {object?} config Passing the completet domain url
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns boolean type if url is valid format.
  * @example
  *
  * isUrlValidFormatVerifier("example.com")
@@ -1285,8 +1285,8 @@ var isUrlValidFormatVerifier=function (domain, config) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * urlDetails("example.com")
@@ -2096,8 +2096,8 @@ function urlComposer (domain) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} domain Passing the completet domain url
- * @param {object=} config Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -2116,7 +2116,7 @@ function isUrlValidFormat (domain, config) {
  * @since 1.0.0
  * @category String
  * @param {...any} ags The Domain url
- * @returns {string} Return the boolean.
+ * @returns {string} Return the string for join url or path.
  * @example
  *
  * joinUrlPath('https://example.com','test')
@@ -2148,8 +2148,8 @@ function joinUrlPath () {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @param {object=} config Passing the completet domain url
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -2167,7 +2167,7 @@ function isHttpProtocolValid (host, config) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -2185,9 +2185,9 @@ function isWebSocketProtocolValid (host) {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @param {object=} config Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
+ * @returns {boolean} Return the boolean if the format is valid.
  * @example
  *
  * isHttps('https://example.com')
@@ -2204,7 +2204,7 @@ function isHttps (host, config) {
  *
  * @since 1.1.0
  * @category Collection
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {any} Returns the object details.
  * @example
  *
@@ -2269,7 +2269,7 @@ function getHostDetails (host) {
  * @since 1.0.2
  * @category Boolean
  * @param {string} host Passing the completet domain url
- * @param {string} ext Passing the completet domain url
+ * @param {string} ext Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -2289,8 +2289,8 @@ function isUrlExtValid (host, ext) {
  *
  * @since 1.2.6
  * @category string
- * @param {string} pattern Passing the completet domain url
- * @param {any=} ext Passing the completet domain url
+ * @param {string} pattern Passing the complete domain url
+ * @param {any=} ext Option you want to set in this function
  * @returns {string} Return the string.
  * @example
  *

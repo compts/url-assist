@@ -7,8 +7,8 @@ const {zero, one, two, three} = require("./variable");
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Options of function
  * @example
  *
  * getDomain("example.com")
@@ -98,8 +98,8 @@ const getDomain =function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * getDomainDetails("example.com")
@@ -183,9 +183,9 @@ const getDomainDetails=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @param {object?} config Passing the completet domain url
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns boolean type if url is valid format.
  * @example
  *
  * isUrlValidFormatVerifier("example.com")
@@ -259,8 +259,8 @@ const isUrlValidFormatVerifier=function (domain, config) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * urlDetails("example.com")

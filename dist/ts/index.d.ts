@@ -3,7 +3,7 @@
  *
  * @since 1.1.0
  * @category Collection
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {any} Returns the object details.
  * @example
  *
@@ -48,9 +48,9 @@ import { qsParse } from './lib/queryObject.js';
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @param {object=} config Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
+ * @returns {boolean} Return the boolean if the format is valid.
  * @example
  *
  * isHttps('https://example.com')
@@ -62,8 +62,8 @@ export function isHttps(host: string, config?: object | undefined): boolean;
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @param {object=} config Passing the completet domain url
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -77,7 +77,7 @@ export function isHttpProtocolValid(host: string, config?: object | undefined): 
  * @since 1.0.0
  * @category String
  * @param {...any} ags The Domain url
- * @returns {string} Return the boolean.
+ * @returns {string} Return the string for join url or path.
  * @example
  *
  * joinUrlPath('https://example.com','test')
@@ -90,7 +90,7 @@ export function joinUrlPath(...ags: any[]): string;
  * @since 1.0.2
  * @category Boolean
  * @param {string} host Passing the completet domain url
- * @param {string} ext Passing the completet domain url
+ * @param {string} ext Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -103,7 +103,7 @@ export function isUrlExtValid(host: string, ext: string): boolean;
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -116,8 +116,8 @@ export function isWebSocketProtocolValid(host: string): boolean;
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} domain Passing the completet domain url
- * @param {object=} config Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -159,8 +159,8 @@ export function urlPattern(pattern: string | object, path: string): any;
  *
  * @since 1.2.6
  * @category string
- * @param {string} pattern Passing the completet domain url
- * @param {any=} ext Passing the completet domain url
+ * @param {string} pattern Passing the complete domain url
+ * @param {any=} ext Option you want to set in this function
  * @returns {string} Return the string.
  * @example
  *

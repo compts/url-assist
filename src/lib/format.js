@@ -4,8 +4,8 @@
  *
  * @since 1.2.6
  * @category Seq
- * @param {any} value config defalut value
- * @returns {any} Returns the null.
+ * @param {any} value URI string that you want to convert
+ * @returns {any} Returns the string of querystring.
  * @example
  *
  * decodeStr("tests+test")

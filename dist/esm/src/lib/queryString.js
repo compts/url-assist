@@ -46,16 +46,16 @@ function qsStringify (value, config) {
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} key The first number in an addition.
- * @param {any} value The first number in an addition.
- * @param {any} type The first number in an addition.
- * @param {any} config The first number in an addition.
- * @param {any} reference The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} key The index of array or object
+ * @param {any} value The passing value from either array or object
+ * @param {any} type The the type of argument
+ * @param {any} config Options of function
+ * @param {any} reference The value that you pass from outside
+ * @returns {null} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 const parseStringConvert=function (key, value, type, config, reference) {
 
