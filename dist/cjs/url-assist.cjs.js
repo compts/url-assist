@@ -1219,7 +1219,7 @@ const getDomainDetails=function (domain) {
 const isUrlValidFormatVerifier=function (domain, config) {
 
     const validConfig = _stk.varExtend({
-        "allowIP": true,
+        "allowIP4": true,
         "allowLocalhost": true
     }, config);
     const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
@@ -1236,7 +1236,7 @@ const isUrlValidFormatVerifier=function (domain, config) {
             return true;
 
         }
-        if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(cleanUrl)) {
+        if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(cleanUrl) && validConfig.allowIP4) {
 
             return true;
 
