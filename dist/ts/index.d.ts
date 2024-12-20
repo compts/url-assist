@@ -130,7 +130,7 @@ export function isUrlValidFormat(domain: string, config?: object | undefined): b
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
  * @returns {any} Return the boolean.
  * @example
  *
