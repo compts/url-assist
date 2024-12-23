@@ -2,7 +2,7 @@
  * Query String object
  *
  * @since 1.0.0
- * @category Seq
+ * @category Collection
  * @param {string} value Passing string to convert to object
  * @param {any=} config Conversion delimeter
  * @returns {any} Returns the total.

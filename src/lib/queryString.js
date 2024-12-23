@@ -1,7 +1,6 @@
 const {each, varExtend, getTypeof, indexOfNotExist, indexOf} = require("structkit");
 const {configQueryString} = require("./config");
-const zero =0;
-
+const {zero} = require("./variable");
 
 /**
  * Query String stringify
@@ -36,7 +35,7 @@ function qsStringify (value, config) {
 
     });
 
-    return referenceValue.join(defaultConfig.newLineSeparator);
+    return defaultConfig.startWith+referenceValue.join(defaultConfig.newLineSeparator);
 
 }
 
@@ -46,18 +45,19 @@ function qsStringify (value, config) {
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} key The first number in an addition.
- * @param {any} value The first number in an addition.
- * @param {any} type The first number in an addition.
- * @param {any} config The first number in an addition.
- * @param {any} reference The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} key The index of array or object
+ * @param {any} value The passing value from either array or object
+ * @param {any} type The the type of argument
+ * @param {any} config Options of function
+ * @param {any} reference The value that you pass from outside
+ * @returns {null} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 const parseStringConvert=function (key, value, type, config, reference) {
+
 
     if (indexOf([
         "json",
@@ -73,7 +73,17 @@ const parseStringConvert=function (key, value, type, config, reference) {
                 ?config.arrayFormat
                 :"["+ky+"]";
 
-            parseStringConvert(key+keyVal, vl, getTypeof(vl), config, reference);
+            let defineKey = keyVal;
+
+            if ((/^\[(.*?)\]$/g).test(ky) && indexOfNotExist([
+                "number",
+                "array"
+            ], type)) {
+
+                defineKey = ky;
+
+            }
+            parseStringConvert(key+""+defineKey, vl, getTypeof(vl), config, reference);
 
         });
 

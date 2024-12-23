@@ -1,4 +1,4 @@
-const {isHttps} = require("../../src/index");
+const {isHttps} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: isHttps method', function () {

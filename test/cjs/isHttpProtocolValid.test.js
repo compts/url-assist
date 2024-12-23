@@ -1,4 +1,4 @@
-const {isHttpProtocolValid} = require("../../src/index");
+const {isHttpProtocolValid} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: isHttpProtocolValid method', function () {
@@ -24,6 +24,36 @@ describe('CJS: isHttpProtocolValid method', function () {
     it('check isHttpProtocolValid ssh is not valid', function () {
 
         assert.deepStrictEqual(isHttpProtocolValid("ssh://example.com"), false);
+
+    });
+
+    it('check isHttpProtocolValid ip is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://127.0.0.1"), true);
+
+    });
+
+    it('check isHttpProtocolValid ip with port is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://127.0.0.1:8000"), true);
+
+    });
+
+    it('check isHttpProtocolValid localhost is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost"), true);
+
+    });
+
+    it('check isHttpProtocolValid localhost is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost"), true);
+
+    });
+
+    it('check isHttpProtocolValid localhost:8080 is valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost:8080"), true);
 
     });
 

@@ -1,13 +1,14 @@
-const {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString} = require("structkit");
+const {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString, varExtend, ifUndefined} = require("structkit");
 const {exemptListOfDomain} = require("./config");
+const {zero, one, two, three} = require("./variable");
 
 /**
  * Get if domain segmet details
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Options of function
  * @example
  *
  * getDomain("example.com")
@@ -21,22 +22,42 @@ const {exemptListOfDomain} = require("./config");
  */
 const getDomain =function (domain) {
 
-    const one =1;
-
-
-    const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+    const referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2,})\b/g, "");
 
     const splitDomain = referenceDomain.split("/");
     let getDomainFirstSplit = first(splitDomain);
     let pathValueDetails = arraySlice(splitDomain, one).join("/");
 
-    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+    let validUrl = true;
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
+
+        validUrl = false;
+        const getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        if (ifUndefined(getPath) === false) {
+
+            pathValueDetails = getPath;
+
+        }
+
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
 
     }
-
 
     let pathValue = pathValueDetails;
     let hashValue = "";
@@ -77,8 +98,8 @@ const getDomain =function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * getDomainDetails("example.com")
@@ -91,10 +112,6 @@ const getDomain =function (domain) {
  */
 const getDomainDetails=function (domain) {
 
-    const zero =0;
-    const one =1;
-    const two =2;
-    const three = 3;
 
     let domainDetails = {
         "domain": "",
@@ -102,6 +119,22 @@ const getDomainDetails=function (domain) {
         "subdomain": "",
         "tld": ""
     };
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
 
     const domainSplit = domain.split(".");
     const getTLD = last(domainSplit).split(":");
@@ -150,27 +183,41 @@ const getDomainDetails=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns boolean type if url is valid format.
  * @example
  *
  * isUrlValidFormatVerifier("example.com")
  * // =>  false
  *
  */
-const isUrlValidFormatVerifier=function (domain) {
+const isUrlValidFormatVerifier=function (domain, config) {
 
+    const validConfig = varExtend({
+        "allowIP4": true,
+        "allowLocalhost": true
+    }, config);
     const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
     const validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
-    const one =1;
-    const two =2;
-    const theee =3;
     const validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
         const cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+
+
+        if ((/^(localhost|localhost:[0-9]{2,})$/g).test(cleanUrl) && validConfig.allowLocalhost) {
+
+            return true;
+
+        }
+        if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(cleanUrl) && validConfig.allowIP4) {
+
+            return true;
+
+        }
         const cleanUrlSplit = cleanUrl.split(".");
 
         if (count(cleanUrlSplit) >= two) {
@@ -185,7 +232,7 @@ const isUrlValidFormatVerifier=function (domain) {
 
                 }
 
-                if (count(cleanUrlSplit) >= theee) {
+                if (count(cleanUrlSplit) >= three) {
 
                     const getDomainSplit = getDomainDetails(cleanUrl);
 
@@ -212,8 +259,8 @@ const isUrlValidFormatVerifier=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * urlDetails("example.com")
@@ -241,10 +288,6 @@ const urlDetails=function (domain) {
         "search": "",
         "user": ""
     };
-
-    const zero =0;
-    const one =1;
-    const two =2;
 
     domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
 

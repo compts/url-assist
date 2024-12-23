@@ -4,10 +4,17 @@ import {expectType} from 'tsd';
 
 describe('TS: qsStringify method', function () {
 
-    it('check qsStringify argument oobject to string', function () {
+    it('check qsStringify argument object to string', function () {
 
         assert.deepStrictEqual(qsStringify({"test": 11,
             "test2": 11}), "test=11&test2=11");
+
+    });
+
+    it('check qsStringify argument startWith with ?', function () {
+
+        assert.deepStrictEqual(qsStringify({"test": 11,
+            "test2": 11}, {"startWith": "?"}), "?test=11&test2=11");
 
     });
 
@@ -39,6 +46,26 @@ describe('TS: qsStringify method', function () {
             "22"
         ],
         "test2": "11"}));
+
+    });
+
+    it('check qsStringify argument with key [g][h][j]', function () {
+
+        assert.deepStrictEqual(qsStringify({
+            "a": {
+                "b": {
+                    "c": {
+                        "d": {
+                            "e": {
+                                "f": {
+                                    '[g][h][i]': 'j'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }), "a[b][c][d][e][f][g][h][i]=j");
 
     });
 });

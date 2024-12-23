@@ -33,6 +33,13 @@ describe('TS: joinUrlPath method', function () {
         assert.deepStrictEqual(joinUrlPath("/test1", "/test"), "/test1/test");
 
     });
+
+    it('check joinUrlPath url, path/ and id/', function () {
+
+        assert.deepStrictEqual(joinUrlPath("https://example.com", "/test/", "id/"), "https://example.com/test/id");
+
+    });
+
     it('check expected type', function () {
 
         expectType<string>(joinUrlPath("https://example.com/", "/test"));

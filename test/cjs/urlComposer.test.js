@@ -1,4 +1,4 @@
-const {urlComposer} = require("../../src/index");
+const {urlComposer} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 const data = urlComposer("http://www.example.com/v1");
@@ -39,6 +39,14 @@ describe('CJS: urlComposer method', function () {
 
         data1.setDomain("youtube");
         assert.deepStrictEqual(data1.getToString(), '/v1/test');
+
+    });
+
+    it('check if path prefix has change', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("v1");
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam');
 
     });
 

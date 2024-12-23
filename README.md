@@ -50,7 +50,7 @@ isUrlExtValid('https://example.com/example.js', 'js')
 ```
 
 [npm-url]: https://www.npmjs.com/package/url-assist
-[npm-image]: https://img.shields.io/badge/url_assist-1.2.1-brightgreen
+[npm-image]: https://img.shields.io/badge/url_assist-1.2.6-brightgreen
 
 ## List of method you can use to check your url
 

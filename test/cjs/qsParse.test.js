@@ -1,4 +1,4 @@
-const {qsParse} = require("../../src/index");
+const {qsParse} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 
@@ -40,8 +40,23 @@ describe('CJS: qsParse method', function () {
                 "11",
                 {"sa": "22"}
             ],
-                "test2": "11"}
+            "test2": "11"}
         );
+
+    });
+
+    it('check qsParse argument to use URI component', function () {
+
+        assert.deepStrictEqual(
+            qsParse("a%5Bb%5D=c"),
+            {"a": {"b": "c"}}
+        );
+
+    });
+
+    it('check qsParse put space if had +', function () {
+
+        assert.deepStrictEqual(qsParse("test+key=test+value"), {"test key": 'test value'});
 
     });
 

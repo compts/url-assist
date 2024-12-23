@@ -1,21 +1,25 @@
 (function(global){
-global.urs={}
+global.urs={};
 
-configQueryString = {
-
+var configQueryString = {
     "arrayFormat": "[]",
     "equalSeparator": "=",
-    "newLineSeparator": "&"
+    "newLineSeparator": "&",
+    "startWith": ""
 };
 var exemptListOfDomain = ['localhost'];
 var objRegExpKey = {
 
-    "any": '[a-zA-Z0-9\\-\\_]',
+    "alpha": '[a-zA-Z]',
+    "any": '[a-zA-Z0-9\\-\\_.]',
     "number": '[0-9]',
-    "string": '[a-zA-Z]'
+    "string": '[a-zA-Z0-9]'
 };
 
-var zero =0;
+var zero = 0;
+var one =1;
+var two =2;
+var three = 3;
 
 /**
  * Query String stringify
@@ -50,7 +54,7 @@ function qsStringify (value, config) {
 
     });
 
-    return referenceValue.join(defaultConfig.newLineSeparator);
+    return defaultConfig.startWith+referenceValue.join(defaultConfig.newLineSeparator);
 
 }
 
@@ -59,16 +63,16 @@ function qsStringify (value, config) {
  *
  * @since 1.0.1
  * @category Seq
- * @param {any} key The first number in an addition.
- * @param {any} value The first number in an addition.
- * @param {any} type The first number in an addition.
- * @param {any} config The first number in an addition.
- * @param {any} reference The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {any} key The index of array or object
+ * @param {any} value The passing value from either array or object
+ * @param {any} type The the type of argument
+ * @param {any} config Options of function
+ * @param {any} reference The value that you pass from outside
+ * @returns {null} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => true
+ * // => null
  */
 var parseStringConvert=function (key, value, type, config, reference) {
 
@@ -86,7 +90,17 @@ var parseStringConvert=function (key, value, type, config, reference) {
                 ?config.arrayFormat
                 :"["+ky+"]";
 
-            parseStringConvert(key+keyVal, vl, _stk.getTypeof(vl), config, reference);
+            var defineKey = keyVal;
+
+            if ((/^\[(.*?)\]$/g).test(ky) && _stk.indexOfNotExist([
+                "number",
+                "array"
+            ], type)) {
+
+                defineKey = ky;
+
+            }
+            parseStringConvert(key+""+defineKey, vl, _stk.getTypeof(vl), config, reference);
 
         });
 
@@ -98,8 +112,35 @@ var parseStringConvert=function (key, value, type, config, reference) {
 
 };
 
-var zero =0;
-var one =1;
+/**
+ * Decoding URI component
+ *
+ * @since 1.2.6
+ * @category Seq
+ * @param {any} value URI string that you want to convert
+ * @returns {any} Returns the string of querystring.
+ * @example
+ *
+ * decodeStr("tests+test")
+ * // => tests test
+ */
+var decodeStr = function (value) {
+
+    var updateValue = value.replace(/\+/g, ' ');
+
+    try {
+
+        updateValue = decodeURIComponent(updateValue);
+
+        return updateValue;
+
+    } catch (err) {
+
+        return updateValue;
+
+    }
+
+};
 
 /**
  * Query String object
@@ -123,7 +164,7 @@ function qsParse (value, config) {
     }
 
     value = value.trim().replace(/^[?#&]/, '');
-
+    value = decodeStr(value);
     var referenceValue = {};
     var defaultConfig = _stk.varExtend(configQueryString, config);
     var defaultSplit = value.split(defaultConfig.newLineSeparator);
@@ -319,7 +360,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
  */
 var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    _stk.each(defaultSplit, function (key, val) {
+    _stk.each(defaultSplit, function (__, val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
         var getKeyOnly = _stk.first(getKeyAndValue);
@@ -440,14 +481,15 @@ function removeSlash (data) {
  * @returns {any} Return the boolean.
  * @example
  *
- * urlComposer('https://example.com')
- *=> true
+ * UrlComposerInit('https://example.com')
+ *=> https://example.com
  */
 function UrlComposerInit (config) {
 
     this.variableProtocol = config.protocol;
     this.variablePort = config.port;
     this.variablePath = config.pathname;
+    this.variablePathPrefix = "";
     this.variableDomain = config.domainDetails.domain;
     this.variableDomainTld = config.domainDetails.tld;
     this.variableSubdomain = config.domainDetails.subdomain;
@@ -456,42 +498,162 @@ function UrlComposerInit (config) {
 
 }
 
+/**
+ * Set HTTP protocol
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setProtocol('http')
+ *  http://example.com
+ */
 UrlComposerInit.prototype.setProtocol = function (data) {
 
     this.variableProtocol = data;
 
 };
+
+/**
+ * Set HTTP hash
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setHash('test')
+ *  http://example.com#test
+ */
 UrlComposerInit.prototype.setHash = function (data) {
 
     this.variableHash = data;
 
 };
+
+/**
+ * Set HTTP port
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPort(8080)
+ * http://example.com:8080#test
+ */
 UrlComposerInit.prototype.setPort = function (data) {
 
     this.variablePort = data;
 
 };
+
+/**
+ * Set HTTP prefix path
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPathPrefix('v1')
+ * http://example.com:8080/v1#test
+ */
+UrlComposerInit.prototype.setPathPrefix = function (data) {
+
+    this.variablePathPrefix = data;
+
+};
+
+/**
+ * Set HTTP path
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setPath('id')
+ * http://example.com:8080/v1/id#test
+ */
 UrlComposerInit.prototype.setPath = function (data) {
 
     this.variablePath = data;
 
 };
+
+/**
+ * Set HTTP domain name
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the undefined.
+ * @example
+ *
+ * setDomain('helloworld')
+ * http://helloworld.com:8080/v1/id#test
+ */
 UrlComposerInit.prototype.setDomain = function (data) {
 
     this.variableDomain = data;
 
 };
+
+/**
+ * Set HTTP TLD
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setDomainTld('xyz')
+ * http://helloworld.xyz:8080/v1/id#test
+ */
 UrlComposerInit.prototype.setDomainTld = function (data) {
 
     this.variableDomainTld = data;
 
 };
+
+/**
+ * Set HTTP subdomain
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setSubdomain('www')
+ * http://www.helloworld.xyz:8080/v1/id#test
+ */
 UrlComposerInit.prototype.setSubdomain = function (data) {
 
     this.variableSubdomain = data;
 
 };
 
+/**
+ * Set HTTP query string
+ *
+ * @since 1.1.0
+ * @category environment
+ * @param {any} data Passing object to convert string
+ * @returns {undefined} Return the boolean.
+ * @example
+ *
+ * setQueryString('a=1')
+ * http://www.helloworld.xyz:8080/v1/id?a=1#test
+ */
 UrlComposerInit.prototype.setQueryString = function (data) {
 
     this.variableQueryString = data;
@@ -499,7 +661,7 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 };
 
 /**
- * Compose your url structure in string
+ * Get your url structure in string
  *
  * @since 1.1.0
  * @category environment
@@ -513,15 +675,19 @@ UrlComposerInit.prototype.getToString = function () {
 
     var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
     var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    var joinPath = [
+        this.variablePathPrefix,
+        this.variablePath
+    ].join("/");
 
     return _stk.templateValue(urlFormat, {
         "domain": urlData.domain,
         "hash": _stk.isEmpty(this.variableHash)
             ? ''
             : '#'+this.variableHash,
-        "path": _stk.isEmpty(this.variablePath)
+        "path": _stk.isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(this.variablePath)
+            : '/'+removeSlash(joinPath)
                 .replace(/^(\/)/, "")
                 .replace(/(\/)$/, ""),
         "port": _stk.isEmpty(urlData.port)
@@ -533,6 +699,40 @@ UrlComposerInit.prototype.getToString = function () {
         "queryString": _stk.isEmpty(this.variableQueryString)
             ? ''
             : '?'+qsStringify(this.variableQueryString),
+        "subdomain": _stk.isEmpty(urlData.subdomain)
+            ? ''
+            :this.variableSubdomain+'.',
+        "tld": _stk.isEmpty(urlData.tld)
+            ? ''
+            : '.'+urlData.tld
+    });
+
+};
+
+/**
+ * Get your domain only  in string
+ *
+ * @since 1.2.6
+ * @category environment
+ * @returns {string} Return the boolean.
+ * @example
+ *
+ * getDomainString()
+ *=> 'www.example.com'
+ */
+UrlComposerInit.prototype.getDomainString = function () {
+
+    var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
+    var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
+
+    return _stk.templateValue(urlFormat, {
+        "domain": urlData.domain,
+        "port": _stk.isEmpty(urlData.port)
+            ? ''
+            : ':'+urlData.port,
+        "protocol": _stk.isEmpty(urlData.protocol)
+            ? ''
+            : urlData.protocol+"://",
         "subdomain": _stk.isEmpty(urlData.subdomain)
             ? ''
             :this.variableSubdomain+'.',
@@ -837,8 +1037,8 @@ PathPatternInit.prototype.getParam = function () {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Options of function
  * @example
  *
  * getDomain("example.com")
@@ -852,15 +1052,37 @@ PathPatternInit.prototype.getParam = function () {
  */
 var getDomain =function (domain) {
 
-    var one =1;
-
-    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2})\b/g, "");
+    var referenceDomain = domain.replace(/\b([\w\\+]{1,}:\/{2,})\b/g, "");
 
     var splitDomain = referenceDomain.split("/");
     var getDomainFirstSplit = _stk.first(splitDomain);
     var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
 
-    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit)) {
+    var validUrl = true;
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+
+        validUrl = false;
+        pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(referenceDomain) && validUrl) {
+
+        validUrl = false;
+        var getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
+
+        if (_stk.ifUndefined(getPath) === false) {
+
+            pathValueDetails = getPath;
+
+        }
+
+        getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
@@ -905,8 +1127,8 @@ var getDomain =function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * getDomainDetails("example.com")
@@ -919,17 +1141,28 @@ var getDomain =function (domain) {
  */
 var getDomainDetails=function (domain) {
 
-    var zero =0;
-    var one =1;
-    var two =2;
-    var three = 3;
-
     var domainDetails = {
         "domain": "",
         "domainWithTld": "",
         "subdomain": "",
         "tld": ""
     };
+
+    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
+
+    if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(domain)) {
+
+        domainDetails.domain = domain;
+
+        return domainDetails;
+
+    }
 
     var domainSplit = domain.split(".");
     var getTLD = _stk.last(domainSplit).split(":");
@@ -978,27 +1211,40 @@ var getDomainDetails=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns boolean type if url is valid format.
  * @example
  *
  * isUrlValidFormatVerifier("example.com")
  * // =>  false
  *
  */
-var isUrlValidFormatVerifier=function (domain) {
+var isUrlValidFormatVerifier=function (domain, config) {
 
+    var validConfig = _stk.varExtend({
+        "allowIP4": true,
+        "allowLocalhost": true
+    }, config);
     var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
     var validDomainRegExp = new RegExp("^([\\w\\d\\-]{1,})$", "g");
 
-    var one =1;
-    var two =2;
-    var theee =3;
     var validTLDlen = 63;
 
     if (httpRegExp.test(domain)) {
 
         var cleanUrl = getDomain(domain).url.replace(/([#?]{1}[[\w\d=_\-$%@&]{0,}]{0,})/g, "");
+
+        if ((/^(localhost|localhost:[0-9]{2,})$/g).test(cleanUrl) && validConfig.allowLocalhost) {
+
+            return true;
+
+        }
+        if ((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g).test(cleanUrl) && validConfig.allowIP4) {
+
+            return true;
+
+        }
         var cleanUrlSplit = cleanUrl.split(".");
 
         if (_stk.count(cleanUrlSplit) >= two) {
@@ -1013,7 +1259,7 @@ var isUrlValidFormatVerifier=function (domain) {
 
                 }
 
-                if (_stk.count(cleanUrlSplit) >= theee) {
+                if (_stk.count(cleanUrlSplit) >= three) {
 
                     var getDomainSplit = getDomainDetails(cleanUrl);
 
@@ -1039,8 +1285,8 @@ var isUrlValidFormatVerifier=function (domain) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain The first number in an addition.
- * @returns {any} Returns the total.
+ * @param {string} domain Arguments for domain or url you want to dissect
+ * @returns {any} Returns return object details of domain.
  * @example
  *
  * urlDetails("example.com")
@@ -1068,10 +1314,6 @@ var urlDetails=function (domain) {
         "search": "",
         "user": ""
     };
-
-    var zero =0;
-    var one =1;
-    var two =2;
 
     domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
 
@@ -1131,15 +1373,692 @@ var urlDetails=function (domain) {
 
 };
 
-var one =1;
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrlInit('helloworld')
+ *=> helloworld
+ */
+function formatUrlInit (pattern, ext) {
+
+    var strPattern = pattern.replace(/\/$/g, "");
+
+    if (ext.stripHash) {
+
+        var rawStr = strPattern.split("#");
+
+        strPattern = _stk.first(rawStr);
+
+    }
+
+    if (ext.slash) {
+
+        strPattern += "/";
+
+    }
+
+    return strPattern;
+
+}
+
+var charMap = {
+    "$": "dollar",
+    "%": "percent",
+    "&": "and",
+    "<": "less",
+    ">": "greater",
+    "|": "or",
+    "¢": "cent",
+    "£": "pound",
+    "¤": "currency",
+    "¥": "yen",
+    "©": "copyright",
+    "ª": "a",
+    "®": "register trademark",
+    "º": "o",
+    "À": "A",
+    "Á": "A",
+    "Â": "A",
+    "Ã": "A",
+    "Ä": "A",
+    "Å": "A",
+    "Æ": "AE",
+    "Ç": "C",
+    "È": "E",
+    "É": "E",
+    "Ê": "E",
+    "Ë": "E",
+    "Ì": "I",
+    "Í": "I",
+    "Î": "I",
+    "Ï": "I",
+    "Ð": "D",
+    "Ñ": "N",
+    "Ò": "O",
+    "Ó": "O",
+    "Ô": "O",
+    "Õ": "O",
+    "Ö": "O",
+    "Ø": "O",
+    "Ù": "U",
+    "Ú": "U",
+    "Û": "U",
+    "Ü": "U",
+    "Ý": "Y",
+    "Þ": "TH",
+    "ß": "ss",
+    "à": "a",
+    "á": "a",
+    "â": "a",
+    "ã": "a",
+    "ä": "a",
+    "å": "a",
+    "æ": "ae",
+    "ç": "c",
+    "è": "e",
+    "é": "e",
+    "ê": "e",
+    "ë": "e",
+    "ì": "i",
+    "í": "i",
+    "î": "i",
+    "ï": "i",
+    "ð": "d",
+    "ñ": "n",
+    "ò": "o",
+    "ó": "o",
+    "ô": "o",
+    "õ": "o",
+    "ö": "o",
+    "ø": "o",
+    "ù": "u",
+    "ú": "u",
+    "û": "u",
+    "ü": "u",
+    "ý": "y",
+    "þ": "th",
+    "ÿ": "y",
+    "Ā": "A",
+    "ā": "a",
+    "Ă": "A",
+    "ă": "a",
+    "Ą": "A",
+    "ą": "a",
+    "Ć": "C",
+    "ć": "c",
+    "Č": "C",
+    "č": "c",
+    "Ď": "D",
+    "ď": "d",
+    "Đ": "DJ",
+    "đ": "dj",
+    "Ē": "E",
+    "ē": "e",
+    "Ė": "E",
+    "ė": "e",
+    "Ę": "e",
+    "ę": "e",
+    "Ě": "E",
+    "ě": "e",
+    "Ğ": "G",
+    "ğ": "g",
+    "Ģ": "G",
+    "ģ": "g",
+    "Ĩ": "I",
+    "ĩ": "i",
+    "Ī": "i",
+    "ī": "i",
+    "Į": "I",
+    "į": "i",
+    "İ": "I",
+    "ı": "i",
+    "Ķ": "k",
+    "ķ": "k",
+    "Ļ": "L",
+    "ļ": "l",
+    "Ľ": "L",
+    "ľ": "l",
+    "Ł": "L",
+    "ł": "l",
+    "Ń": "N",
+    "ń": "n",
+    "Ņ": "N",
+    "ņ": "n",
+    "Ň": "N",
+    "ň": "n",
+    "Ō": "O",
+    "ō": "o",
+    "Ő": "O",
+    "ő": "o",
+    "Œ": "OE",
+    "œ": "oe",
+    "Ŕ": "R",
+    "ŕ": "r",
+    "Ř": "R",
+    "ř": "r",
+    "Ś": "S",
+    "ś": "s",
+    "Ş": "S",
+    "ş": "s",
+    "Š": "S",
+    "š": "s",
+    "Ţ": "T",
+    "ţ": "t",
+    "Ť": "T",
+    "ť": "t",
+    "Ũ": "U",
+    "ũ": "u",
+    "Ū": "u",
+    "ū": "u",
+    "Ů": "U",
+    "ů": "u",
+    "Ű": "U",
+    "ű": "u",
+    "Ų": "U",
+    "ų": "u",
+    "Ŵ": "W",
+    "ŵ": "w",
+    "Ŷ": "Y",
+    "ŷ": "y",
+    "Ÿ": "Y",
+    "Ź": "Z",
+    "ź": "z",
+    "Ż": "Z",
+    "ż": "z",
+    "Ž": "Z",
+    "ž": "z",
+    "Ə": "E",
+    "ƒ": "f",
+    "Ơ": "O",
+    "ơ": "o",
+    "Ư": "U",
+    "ư": "u",
+    "ǈ": "LJ",
+    "ǉ": "lj",
+    "ǋ": "NJ",
+    "ǌ": "nj",
+    "Ș": "S",
+    "ș": "s",
+    "Ț": "T",
+    "ț": "t",
+    "ə": "e",
+    "˚": "o",
+    "Ά": "A",
+    "Έ": "E",
+    "Ή": "H",
+    "Ί": "I",
+    "Ό": "O",
+    "Ύ": "Y",
+    "Ώ": "W",
+    "ΐ": "i",
+    "Α": "A",
+    "Β": "B",
+    "Γ": "G",
+    "Δ": "D",
+    "Ε": "E",
+    "Ζ": "Z",
+    "Η": "H",
+    "Θ": "8",
+    "Ι": "I",
+    "Κ": "K",
+    "Λ": "L",
+    "Μ": "M",
+    "Ν": "N",
+    "Ξ": "3",
+    "Ο": "O",
+    "Π": "P",
+    "Ρ": "R",
+    "Σ": "S",
+    "Τ": "T",
+    "Υ": "Y",
+    "Φ": "F",
+    "Χ": "X",
+    "Ψ": "PS",
+    "Ω": "W",
+    "Ϊ": "I",
+    "Ϋ": "Y",
+    "ά": "a",
+    "έ": "e",
+    "ή": "h",
+    "ί": "i",
+    "ΰ": "y",
+    "α": "a",
+    "β": "b",
+    "γ": "g",
+    "δ": "d",
+    "ε": "e",
+    "ζ": "z",
+    "η": "h",
+    "θ": "8",
+    "ι": "i",
+    "κ": "k",
+    "λ": "l",
+    "μ": "m",
+    "ν": "n",
+    "ξ": "3",
+    "ο": "o",
+    "π": "p",
+    "ρ": "r",
+    "ς": "s",
+    "σ": "s",
+    "τ": "t",
+    "υ": "y",
+    "φ": "f",
+    "χ": "x",
+    "ψ": "ps",
+    "ω": "w",
+    "ϊ": "i",
+    "ϋ": "y",
+    "ό": "o",
+    "ύ": "y",
+    "ώ": "w",
+    "Ё": "Yo",
+    "Ђ": "DJ",
+    "Є": "Ye",
+    "І": "I",
+    "Ї": "Yi",
+    "Ј": "J",
+    "Љ": "LJ",
+    "Њ": "NJ",
+    "Ћ": "C",
+    "Џ": "DZ",
+    "А": "A",
+    "Б": "B",
+    "В": "V",
+    "Г": "G",
+    "Д": "D",
+    "Е": "E",
+    "Ж": "Zh",
+    "З": "Z",
+    "И": "I",
+    "Й": "J",
+    "К": "K",
+    "Л": "L",
+    "М": "M",
+    "Н": "N",
+    "О": "O",
+    "П": "P",
+    "Р": "R",
+    "С": "S",
+    "Т": "T",
+    "У": "U",
+    "Ф": "F",
+    "Х": "H",
+    "Ц": "C",
+    "Ч": "Ch",
+    "Ш": "Sh",
+    "Щ": "Sh",
+    "Ъ": "U",
+    "Ы": "Y",
+    "Ь": "",
+    "Э": "E",
+    "Ю": "Yu",
+    "Я": "Ya",
+    "а": "a",
+    "б": "b",
+    "в": "v",
+    "г": "g",
+    "д": "d",
+    "е": "e",
+    "ж": "zh",
+    "з": "z",
+    "и": "i",
+    "й": "j",
+    "к": "k",
+    "л": "l",
+    "м": "m",
+    "н": "n",
+    "о": "o",
+    "п": "p",
+    "р": "r",
+    "с": "s",
+    "т": "t",
+    "у": "u",
+    "ф": "f",
+    "х": "h",
+    "ц": "c",
+    "ч": "ch",
+    "ш": "sh",
+    "щ": "sh",
+    "ъ": "u",
+    "ы": "y",
+    "ь": "",
+    "э": "e",
+    "ю": "yu",
+    "я": "ya",
+    "ё": "yo",
+    "ђ": "dj",
+    "є": "ye",
+    "і": "i",
+    "ї": "yi",
+    "ј": "j",
+    "љ": "lj",
+    "њ": "nj",
+    "ћ": "c",
+    "ѝ": "u",
+    "џ": "dz",
+    "Ґ": "G",
+    "ґ": "g",
+    "Ғ": "GH",
+    "ғ": "gh",
+    "Қ": "KH",
+    "қ": "kh",
+    "Ң": "NG",
+    "ң": "ng",
+    "Ү": "UE",
+    "ү": "ue",
+    "Ұ": "U",
+    "ұ": "u",
+    "Һ": "H",
+    "һ": "h",
+    "Ә": "AE",
+    "ә": "ae",
+    "Ө": "OE",
+    "ө": "oe",
+    "Ա": "A",
+    "Բ": "B",
+    "Գ": "G",
+    "Դ": "D",
+    "Ե": "E",
+    "Զ": "Z",
+    "Է": "E'",
+    "Ը": "Y'",
+    "Թ": "T'",
+    "Ժ": "JH",
+    "Ի": "I",
+    "Լ": "L",
+    "Խ": "X",
+    "Ծ": "C'",
+    "Կ": "K",
+    "Հ": "H",
+    "Ձ": "D'",
+    "Ղ": "GH",
+    "Ճ": "TW",
+    "Մ": "M",
+    "Յ": "Y",
+    "Ն": "N",
+    "Շ": "SH",
+    "Չ": "CH",
+    "Պ": "P",
+    "Ջ": "J",
+    "Ռ": "R'",
+    "Ս": "S",
+    "Վ": "V",
+    "Տ": "T",
+    "Ր": "R",
+    "Ց": "C",
+    "Փ": "P'",
+    "Ք": "Q'",
+    "Օ": "O''",
+    "Ֆ": "F",
+    "և": "EV",
+    "ء": "a",
+    "آ": "aa",
+    "أ": "a",
+    "ؤ": "u",
+    "إ": "i",
+    "ئ": "e",
+    "ا": "a",
+    "ب": "b",
+    "ة": "h",
+    "ت": "t",
+    "ث": "th",
+    "ج": "j",
+    "ح": "h",
+    "خ": "kh",
+    "د": "d",
+    "ذ": "th",
+    "ر": "r",
+    "ز": "z",
+    "س": "s",
+    "ش": "sh",
+    "ص": "s",
+    "ض": "dh",
+    "ط": "t",
+    "ظ": "z",
+    "ع": "a",
+    "غ": "gh",
+    "ف": "f",
+    "ق": "q",
+    "ك": "k",
+    "ل": "l",
+    "م": "m",
+    "ن": "n",
+    "ه": "h",
+    "و": "w",
+    "ى": "a",
+    "ي": "y",
+    "ً": "an",
+    "ٌ": "on",
+    "ٍ": "en",
+    "َ": "a",
+    "ُ": "u",
+    "ِ": "e",
+    "ْ": "",
+    "٠": "0",
+    "١": "1",
+    "٢": "2",
+    "٣": "3",
+    "٤": "4",
+    "٥": "5",
+    "٦": "6",
+    "٧": "7",
+    "٨": "8",
+    "٩": "9",
+    "پ": "p",
+    "چ": "ch",
+    "ژ": "zh",
+    "ک": "k",
+    "گ": "g",
+    "ی": "y",
+    "۰": "0",
+    "۱": "1",
+    "۲": "2",
+    "۳": "3",
+    "۴": "4",
+    "۵": "5",
+    "۶": "6",
+    "۷": "7",
+    "۸": "8",
+    "۹": "9",
+    "฿": "baht",
+    "ა": "a",
+    "ბ": "b",
+    "გ": "g",
+    "დ": "d",
+    "ე": "e",
+    "ვ": "v",
+    "ზ": "z",
+    "თ": "t",
+    "ი": "i",
+    "კ": "k",
+    "ლ": "l",
+    "მ": "m",
+    "ნ": "n",
+    "ო": "o",
+    "პ": "p",
+    "ჟ": "zh",
+    "რ": "r",
+    "ს": "s",
+    "ტ": "t",
+    "უ": "u",
+    "ფ": "f",
+    "ქ": "k",
+    "ღ": "gh",
+    "ყ": "q",
+    "შ": "sh",
+    "ჩ": "ch",
+    "ც": "ts",
+    "ძ": "dz",
+    "წ": "ts",
+    "ჭ": "ch",
+    "ხ": "kh",
+    "ჯ": "j",
+    "ჰ": "h",
+    "Ṣ": "S",
+    "ṣ": "s",
+    "Ẁ": "W",
+    "ẁ": "w",
+    "Ẃ": "W",
+    "ẃ": "w",
+    "Ẅ": "W",
+    "ẅ": "w",
+    "ẞ": "SS",
+    "Ạ": "A",
+    "ạ": "a",
+    "Ả": "A",
+    "ả": "a",
+    "Ấ": "A",
+    "ấ": "a",
+    "Ầ": "A",
+    "ầ": "a",
+    "Ẩ": "A",
+    "ẩ": "a",
+    "Ẫ": "A",
+    "ẫ": "a",
+    "Ậ": "A",
+    "ậ": "a",
+    "Ắ": "A",
+    "ắ": "a",
+    "Ằ": "A",
+    "ằ": "a",
+    "Ẳ": "A",
+    "ẳ": "a",
+    "Ẵ": "A",
+    "ẵ": "a",
+    "Ặ": "A",
+    "ặ": "a",
+    "Ẹ": "E",
+    "ẹ": "e",
+    "Ẻ": "E",
+    "ẻ": "e",
+    "Ẽ": "E",
+    "ẽ": "e",
+    "Ế": "E",
+    "ế": "e",
+    "Ề": "E",
+    "ề": "e",
+    "Ể": "E",
+    "ể": "e",
+    "Ễ": "E",
+    "ễ": "e",
+    "Ệ": "E",
+    "ệ": "e",
+    "Ỉ": "I",
+    "ỉ": "i",
+    "Ị": "I",
+    "ị": "i",
+    "Ọ": "O",
+    "ọ": "o",
+    "Ỏ": "O",
+    "ỏ": "o",
+    "Ố": "O",
+    "ố": "o",
+    "Ồ": "O",
+    "ồ": "o",
+    "Ổ": "O",
+    "ổ": "o",
+    "Ỗ": "O",
+    "ỗ": "o",
+    "Ộ": "O",
+    "ộ": "o",
+    "Ớ": "O",
+    "ớ": "o",
+    "Ờ": "O",
+    "ờ": "o",
+    "Ở": "O",
+    "ở": "o",
+    "Ỡ": "O",
+    "ỡ": "o",
+    "Ợ": "O",
+    "ợ": "o",
+    "Ụ": "U",
+    "ụ": "u",
+    "Ủ": "U",
+    "ủ": "u",
+    "Ứ": "U",
+    "ứ": "u",
+    "Ừ": "U",
+    "ừ": "u",
+    "Ử": "U",
+    "ử": "u",
+    "Ữ": "U",
+    "ữ": "u",
+    "Ự": "U",
+    "ự": "u",
+    "Ỳ": "Y",
+    "ỳ": "y",
+    "Ỵ": "Y",
+    "ỵ": "y",
+    "Ỷ": "Y",
+    "ỷ": "y",
+    "Ỹ": "Y",
+    "ỹ": "y",
+    "–": "-",
+    "‘": "'",
+    "’": "'",
+    "“": "\\\"",
+    "”": "\\\"",
+    "„": "\\\"",
+    "†": "+",
+    "•": "*",
+    "…": "...",
+    "₠": "ecu",
+    "₢": "cruzeiro",
+    "₣": "french franc",
+    "₤": "lira",
+    "₥": "mill",
+    "₦": "naira",
+    "₧": "peseta",
+    "₨": "rupee",
+    "₩": "won",
+    "₪": "new shequel",
+    "₫": "dong",
+    "€": "euro",
+    "₭": "kip",
+    "₮": "tugrik",
+    "₯": "drachma",
+    "₰": "penny",
+    "₱": "peso",
+    "₲": "guarani",
+    "₳": "austral",
+    "₴": "hryvnia",
+    "₵": "cedi",
+    "₸": "kazakhstani tenge",
+    "₹": "indian rupee",
+    "₺": "turkish lira",
+    "₽": "russian ruble",
+    "₿": "bitcoin",
+    "℠": "sm",
+    "™": "tm",
+    "∂": "d",
+    "∆": "delta",
+    "∑": "sum",
+    "∞": "infinity",
+    "♥": "love",
+    "元": "yuan",
+    "円": "yen",
+    "﷼": "rial",
+    "ﻵ": "laa",
+    "ﻷ": "laa",
+    "ﻹ": "lai",
+    "ﻻ": "la"
+};
 
 /**
  * In url or path, you now verified the format of your url
  *
  * @since 1.2.1
  * @category Seq
- * @param {string|object} pattern Passing the completet domain url
- * @param {string} path Passing the completet domain url
+ * @param {string|object} pattern Path format you can use to control like `/:id<number>`
+ * @param {string} path Passing url path like `/12`
  * @returns {any} Return the boolean.
  * @example
  *
@@ -1158,7 +2077,7 @@ function urlPattern (pattern, path) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
  * @returns {any} Return the boolean.
  * @example
  *
@@ -1177,16 +2096,17 @@ function urlComposer (domain) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} domain Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isUrlValidFormat('https://example.com')
  *=> true
  */
-function isUrlValidFormat (domain) {
+function isUrlValidFormat (domain, config) {
 
-    return isUrlValidFormatVerifier(domain);
+    return isUrlValidFormatVerifier(domain, config);
 
 }
 
@@ -1196,7 +2116,7 @@ function isUrlValidFormat (domain) {
  * @since 1.0.0
  * @category String
  * @param {...any} ags The Domain url
- * @returns {string} Return the boolean.
+ * @returns {string} Return the string for join url or path.
  * @example
  *
  * joinUrlPath('https://example.com','test')
@@ -1208,15 +2128,18 @@ function joinUrlPath () {
 
     var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
     var replacePath = _stk.arraySlice(ags, one);
-    var cleanReplacePath = [];
+    var cleanReplacePath = _stk.reduce([], replacePath, function (grand, value) {
 
-    _stk.each(replacePath, function (key, value) {
+        grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
-        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+        return grand;
 
     });
 
-    return replaceDomain+"/"+cleanReplacePath.join("/");
+    return [
+        replaceDomain,
+        cleanReplacePath.join("/")
+    ].join("/");
 
 }
 
@@ -1225,16 +2148,17 @@ function joinUrlPath () {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  *=> true
  */
-function isHttpProtocolValid (host) {
+function isHttpProtocolValid (host, config) {
 
-    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -1243,7 +2167,7 @@ function isHttpProtocolValid (host) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -1261,16 +2185,17 @@ function isWebSocketProtocolValid (host) {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
+ * @returns {boolean} Return the boolean if the format is valid.
  * @example
  *
  * isHttps('https://example.com')
  *=> true
  */
-function isHttps (host) {
+function isHttps (host, config) {
 
-    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -1279,7 +2204,7 @@ function isHttps (host) {
  *
  * @since 1.1.0
  * @category Collection
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {any} Returns the object details.
  * @example
  *
@@ -1344,7 +2269,7 @@ function getHostDetails (host) {
  * @since 1.0.2
  * @category Boolean
  * @param {string} host Passing the completet domain url
- * @param {string} ext Passing the completet domain url
+ * @param {string} ext Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -1353,22 +2278,127 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    var regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    var regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
-urs.getHostDetails=getHostDetails
-urs.qsStringify=qsStringify
-urs.qsParse=qsParse
-urs.isHttps=isHttps
-urs.isHttpProtocolValid=isHttpProtocolValid
-urs.joinUrlPath=joinUrlPath
-urs.isUrlExtValid=isUrlExtValid
-urs.isWebSocketProtocolValid=isWebSocketProtocolValid
-urs.isUrlValidFormat=isUrlValidFormat
-urs.urlComposer=urlComposer
-urs.urlPattern=urlPattern
+/**
+ * Create url slug from words
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the complete domain url
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * slugify('hello world')
+ *=> hello-world
+ */
+function slugify (pattern, ext) {
 
-})(typeof window !== "undefined" ? window : this);
+    var strPattern = pattern;
+
+    var varExt = _stk.varExtend({
+        "delimiter": "-",
+        "dictStrictMap": {},
+        "lower": true,
+        "remove": null,
+        "replaceStrictMap": false,
+        "strict": false
+    }, ext);
+
+    if (varExt.replaceStrictMap) {
+
+        var refCharMap = _stk.mergeWithKey(charMap, varExt.dictStrictMap);
+
+        strPattern = _stk.reduce("", strPattern.split(""), function (sums, value) {
+
+            sums+= _stk.has(refCharMap, value)
+                ?refCharMap[value]
+                :value;
+
+            return sums;
+
+        });
+
+    }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+
+    }
+
+    strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    if (varExt.lower) {
+
+        strPattern = _stk.stringLowerCase(strPattern);
+
+    }
+
+    if (_stk.getTypeof(varExt.remove)==="regexp") {
+
+        strPattern = strPattern.replace(varExt.remove, "");
+
+    }
+
+    return strPattern;
+
+}
+
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+function formatUrl (pattern, ext) {
+
+    var varExt = _stk.varExtend({
+        "slash": true,
+        "stripHash": false
+    }, ext);
+
+    if ((/\s/g).test(pattern)) {
+
+        throw new Error('The Url must remove the space');
+
+    }
+    if ((/[^\w\d\-_#@?/:.=%[\]+&]/g).test(pattern)) {
+
+        throw new Error('The Url must remove special charaster');
+
+    }
+
+    return formatUrlInit(pattern, varExt);
+
+}
+
+urs.getHostDetails=getHostDetails;
+urs.formatUrl=formatUrl;
+urs.qsStringify=qsStringify;
+urs.qsParse=qsParse;
+urs.isHttps=isHttps;
+urs.isHttpProtocolValid=isHttpProtocolValid;
+urs.joinUrlPath=joinUrlPath;
+urs.isUrlExtValid=isUrlExtValid;
+urs.isWebSocketProtocolValid=isWebSocketProtocolValid;
+urs.isUrlValidFormat=isUrlValidFormat;
+urs.urlComposer=urlComposer;
+urs.urlPattern=urlPattern;
+urs.slugify=slugify;
+
+
+ })(typeof window !== "undefined" ? window : this);

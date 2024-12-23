@@ -42,4 +42,12 @@ describe('ESM: urlComposer method', function () {
 
     });
 
+    it('check if path prefix has change', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("v1");
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam');
+
+    });
+    
 });

@@ -1,24 +1,28 @@
-import {qsStringify} from './lib/queryString';
+import {qsStringify} from './lib/queryString.js';
 
-import {UrlComposerInit} from './lib/urlComposerInit';
+import {UrlComposerInit} from './lib/urlComposerInit.js';
 
-import {PathPatternInit} from './lib/pathPatternInit';
+import {PathPatternInit} from './lib/pathPatternInit.js';
 
-import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain';
+import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain.js';
 
-import {qsParse} from './lib/queryObject';
+import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, each, first, isEmpty} from 'structkit';
+import {arraySlice, first, has, isEmpty, reduce, getTypeof, stringLowerCase, varExtend, mergeWithKey} from 'structkit';
 
-const one =1;
+import {one} from './lib/variable.js';
+
+import {formatUrlInit} from './lib/formatUrlInit.js';
+
+import {charMap} from './lib/slugConfig.js';
 
 /**
  * In url or path, you now verified the format of your url
  *
  * @since 1.2.1
  * @category Seq
- * @param {string|object} pattern Passing the completet domain url
- * @param {string} path Passing the completet domain url
+ * @param {string|object} pattern Path format you can use to control like `/:id<number>`
+ * @param {string} path Passing url path like `/12`
  * @returns {any} Return the boolean.
  * @example
  *
@@ -37,7 +41,7 @@ function urlPattern (pattern, path) {
  *
  * @since 1.1.0
  * @category Seq
- * @param {string} domain Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
  * @returns {any} Return the boolean.
  * @example
  *
@@ -56,16 +60,17 @@ function urlComposer (domain) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} domain Passing the completet domain url
+ * @param {string} domain Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isUrlValidFormat('https://example.com')
  *=> true
  */
-function isUrlValidFormat (domain) {
+function isUrlValidFormat (domain, config) {
 
-    return isUrlValidFormatVerifier(domain);
+    return isUrlValidFormatVerifier(domain, config);
 
 }
 
@@ -75,7 +80,7 @@ function isUrlValidFormat (domain) {
  * @since 1.0.0
  * @category String
  * @param {...any} ags The Domain url
- * @returns {string} Return the boolean.
+ * @returns {string} Return the string for join url or path.
  * @example
  *
  * joinUrlPath('https://example.com','test')
@@ -85,15 +90,18 @@ function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
     const replacePath = arraySlice(ags, one);
-    const cleanReplacePath = [];
+    const cleanReplacePath = reduce([], replacePath, function (grand, value) {
 
-    each(replacePath, function (key, value) {
+        grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
-        cleanReplacePath.push(value.replace(/^(\/)/, ""));
+        return grand;
 
     });
 
-    return replaceDomain+"/"+cleanReplacePath.join("/");
+    return [
+        replaceDomain,
+        cleanReplacePath.join("/")
+    ].join("/");
 
 }
 
@@ -102,16 +110,17 @@ function joinUrlPath (...ags) {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
  * isHttpProtocolValid('https://example.com')
  *=> true
  */
-function isHttpProtocolValid (host) {
+function isHttpProtocolValid (host, config) {
 
-    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host);
+    return (/^(https|http):\/\//g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -120,7 +129,7 @@ function isHttpProtocolValid (host) {
  *
  * @since 1.1.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -138,16 +147,17 @@ function isWebSocketProtocolValid (host) {
  *
  * @since 1.0.0
  * @category Boolean
- * @param {string} host Passing the completet domain url
- * @returns {boolean} Return the boolean.
+ * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
+ * @returns {boolean} Return the boolean if the format is valid.
  * @example
  *
  * isHttps('https://example.com')
  *=> true
  */
-function isHttps (host) {
+function isHttps (host, config) {
 
-    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host);
+    return (/^(https):\/\/\b/g).test(host) && isUrlValidFormat(host, config);
 
 }
 
@@ -156,7 +166,7 @@ function isHttps (host) {
  *
  * @since 1.1.0
  * @category Collection
- * @param {string} host Passing the completet domain url
+ * @param {string} host Passing the complete domain url
  * @returns {any} Returns the object details.
  * @example
  *
@@ -221,7 +231,7 @@ function getHostDetails (host) {
  * @since 1.0.2
  * @category Boolean
  * @param {string} host Passing the completet domain url
- * @param {string} ext Passing the completet domain url
+ * @param {string} ext Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
@@ -230,10 +240,112 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?#]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
 }
 
-export {getHostDetails,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern};
+/**
+ * Create url slug from words
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the complete domain url
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * slugify('hello world')
+ *=> hello-world
+ */
+function slugify (pattern, ext) {
+
+    let strPattern = pattern;
+
+    const varExt = varExtend({
+        "delimiter": "-",
+        "dictStrictMap": {},
+        "lower": true,
+        "remove": null,
+        "replaceStrictMap": false,
+        "strict": false
+    }, ext);
+
+    if (varExt.replaceStrictMap) {
+
+        const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
+
+        strPattern = reduce("", strPattern.split(""), function (sums, value) {
+
+            sums+= has(refCharMap, value)
+                ?refCharMap[value]
+                :value;
+
+            return sums;
+
+        });
+
+    }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
+
+    }
+
+    strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
+
+    if (varExt.lower) {
+
+        strPattern = stringLowerCase(strPattern);
+
+    }
+
+    if (getTypeof(varExt.remove)==="regexp") {
+
+        strPattern = strPattern.replace(varExt.remove, "");
+
+    }
+
+    return strPattern;
+
+}
+
+/**
+ * To normalize the format of the URL
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} pattern Passing the completet domain url
+ * @param {any=} ext Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+function formatUrl (pattern, ext) {
+
+    const varExt = varExtend({
+        "slash": true,
+        "stripHash": false
+    }, ext);
+
+    if ((/\s/g).test(pattern)) {
+
+        throw new Error('The Url must remove the space');
+
+    }
+    if ((/[^\w\d\-_#@?/:.=%[\]+&]/g).test(pattern)) {
+
+        throw new Error('The Url must remove special charaster');
+
+    }
+
+    return formatUrlInit(pattern, varExt);
+
+}
+
+export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify};

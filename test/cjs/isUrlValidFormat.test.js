@@ -1,4 +1,4 @@
-const {isUrlValidFormat} = require("../../src/index");
+const {isUrlValidFormat} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('CJS: isUrlValidFormat method', function () {

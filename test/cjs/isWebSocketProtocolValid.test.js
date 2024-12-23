@@ -1,4 +1,4 @@
-const {isWebSocketProtocolValid} = require("../../src/index");
+const {isWebSocketProtocolValid} = require("../../dist/cjs/url-assist.cjs");
 const assert = require("assert");
 
 describe('ESM: isWebSocketProtocolValid method', function () {
