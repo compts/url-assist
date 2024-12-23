@@ -25,8 +25,9 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist/cjs/src",
-    "dist/esm/src"
+    "dist/cjs",
+    "dist/esm",
+    "dist/ts"
   ],
   "scripts": {
     "es_linter": "eslint src/lib/*.js src/*.js --fix",
