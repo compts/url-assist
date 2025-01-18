@@ -163,12 +163,12 @@ const getDomainDetails=function (domain) {
 
     if (count(domainSplit) >= three) {
 
-        const getDefaultDomain = arraySlice(domainSplit, count(domainSplit) - two, count(domainSplit) - two);
+        const getDefaultDomain = arraySlice(domainSplit, one, count(domainSplit) - two).join(".");
 
         domainDetails = {
-            "domain": toString(getDefaultDomain),
+            "domain": getDefaultDomain,
             "domainWithTld": getDefaultDomain +"."+last(domainSplit),
-            "subdomain": arraySlice(domainSplit, zero, count(domainSplit) - three).join("."),
+            "subdomain": first(domainSplit),
             "tld": first(getTLD)
         };
 

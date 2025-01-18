@@ -1191,12 +1191,12 @@ var getDomainDetails=function (domain) {
 
     if (_stk.count(domainSplit) >= three) {
 
-        var getDefaultDomain = _stk.arraySlice(domainSplit, _stk.count(domainSplit) - two, _stk.count(domainSplit) - two);
+        var getDefaultDomain = _stk.arraySlice(domainSplit, one, _stk.count(domainSplit) - two).join(".");
 
         domainDetails = {
-            "domain": _stk.toString(getDefaultDomain),
+            "domain": getDefaultDomain,
             "domainWithTld": getDefaultDomain +"."+_stk.last(domainSplit),
-            "subdomain": _stk.arraySlice(domainSplit, zero, _stk.count(domainSplit) - three).join("."),
+            "subdomain": _stk.first(domainSplit),
             "tld": _stk.first(getTLD)
         };
 
