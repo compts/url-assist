@@ -93,42 +93,40 @@ describe('ESM: getHostDetails method', function () {
 
     it('check getHostDetails with  username and domain', function () {
 
-        assert.deepStrictEqual(getHostDetails('git+ssh://gituser@host.xz/path/name.git'), {
-            "domainDetails": {
-                "domain": "gituser@host",
-                "domainWithTld": "gituser@host.xz",
-                "subdomain": "",
-                "tld": "xz"
-            },
-            "hash": "",
-            "hostname": "host.xz",
-            "href": "git+ssh://gituser@host.xz/path/name.git",
-            "password": "",
-            "pathname": "path/name.git",
-            "port": "",
-            "protocol": "git+ssh",
-            "search": "",
-            "user": "gituser"});
+        assert.deepStrictEqual(getHostDetails('git+ssh://gituser@host.xz/path/name.git'), {"domainDetails": {
+            "domain": "gituser@host",
+            "domainWithTld": "gituser@host.xz",
+            "subdomain": "",
+            "tld": "xz"
+        },
+        "hash": "",
+        "hostname": "host.xz",
+        "href": "git+ssh://gituser@host.xz/path/name.git",
+        "password": "",
+        "pathname": "path/name.git",
+        "port": "",
+        "protocol": "git+ssh",
+        "search": "",
+        "user": "gituser"});
 
     });
     it('check getHostDetails with  username and password in domain', function () {
 
-        assert.deepStrictEqual(getHostDetails('git+ssh://gituser:gitpass@host.xz/path/name.git'), {
-            "domainDetails": {
-                "domain": "gituser:gitpass@host",
-                "domainWithTld": "gituser:gitpass@host.xz",
-                "subdomain": "",
-                "tld": "xz"
-            },
-            "hash": "",
-            "hostname": "host.xz",
-            "href": "git+ssh://gituser:gitpass@host.xz/path/name.git",
-            "password": "gitpass",
-            "pathname": "path/name.git",
-            "port": "",
-            "protocol": "git+ssh",
-            "search": "",
-            "user": "gituser"});
+        assert.deepStrictEqual(getHostDetails('git+ssh://gituser:gitpass@host.xz/path/name.git'), {"domainDetails": {
+            "domain": "gituser:gitpass@host",
+            "domainWithTld": "gituser:gitpass@host.xz",
+            "subdomain": "",
+            "tld": "xz"
+        },
+        "hash": "",
+        "hostname": "host.xz",
+        "href": "git+ssh://gituser:gitpass@host.xz/path/name.git",
+        "password": "gitpass",
+        "pathname": "path/name.git",
+        "port": "",
+        "protocol": "git+ssh",
+        "search": "",
+        "user": "gituser"});
 
     });
 
@@ -149,6 +147,92 @@ describe('ESM: getHostDetails method', function () {
             "port": "",
             "protocol": "https",
             "search": '',
+            "user": ''
+        });
+
+    });
+
+    it('check getHostDetails with IPv6 address', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://[2001:db8::ff00:42:8329]/test'), {
+            "domainDetails": {
+                "domain": "[2001:db8::ff00:42:8329]",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": '[2001:db8::ff00:42:8329]',
+            "href": 'https://[2001:db8::ff00:42:8329]/test',
+            "password": "",
+            "pathname": "test",
+            "port": "",
+            "protocol": "https",
+            "search": '',
+            "user": ''
+        });
+
+    });
+
+    it('check getHostDetails with IPv6 address and port', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://[2001:db8::ff00:42:8329]:8080/test'), {
+            "domainDetails": {
+                "domain": "[2001:db8::ff00:42:8329]",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": '[2001:db8::ff00:42:8329]',
+            "href": 'https://[2001:db8::ff00:42:8329]:8080/test',
+            "password": "",
+            "pathname": "test",
+            "port": "8080",
+            "protocol": "https",
+            "search": '',
+            "user": ''
+        });
+
+    });
+    it('check getHostDetails with IPv6 address and query string', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://[2001:db8::ff00:42:8329]/test?query=string'), {
+            "domainDetails": {
+                "domain": "[2001:db8::ff00:42:8329]",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": '[2001:db8::ff00:42:8329]',
+            "href": 'https://[2001:db8::ff00:42:8329]/test?query=string',
+            "password": "",
+            "pathname": "test",
+            "port": "",
+            "protocol": "https",
+            "search": 'query=string',
+            "user": ''
+        });
+
+    });
+    it('check getHostDetails with IPv6 address, port and query string', function () {
+
+        assert.deepStrictEqual(getHostDetails('https://[2001:db8::ff00:42:8329]:8080/test?query=string'), {
+            "domainDetails": {
+                "domain": "[2001:db8::ff00:42:8329]",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": '[2001:db8::ff00:42:8329]',
+            "href": 'https://[2001:db8::ff00:42:8329]:8080/test?query=string',
+            "password": "",
+            "pathname": "test",
+            "port": "8080",
+            "protocol": "https",
+            "search": 'query=string',
             "user": ''
         });
 

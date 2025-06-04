@@ -5,6 +5,7 @@ import {expectType} from 'tsd';
 
 const pattern1 = urlPattern(":id", "1");
 const pattern2 = urlPattern(/a\/([a-z]{1,})/, "/a/sdindex");
+const pattern3 = urlPattern("/yahoo/:id<number>/edit", "/yahoo/123/edit");
 
 describe('TS: urlPattern method', function () {
 
@@ -51,4 +52,19 @@ describe('TS: urlPattern method', function () {
         expectType<any>(pattern1.getParam());
 
     });
+    it('check urlPattern with path is valid', function () {
+
+        assert.deepStrictEqual(pattern3.isValid(), true);
+
+
+    });
+
+    it('check urlPattern with path get value getParam', function () {
+
+        assert.deepStrictEqual(pattern3.getParam(), {
+            "id": "123"
+        });
+
+
+    });    
 });

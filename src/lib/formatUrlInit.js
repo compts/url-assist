@@ -1,4 +1,4 @@
-const {first} = require("structkit");
+const {first, last, isEmpty} = require("structkit");
 
 
 /**
@@ -16,6 +16,7 @@ const {first} = require("structkit");
  */
 function formatUrlInit (pattern, ext) {
 
+    const one =1;
     let strPattern = pattern.replace(/\/$/g, "");
 
     if (ext.stripHash) {
@@ -25,6 +26,32 @@ function formatUrlInit (pattern, ext) {
         strPattern = first(rawStr);
 
     }
+    let refQueryParam = "";
+    const rawStrParamPattern = strPattern.split("?");
+
+    if (rawStrParamPattern.length > one) {
+
+        strPattern = first(rawStrParamPattern);
+        refQueryParam = last(rawStrParamPattern);
+
+    }
+    if (ext && ext.stripQuery) {
+
+        strPattern = first(rawStrParamPattern);
+
+    }
+    if (ext && ext.stripProtocol) {
+
+        const rawStr = strPattern.split("://");
+
+        strPattern = first(rawStr);
+
+    }
+    if (ext && ext.stripWww) {
+
+        strPattern = strPattern.replace(/^www\./, "");
+
+    }
 
     if (ext.slash) {
 
@@ -32,6 +59,11 @@ function formatUrlInit (pattern, ext) {
 
     }
 
+    if (ext && ext.stripQuery === false && !isEmpty(refQueryParam)) {
+
+        strPattern = strPattern+"?" + refQueryParam;
+
+    }
 
     return strPattern;
 

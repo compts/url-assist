@@ -283,7 +283,7 @@ PathPatternInit.prototype.getParam = function () {
 
         const matchPatternPath = refPath.match(refPattern.patterns);
 
-        each(refPattern.arguments, function (key, value) {
+        each(refPattern.arguments, function (value) {
 
             refParam[value.name] = matchPatternPath[value.index + (count(matchPatternPath)-count(refPattern.arguments))];
 

@@ -2,6 +2,8 @@ import {urlComposer} from "../../dist/esm/src/index";
 import assert from 'assert';
 
 const data = urlComposer("http://www.example.com/v1");
+const one = 1;
+const port = 8080;
 
 describe('ESM: urlComposer method', function () {
 
@@ -49,5 +51,51 @@ describe('ESM: urlComposer method', function () {
         assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam');
 
     });
-    
+
+    it('check if path prefix has change with slash', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("/v1/");
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam');
+
+    });
+    it('check if path prefix has change with slash and query', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("/v1/");
+        data.setQueryString("test=1");
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam?test=1');
+
+    });
+    it('check if path prefix has change with slash and query and hash', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("/v1/");
+        data.setQueryString({"test": one});
+        data.setHash("hash");
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com/v1/gundam?test=1#hash');
+
+    });
+    it('check if path prefix has change with slash and query and hash and port', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("/v1/");
+        data.setQueryString({"test": one});
+        data.setHash("hash");
+        data.setPort(port);
+        assert.deepStrictEqual(data.getToString(), 'https://service.youtube.com:8080/v1/gundam?test=1#hash');
+
+    });
+    it('check if path prefix has change with slash and query and hash and port with subdomain', function () {
+
+        data.setPath("gundam/");
+        data.setPathPrefix("/v1/");
+        data.setQueryString("test=1");
+        data.setHash("hash");
+        data.setPort(port);
+        data.setSubdomain("www.service");
+        assert.deepStrictEqual(data.getToString(), 'https://www.service.youtube.com:8080/v1/gundam?test=1#hash');
+
+    });
+
 });

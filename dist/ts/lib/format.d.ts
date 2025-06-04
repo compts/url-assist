@@ -1,13 +1,26 @@
 /**
- * Decoding URI component
+ * Query String encode
  *
- * @since 1.2.6
- * @category Seq
- * @param {any} value URI string that you want to convert
- * @returns {any} Returns the string of querystring.
+ * @since 1.2.7
+ * @category string
+ * @param {string} query Passing the completet domain url
+ * @returns {string} Return the string.
  * @example
  *
- * decodeStr("tests+test")
- * // => tests test
+ * formatUrl('helloworld')
+ *=> helloworld/
  */
-export function decodeStr(value: any): any;
+export function queryEncode(query: string): string;
+/**
+ * Query String decode
+ *
+ * @since 1.2.7
+ * @category string
+ * @param {string} query Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+export function queryDecode(query: string): string;

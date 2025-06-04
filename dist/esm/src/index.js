@@ -6,9 +6,11 @@ import {PathPatternInit} from './lib/pathPatternInit.js';
 
 import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain.js';
 
+import {queryEncode, queryDecode} from './lib/queryString.js';
+
 import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, first, has, isEmpty, reduce, getTypeof, stringLowerCase, varExtend, mergeWithKey} from 'structkit';
+import {arraySlice, first, has, isEmpty, reduce, stringLowerCase, varExtend, mergeWithKey, trim} from 'structkit';
 
 import {one} from './lib/variable.js';
 
@@ -240,7 +242,7 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    const regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    const regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&\\#]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
@@ -266,17 +268,21 @@ function slugify (pattern, ext) {
     const varExt = varExtend({
         "delimiter": "-",
         "dictStrictMap": {},
+        "isStripDomanName": true,
         "lower": true,
         "remove": null,
-        "replaceStrictMap": false,
-        "strict": false
+        "replaceStrictMap": true,
+        "strict": true
     }, ext);
+
+    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+    strPattern = strPattern.replace(/[-_]{1,}/g, " ");
 
     if (varExt.replaceStrictMap) {
 
         const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
 
-        strPattern = reduce("", strPattern.split(""), function (sums, value) {
+        strPattern = reduce("", strPattern.normalize().split(""), function (sums, value) {
 
             sums+= has(refCharMap, value)
                 ?refCharMap[value]
@@ -287,14 +293,9 @@ function slugify (pattern, ext) {
         });
 
     }
-    if (varExt.strict) {
-
-        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
-        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
-
-    }
 
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = trim(strPattern);
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
 
     if (varExt.lower) {
@@ -302,12 +303,24 @@ function slugify (pattern, ext) {
         strPattern = stringLowerCase(strPattern);
 
     }
+    if (varExt.isStripDomanName) {
 
-    if (getTypeof(varExt.remove)==="regexp") {
+        if (isUrlValidFormat(strPattern)) {
 
-        strPattern = strPattern.replace(varExt.remove, "");
+            const details = getHostDetails(strPattern);
+
+            strPattern = details.pathname;
+
+        }
 
     }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(new RegExp("[^\\w\\d\\s"+varExt.delimiter+"]", "g"), "");
+
+    }
+
+    strPattern = strPattern.replace(varExt.remove || /[!@#$%^&*()'":]+/g, "");
 
     return strPattern;
 
@@ -330,7 +343,10 @@ function formatUrl (pattern, ext) {
 
     const varExt = varExtend({
         "slash": true,
-        "stripHash": false
+        "stripHash": false,
+        "stripProtocol": false,
+        "stripQuery": false,
+        "stripWww": false
     }, ext);
 
     if ((/\s/g).test(pattern)) {
@@ -348,4 +364,4 @@ function formatUrl (pattern, ext) {
 
 }
 
-export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify};
+export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify,queryEncode,queryDecode};
