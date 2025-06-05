@@ -9,6 +9,7 @@
   "exports": {
     ".": {
       "import": "./dist/esm/src/index.js",
+      "require": "./dist/cjs/url-assist.js",
       "types": {
         "require": "./dist/ts/index.d.ts",
         "default": "./dist/ts/index.d.ts"
@@ -87,7 +88,8 @@
     "jest": "^27.5.1",
     "mocha": "^5.2.0",
     "ts-node": "^10.9.1",
-    "tsd": "^0.19.1"
+    "tsd": "^0.19.1",
+     "jsr":"0.13.4"
   },
   "jest": {
     "collectCoverage": true,
