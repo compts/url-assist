@@ -1,4 +1,4 @@
-import {isHttpProtocolValid} from "../../dist/esm/src/index";
+import {isHttpProtocolValid} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

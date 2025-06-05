@@ -1,4 +1,4 @@
-import {urlComposer} from "../../dist/esm/src/index";
+import {urlComposer} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 
