@@ -1,4 +1,4 @@
-import {formatUrl} from "../../dist/esm/index";
+import {formatUrl} from "../../src/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

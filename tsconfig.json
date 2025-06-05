@@ -1,11 +1,28 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowJs": true,
-    "checkJs": true,
-    "noEmit": false,
-    "outDir": "./dist/ts"
-  },
-  "include": ["dist/esm/**/*"]
+    // Change this to match your project
+    "include": ["dist/esm/**/*"],
+    "compilerOptions": {
+      // Tells TypeScript to read JS files, as
+      // normally they are ignored as source files
+      "allowJs": true,
+      // Generate d.ts files
+      "declaration": true,
+      // This compiler run should
+      // only output d.ts files
+      "emitDeclarationOnly": true,
+      // Types should go into this directory.
+      // Removing this would place the .d.ts files
+      // next to the .js files
+      "target": "es6",                          
+      /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
+       "module": "commonjs",
+      "outDir": "dist/ts",
+      "esModuleInterop": true,
+      // go to js file when using IDE functions like
+      // "Go to Definition" in VSCode
+      "declarationMap": true,
+    },
+    "ts-node": {
+      "files": true
+    },
 }

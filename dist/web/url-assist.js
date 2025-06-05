@@ -72,11 +72,11 @@ function qsStringify (value, config) {
  * @param {any} type The the type of argument
  * @param {any} config Options of function
  * @param {any} reference The value that you pass from outside
- * @returns {null} Returns null
+ * @returns {undefined} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => null
+ * // => undefined
  */
 var parseStringConvert=function (key, value, type, config, reference) {
 
