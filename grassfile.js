@@ -41,51 +41,6 @@ exports.module=function (grassconf) {
 
     });
 
-    grassconf.load("esm_only", function () {
-
-        return grassconf.src([list_iife_js])
-            .pipe(grassconf.streamPipe(function (data) {
-
-                const importLib = [];
-                let exportList = "";
-
-                each(data.readData().split("\n"), function (line) {
-
-                    if (line.indexOf("exports.") > -1) {
-
-                        const matchArr = line.match(/(exports)\.([a-zA-Z0-9]{0,})\s{0,}(\=)\s{0,}([a-zA-Z0-9]{0,})\;/m);
-
-                        if (matchArr && matchArr.length > 0) {
-
-                            console.log(matchArr, "matchArr");
-                            importLib.push("    "+matchArr[2] + " as " + matchArr[2] + "_module");
-                            // ImportLib.push(matchArr[2]);
-                            exportList += `export const ${matchArr[2]} = ${matchArr[4]+ "_module"};\n`;
-
-                            /*
-                             * Const getData = data.readData();
-                             * const replaceData = getData.replace(matchArr[0], `export const ${matchArr[2]} = ${matchArr[4]};`);
-                             */
-
-                        }
-
-                    }
-
-                });
-
-                let replaceData = "import {\n"+importLib.join(",\n")+"\n    } from './index.js';";
-
-                replaceData = replaceData + "\n" + exportList;
-                data.writeData(replaceData);
-                data.done();
-
-
-            }))
-            .pipe(grass_concat("dist/esm/node.esm.js", {
-                "istruncate": true
-            }));
-
-    });
     grassconf.load("web_iife", function () {
 
         return packpier(
@@ -145,7 +100,6 @@ exports.execute=function (lib) {
 
         strm.series("web_iife");
         strm.series("esm");
-        strm.series("esm_only");
 
     };
 
