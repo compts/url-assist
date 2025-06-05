@@ -59,7 +59,7 @@ exports.module=function (grassconf) {
                         if (matchArr && matchArr.length > 0) {
 
                             console.log(matchArr, "matchArr");
-                            importLib.push(matchArr[2] + " as " + matchArr[2] + "_module");
+                            importLib.push("    "+matchArr[2] + " as " + matchArr[2] + "_module");
                             // ImportLib.push(matchArr[2]);
                             exportList += `export const ${matchArr[2]} = ${matchArr[4]+ "_module"};\n`;
 
@@ -74,7 +74,7 @@ exports.module=function (grassconf) {
 
                 });
 
-                let replaceData = "import {"+importLib.join(", ")+"} from './index.js';";
+                let replaceData = "import {\n"+importLib.join(",\n")+"\n    } from './index.js';";
 
                 replaceData = replaceData + "\n" + exportList;
                 data.writeData(replaceData);

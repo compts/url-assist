@@ -1,4 +1,20 @@
-import {getHostDetails as getHostDetails_module, formatUrl as formatUrl_module, qsStringify as qsStringify_module, qsParse as qsParse_module, isHttps as isHttps_module, isHttpProtocolValid as isHttpProtocolValid_module, joinUrlPath as joinUrlPath_module, isUrlExtValid as isUrlExtValid_module, isWebSocketProtocolValid as isWebSocketProtocolValid_module, isUrlValidFormat as isUrlValidFormat_module, urlComposer as urlComposer_module, urlPattern as urlPattern_module, slugify as slugify_module, queryEncode as queryEncode_module, queryDecode as queryDecode_module} from './index.js';
+import {
+    getHostDetails as getHostDetails_module,
+    formatUrl as formatUrl_module,
+    qsStringify as qsStringify_module,
+    qsParse as qsParse_module,
+    isHttps as isHttps_module,
+    isHttpProtocolValid as isHttpProtocolValid_module,
+    joinUrlPath as joinUrlPath_module,
+    isUrlExtValid as isUrlExtValid_module,
+    isWebSocketProtocolValid as isWebSocketProtocolValid_module,
+    isUrlValidFormat as isUrlValidFormat_module,
+    urlComposer as urlComposer_module,
+    urlPattern as urlPattern_module,
+    slugify as slugify_module,
+    queryEncode as queryEncode_module,
+    queryDecode as queryDecode_module
+} from './index.js';
 export const getHostDetails = getHostDetails_module;
 export const formatUrl = formatUrl_module;
 export const qsStringify = qsStringify_module;
