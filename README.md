@@ -150,3 +150,8 @@ isHttps('http://example.com')// false
 isHttpProtocolValid('https://example.com')// true
 isHttpProtocolValid('ftp://example.com')// false
 ```
+
+[slugify your url/path](#slugify)
+``` javascript
+slugify("Hello world 123")// "hello-world-123"
+```
