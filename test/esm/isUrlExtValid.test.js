@@ -1,4 +1,4 @@
-import {isUrlExtValid} from "../../dist/esm/src/index";
+import {isUrlExtValid} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: isUrlExtValid method', function () {

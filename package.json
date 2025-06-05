@@ -3,12 +3,12 @@
   "version": "1.2.7.1",
   "description": "URL library at your ease",
   "main": "./dist/cjs/url-assist.cjs.js",
-  "module": "./dist/esm/src/index.js",
+  "module": "./dist/esm/index.js",
   "types": "./dist/ts/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/esm/src/index.js",
+      "import": "./dist/esm/index.js",
       "require": "./dist/cjs/url-assist.cjs.js",
       "types": {
         "require": "./dist/ts/index.d.ts",
