@@ -1,4 +1,4 @@
-/* @ts-self-types="./node.esm.d.ts" */
+/* @ts-self-types="../ts/node.esm.d.ts" */
 
 import {
     getHostDetails as getHostDetails_module,
