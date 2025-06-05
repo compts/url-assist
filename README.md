@@ -145,8 +145,8 @@ isHttps('https://example.com')// true
 isHttps('http://example.com')// false
 ```
 
-[Check https/http is valid](#check-https-http-valid)
+[slugify your url/path](#slugify)
 ``` javascript
-isHttpProtocolValid('https://example.com')// true
-isHttpProtocolValid('ftp://example.com')// false
+isHttpProtocolValid('Hello world 123')// hello-world-123
 ```
+
