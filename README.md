@@ -1,5 +1,7 @@
 # UrlAssist
-[![NPM version][npm-image]][npm-url] 
+[![NPM version][npm-image]][npm-url]
+[![Build Status](https://github.com/compts/url-assist/actions/workflows/cicd.yaml/badge.svg?branch=main)](https://github.com/compts/url-assist/actions)
+[![NPM Downloads](https://img.shields.io/npm/dm/url-assist?logo=npm&style=flat-square)](https://npmtrends.com/url-assist)
 
 [Site](https://urlassist.codehyouka.xyz/) |
 [Docs](https://urlassist.codehyouka.xyz/api) |
@@ -50,7 +52,7 @@ isUrlExtValid('https://example.com/example.js', 'js')
 ```
 
 [npm-url]: https://www.npmjs.com/package/url-assist
-[npm-image]: https://img.shields.io/badge/url_assist-1.2.6-brightgreen
+[npm-image]: https://img.shields.io/badge/url_assist-1.2.7-brightgreen
 
 ## List of method you can use to check your url
 

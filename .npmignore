@@ -4,3 +4,9 @@ notes
 node_modules
 example
 dist/web/*
+.clover
+src
+coverage
+tsgenerate.sh
+grassfile.js
+releaseNote

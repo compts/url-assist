@@ -1,0 +1,35 @@
+name: Publish
+on:
+  push:
+    branches: 
+    - release
+  release:
+    types: [published]
+jobs:
+  publish:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
+    strategy:
+      matrix:
+        node-version: [ 21.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - name: Install Deno
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version: v2.x
+    - uses: actions/checkout@v4
+    - name: Deno publish
+      run: |
+        npx jsr publish
+

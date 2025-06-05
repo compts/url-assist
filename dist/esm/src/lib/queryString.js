@@ -31,7 +31,7 @@ function qsStringify (value, config) {
     const referenceValue = [];
     const defaultConfig = varExtend(configQueryString, config);
 
-    each(value, function (key, val) {
+    each(value, function (val, key) {
 
         parseStringConvert(key, val, getTypeof(val), defaultConfig, referenceValue);
 
@@ -64,7 +64,7 @@ const parseStringConvert=function (key, value, type, config, reference) {
         "array"
     ], type) >=zero) {
 
-        each(value, function (ky, vl) {
+        each(value, function (vl, ky) {
 
             const keyVal = indexOf([
                 "number",

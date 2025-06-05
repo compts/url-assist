@@ -1,6 +1,6 @@
 {
   "name": "url-assist",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "URL library at your ease",
   "main": "./dist/cjs/url-assist.cjs.js",
   "module": "./dist/esm/src/index.js",
@@ -72,8 +72,7 @@
   },
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
-    "tsd": "^0.19.1",
-    "structkit": "^1.4.843"
+    "structkit": "^1.4.87"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
@@ -87,7 +86,8 @@
     "esm": "^3.2.25",
     "jest": "^27.5.1",
     "mocha": "^5.2.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsd": "^0.19.1"
   },
   "jest": {
     "collectCoverage": true,

@@ -20,6 +20,10 @@ var zero = 0;
 var one =1;
 var two =2;
 var three = 3;
+var five = 5;
+var six = 6;
+
+//  * @param {string} url - URL to check
 
 /**
  * Query String stringify
@@ -48,7 +52,7 @@ function qsStringify (value, config) {
     var referenceValue = [];
     var defaultConfig = _stk.varExtend(configQueryString, config);
 
-    _stk.each(value, function (key, val) {
+    _stk.each(value, function (val, key) {
 
         parseStringConvert(key, val, _stk.getTypeof(val), defaultConfig, referenceValue);
 
@@ -81,7 +85,7 @@ var parseStringConvert=function (key, value, type, config, reference) {
         "array"
     ], type) >=zero) {
 
-        _stk.each(value, function (ky, vl) {
+        _stk.each(value, function (vl, ky) {
 
             var keyVal = _stk.indexOf([
                 "number",
@@ -113,20 +117,50 @@ var parseStringConvert=function (key, value, type, config, reference) {
 };
 
 /**
- * Decoding URI component
+ * Query String encode
  *
- * @since 1.2.6
- * @category Seq
- * @param {any} value URI string that you want to convert
- * @returns {any} Returns the string of querystring.
+ * @since 1.2.7
+ * @category string
+ * @param {string} query Passing the completet domain url
+ * @returns {string} Return the string.
  * @example
  *
- * decodeStr("tests+test")
- * // => tests test
+ * formatUrl('helloworld')
+ *=> helloworld/
  */
-var decodeStr = function (value) {
+function queryEncode (query) {
 
-    var updateValue = value.replace(/\+/g, ' ');
+    var updateValue = query.replace(/\+/g, ' ');
+
+    try {
+
+        updateValue = encodeURIComponent(updateValue);
+
+        return updateValue;
+
+    } catch (err) {
+
+        return updateValue;
+
+    }
+
+}
+
+/**
+ * Query String decode
+ *
+ * @since 1.2.7
+ * @category string
+ * @param {string} query Passing the completet domain url
+ * @returns {string} Return the string.
+ * @example
+ *
+ * formatUrl('helloworld')
+ *=> helloworld/
+ */
+function queryDecode (query) {
+
+    var updateValue = query.replace(/\+/g, ' ');
 
     try {
 
@@ -140,7 +174,7 @@ var decodeStr = function (value) {
 
     }
 
-};
+}
 
 /**
  * Query String object
@@ -162,9 +196,13 @@ function qsParse (value, config) {
         return {};
 
     }
+    if (_stk.isEmpty(value)) {
 
+        return {};
+
+    }
+    value = queryDecode(value);
     value = value.trim().replace(/^[?#&]/, '');
-    value = decodeStr(value);
     var referenceValue = {};
     var defaultConfig = _stk.varExtend(configQueryString, config);
     var defaultSplit = value.split(defaultConfig.newLineSeparator);
@@ -172,111 +210,17 @@ function qsParse (value, config) {
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
+    var reFlistKey = [];
+
     qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
-
-    });
-
-    // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+        referenceValue = parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly, reFlistKey, true);
 
     });
 
     return referenceValue;
 
 }
-
-/**
- * Parsing query string into JSON object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-var parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
-
-    var filterKeyList = _stk.filter(keyList, function (ke, value) {
-
-        return _stk.isEmpty(value)===false;
-
-    });
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
-
-        referenceValue[keyOnly] = getValueOnly;
-
-    }
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
-
-        var firstKey = _stk.first(filterKeyList);
-        var referenceData = {};
-
-        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
-        referenceValue[keyOnly].push(_stk.isEmpty(firstKey)
-            ? getValueOnly
-            : referenceData);
-
-    }
-
-    if (_stk.getTypeof(referenceValue[keyOnly]) === "json") {
-
-        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
-
-    }
-
-};
-
-/**
- * Parsing nested object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
-
-    var keyListClone = _stk.clone(keyList);
-
-    keyList.shift();
-    if (_stk.isEmpty(keyList)) {
-
-        if (_stk.getTypeof(referenceValue[_stk.first(keyListClone)]) === "array") {
-
-            referenceValue[_stk.first(keyListClone)].push(getValueOnly);
-
-        } else {
-
-            referenceValue[_stk.first(keyListClone)] = getValueOnly;
-
-        }
-
-    } else {
-
-        objectMultipleKey(referenceValue[_stk.first(keyListClone)], keyList, getValueOnly);
-
-    }
-
-};
 
 /**
  * Parsing JSON object into query string
@@ -288,59 +232,128 @@ var objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @param {any} keyOnly Key in array
  * @param {any} keyList array of keys in array argument
  * @param {any} getValueOnly Value to replace
+ * @param {any} reFlistKey Value to replace
+ * @param {any} isParent Value to replace
  * @returns {null} Returns the null.
  * @example
  *
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => null
  */
-var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly, reFlistKey, isParent) {
+
+    var keyRefArray = _stk.toArray(keyList);
+
+    var keyFlatten = _stk.flatten([
+        keyOnly,
+        keyRefArray
+    ]);
+    var keyFlattenJoin = keyFlatten.join(".");
 
     if (_stk.has(referenceValue, keyOnly) ===false) {
 
         if (_stk.isEmpty(keyList)) {
 
-            if (_stk.isEmpty(keyOnly) ===false) {
-
-                referenceValue[keyOnly]="";
-
-            }
+            referenceValue[keyOnly] = getValueOnly;
 
         } else {
 
-            var firstKey = _stk.first(keyList);
+            referenceValue = _stk.setData(referenceValue, keyFlattenJoin, getValueOnly);
 
-            if (_stk.isEmpty(firstKey)) {
+        }
+        reFlistKey.push(keyOnly);
 
-                referenceValue[keyOnly] = [];
+        return referenceValue;
+
+    }
+
+    if (_stk.indexOfExist(reFlistKey, keyOnly)) {
+
+        if (_stk.indexOfExist([
+            "string",
+            "number",
+            "boolean",
+            "null"
+        ], _stk.getTypeof(referenceValue[keyOnly]))) {
+
+            var isrefExist = _stk.someValid(_stk.map(isParent
+                ?[keyOnly]
+                :[keyFlattenJoin], function (params) {
+
+                return _stk.getData(referenceValue, params, true) !== null;
+
+            }));
+
+            if (_stk.isEmpty(keyList) === false) {
+
+                if (isrefExist) {
+
+                    referenceValue = _stk.setData(referenceValue, keyOnly, [
+                        referenceValue[keyOnly],
+                        _stk.setData({}, keyList.join("."), getValueOnly)
+                    ]);
+
+                } else {
+
+                    referenceValue = _stk.setData(referenceValue, keyOnly, _stk.setData({}, keyList.join("."), getValueOnly));
+
+                }
 
             } else {
 
-                referenceValue[keyOnly] = {};
+                if (isrefExist) {
+
+                    referenceValue = _stk.setData(referenceValue, keyOnly, [
+                        referenceValue[keyOnly],
+                        getValueOnly
+                    ]);
+
+                } else {
+
+                    referenceValue = _stk.setData(referenceValue, keyOnly, getValueOnly);
+
+                }
 
             }
+            reFlistKey.push(keyFlattenJoin);
 
-            if (_stk.isEmpty(keyList) ===false) {
+            return referenceValue;
 
-                var keyListClone = _stk.clone(keyList);
+        }
+        if (_stk.getTypeof(referenceValue[keyOnly]) === "array") {
 
-                keyList.shift();
+            // If the key is array, then we need to set the value
+            var referenceData = referenceValue[keyOnly];
 
-                parseObjectSchema(referenceValue[keyOnly], defaultConfig, _stk.first(keyListClone), keyList, getValueOnly);
+            if (_stk.isEmpty(keyList)) {
+
+                referenceData.push(getValueOnly);
+
+            } else {
+
+                referenceData.push(_stk.setData({}, keyList.join("."), getValueOnly));
 
             }
+            referenceValue = _stk.setData(referenceValue, keyOnly, referenceData);
+            reFlistKey.push(keyFlattenJoin);
+
+            return referenceValue;
 
         }
 
-    } else {
+        var referenceData = referenceValue[keyOnly];
 
-        if (_stk.getTypeof(referenceValue[keyOnly]) === "string") {
+        referenceData = parseObjectSchema(referenceData, defaultConfig, _stk.first(keyList), _stk.toArray(_stk.remove(keyList, zero)), getValueOnly, keyList, false);
 
-            referenceValue[keyOnly] = [];
+        referenceValue = _stk.setData(referenceValue, keyOnly, referenceData);
 
-        }
+        reFlistKey.push(keyFlattenJoin);
+
+        return referenceValue;
 
     }
+
+    return referenceValue;
 
 };
 
@@ -360,7 +373,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
  */
 var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    _stk.each(defaultSplit, function (__, val) {
+    _stk.each(defaultSplit, function (val) {
 
         var getKeyAndValue = val.split(defaultConfig.equalSeparator);
         var getKeyOnly = _stk.first(getKeyAndValue);
@@ -391,11 +404,51 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, getValueOnly);
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
 
         }
 
     });
+
+};
+
+/**
+ * Convert value to its type
+ *
+ * @since 1.2.7
+ * @category Seq
+ * @param {any} value config defalut value
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
+ * // => true
+ */
+var convertValueToItsType = function (value) {
+
+    if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
+
+        value = parseFloat(value);
+
+    } else if ((/^([0-9]{1,})$/gmi).test(value)) {
+
+        value = parseInt(value);
+
+    } else if (value === "true") {
+
+        value = true;
+
+    } else if (value === "false") {
+
+        value = false;
+
+    } else if (value === "null") {
+
+        value = null;
+
+    }
+
+    return value;
 
 };
 
@@ -466,7 +519,8 @@ function ifValidHost (domain, protocol, port, subdomain, tld) {
  */
 function removeSlash (data) {
 
-    return data.replace(/^(\/)/, "").replace(/(\/)$/, "");
+    return data.replace(/^(\/)/g, "").replace(/(\/)$/g, "")
+        .replace(/[/]{2,}/g, "/");
 
 }
 
@@ -566,7 +620,7 @@ UrlComposerInit.prototype.setPort = function (data) {
  */
 UrlComposerInit.prototype.setPathPrefix = function (data) {
 
-    this.variablePathPrefix = data;
+    this.variablePathPrefix = removeSlash(data);
 
 };
 
@@ -584,7 +638,7 @@ UrlComposerInit.prototype.setPathPrefix = function (data) {
  */
 UrlComposerInit.prototype.setPath = function (data) {
 
-    this.variablePath = data;
+    this.variablePath = removeSlash(data);
 
 };
 
@@ -656,6 +710,15 @@ UrlComposerInit.prototype.setSubdomain = function (data) {
  */
 UrlComposerInit.prototype.setQueryString = function (data) {
 
+    if (_stk.getTypeof(data) === "string") {
+
+        data = qsParse(data);
+
+    } else if (!_stk.has(data)) {
+
+        data = {};
+
+    }
     this.variableQueryString = data;
 
 };
@@ -687,9 +750,7 @@ UrlComposerInit.prototype.getToString = function () {
             : '#'+this.variableHash,
         "path": _stk.isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(joinPath)
-                .replace(/^(\/)/, "")
-                .replace(/(\/)$/, ""),
+            : '/'+removeSlash(joinPath),
         "port": _stk.isEmpty(urlData.port)
             ? ''
             : ':'+urlData.port,
@@ -1020,7 +1081,7 @@ PathPatternInit.prototype.getParam = function () {
 
         var matchPatternPath = refPath.match(refPattern.patterns);
 
-        _stk.each(refPattern.arguments, function (key, value) {
+        _stk.each(refPattern.arguments, function (value) {
 
             refParam[value.name] = matchPatternPath[value.index + (_stk.count(matchPatternPath)-_stk.count(refPattern.arguments))];
 
@@ -1057,6 +1118,7 @@ var getDomain =function (domain) {
     var splitDomain = referenceDomain.split("/");
     var getDomainFirstSplit = _stk.first(splitDomain);
     var pathValueDetails = _stk.arraySlice(splitDomain, one).join("/");
+    var referenceDomainNoProtocol = referenceDomain.replace(/^((https|http)?:\/\/)/, "");
 
     var validUrl = true;
 
@@ -1079,6 +1141,29 @@ var getDomain =function (domain) {
         }
 
         getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    var matchIPV6 = referenceDomain.match(/\[?([A-F0-9:]+)?\]/i);
+
+    if (matchIPV6 && validUrl) {
+
+        validUrl = false;
+        getDomainFirstSplit = _stk.first(matchIPV6);
+        pathValueDetails = referenceDomainNoProtocol.replace(getDomainFirstSplit, "");
+
+        pathValueDetails = pathValueDetails.replace(/:([0-9]{2,})?\//g, function (wh, s1) {
+
+            getDomainFirstSplit = getDomainFirstSplit+":"+s1;
+
+            return "";
+
+        });
+
+    }
+    if ((/^\[?([A-F0-9]{1,4}(:[A-F0-9]{1,4}){7}|([A-F0-9]{1,4}:){1,7}:|:((:[A-F0-9]{1,4}){1,7}|:)|([A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}|([A-F0-9]{1,4}:){1,5}(:[A-F0-9]{1,4}){1,2}|([A-F0-9]{1,4}:){1,4}(:[A-F0-9]{1,4}){1,3}|([A-F0-9]{1,4}:){1,3}(:[A-F0-9]{1,4}){1,4}|([A-F0-9]{1,4}:){1,2}(:[A-F0-9]{1,4}){1,5}|[A-F0-9]{1,4}:((:[A-F0-9]{1,4}){1,6}))\]?$/i).test(getDomainFirstSplit) && validUrl) {
+
+        validUrl = false;
 
     }
 
@@ -1169,12 +1254,27 @@ var getDomainDetails=function (domain) {
 
     if (_stk.count(domainSplit) === one) {
 
-        domainDetails = {
-            "domain": _stk.first(getTLD),
-            "domainWithTld": _stk.first(getTLD),
-            "subdomain": "",
-            "tld": ""
-        };
+        if (_stk.count(getTLD) > one) {
+
+            domainDetails = {
+                "domain": _stk.arraySlice(getTLD, zero, _stk.count(getTLD)>=six
+                    ?five
+                    : _stk.count(getTLD)-one).join(":"),
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            };
+
+        } else {
+
+            domainDetails = {
+                "domain": _stk.first(getTLD),
+                "domainWithTld": _stk.first(getTLD),
+                "subdomain": "",
+                "tld": ""
+            };
+
+        }
 
     }
 
@@ -1191,12 +1291,12 @@ var getDomainDetails=function (domain) {
 
     if (_stk.count(domainSplit) >= three) {
 
-        var getDefaultDomain = _stk.arraySlice(domainSplit, _stk.count(domainSplit) - two, _stk.count(domainSplit) - two);
+        var getDefaultDomain = _stk.arraySlice(domainSplit, one, _stk.count(domainSplit) - two).join(".");
 
         domainDetails = {
-            "domain": _stk.toString(getDefaultDomain),
+            "domain": getDefaultDomain,
             "domainWithTld": getDefaultDomain +"."+_stk.last(domainSplit),
-            "subdomain": _stk.arraySlice(domainSplit, zero, _stk.count(domainSplit) - three).join("."),
+            "subdomain": _stk.first(domainSplit),
             "tld": _stk.first(getTLD)
         };
 
@@ -1224,6 +1324,7 @@ var isUrlValidFormatVerifier=function (domain, config) {
 
     var validConfig = _stk.varExtend({
         "allowIP4": true,
+        "allowIP6": true,
         "allowLocalhost": true
     }, config);
     var httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
@@ -1245,12 +1346,50 @@ var isUrlValidFormatVerifier=function (domain, config) {
             return true;
 
         }
+        if ((/^\[?([A-F0-9]{1,4}(:[A-F0-9]{1,4}){7}|([A-F0-9]{1,4}:){1,7}:|:((:[A-F0-9]{1,4}){1,7}|:)|([A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}|([A-F0-9]{1,4}:){1,5}(:[A-F0-9]{1,4}){1,2}|([A-F0-9]{1,4}:){1,4}(:[A-F0-9]{1,4}){1,3}|([A-F0-9]{1,4}:){1,3}(:[A-F0-9]{1,4}){1,4}|([A-F0-9]{1,4}:){1,2}(:[A-F0-9]{1,4}){1,5}|[A-F0-9]{1,4}:((:[A-F0-9]{1,4}){1,6}))\]?$/i).test(cleanUrl) && validConfig.allowIP6) {
+
+            return true;
+
+        }
         var cleanUrlSplit = cleanUrl.split(".");
+
+        var filterEmpty = _stk.filter(cleanUrlSplit, function (valS) {
+
+            return _stk.isEmpty(valS);
+
+        });
+
+        // Check if there is a empty in split url
+        if (_stk.isEmpty(filterEmpty) === false) {
+
+            return false;
+
+        }
 
         if (_stk.count(cleanUrlSplit) >= two) {
 
-            var getTLD = _stk.count(_stk.first(_stk.last(cleanUrlSplit).split("/")).split(""));
+            var tldName = _stk.last(cleanUrlSplit);
+            var getTLD = _stk.count(_stk.first(tldName.split("/")).split(""));
 
+            if ((/^[a-zA-Z]{0,}:?([0-9]{2,})$/g).test(tldName)) {
+
+                var tldNameSplit = tldName.split(":");
+
+                if (_stk.count(tldNameSplit) === two && (/^[a-zA-Z]{0,}$/g).test(_stk.first(tldNameSplit))) {
+
+                    if (_stk.isEmpty(_stk.first(tldNameSplit))) {
+
+                        return false;
+
+                    }
+
+                    return validDomainRegExp.test(_stk.first(cleanUrlSplit));
+
+                }
+
+                return false;
+
+            }
             if (getTLD > one && getTLD <= validTLDlen) {
 
                 if (_stk.count(cleanUrlSplit) === two) {
@@ -1315,7 +1454,7 @@ var urlDetails=function (domain) {
         "user": ""
     };
 
-    domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
+    domain.replace(/([\w\\+]{1,}):\/\//g, function (wh, s1) {
 
         dataReference.protocol = s1;
 
@@ -1388,6 +1527,7 @@ var urlDetails=function (domain) {
  */
 function formatUrlInit (pattern, ext) {
 
+    var one =1;
     var strPattern = pattern.replace(/\/$/g, "");
 
     if (ext.stripHash) {
@@ -1397,10 +1537,42 @@ function formatUrlInit (pattern, ext) {
         strPattern = _stk.first(rawStr);
 
     }
+    var refQueryParam = "";
+    var rawStrParamPattern = strPattern.split("?");
+
+    if (rawStrParamPattern.length > one) {
+
+        strPattern = _stk.first(rawStrParamPattern);
+        refQueryParam = _stk.last(rawStrParamPattern);
+
+    }
+    if (ext && ext.stripQuery) {
+
+        strPattern = _stk.first(rawStrParamPattern);
+
+    }
+    if (ext && ext.stripProtocol) {
+
+        var rawStr = strPattern.split("://");
+
+        strPattern = _stk.first(rawStr);
+
+    }
+    if (ext && ext.stripWww) {
+
+        strPattern = strPattern.replace(/^www\./, "");
+
+    }
 
     if (ext.slash) {
 
         strPattern += "/";
+
+    }
+
+    if (ext && ext.stripQuery === false && !_stk.isEmpty(refQueryParam)) {
+
+        strPattern = strPattern+"?" + refQueryParam;
 
     }
 
@@ -2278,7 +2450,7 @@ function getHostDetails (host) {
  */
 function isUrlExtValid (host, ext) {
 
-    var regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&]{0,}$", "g");
+    var regularExpression = new RegExp("(."+ext+")[?#/]{0,1}[\\w\\d\\=\\_\\-\\$\\%\\@\\&\\#]{0,}$", "g");
 
     return isHttpProtocolValid(host) &&regularExpression.test(host);
 
@@ -2304,17 +2476,21 @@ function slugify (pattern, ext) {
     var varExt = _stk.varExtend({
         "delimiter": "-",
         "dictStrictMap": {},
+        "isStripDomanName": true,
         "lower": true,
         "remove": null,
-        "replaceStrictMap": false,
-        "strict": false
+        "replaceStrictMap": true,
+        "strict": true
     }, ext);
+
+    strPattern = strPattern.replace(/[\s]{2,}/g, " ");
+    strPattern = strPattern.replace(/[-_]{1,}/g, " ");
 
     if (varExt.replaceStrictMap) {
 
         var refCharMap = _stk.mergeWithKey(charMap, varExt.dictStrictMap);
 
-        strPattern = _stk.reduce("", strPattern.split(""), function (sums, value) {
+        strPattern = _stk.reduce("", strPattern.normalize().split(""), function (sums, value) {
 
             sums+= _stk.has(refCharMap, value)
                 ?refCharMap[value]
@@ -2325,14 +2501,9 @@ function slugify (pattern, ext) {
         });
 
     }
-    if (varExt.strict) {
-
-        strPattern = strPattern.replace(/[\s]{2,}/g, " ");
-        strPattern = strPattern.replace(/[^\w\d\s]/g, "");
-
-    }
 
     strPattern = strPattern.replace(/[\n\t\r]/g, " ");
+    strPattern = _stk.trim(strPattern);
     strPattern = strPattern.replace(/([\s])/g, varExt.delimiter);
 
     if (varExt.lower) {
@@ -2340,12 +2511,24 @@ function slugify (pattern, ext) {
         strPattern = _stk.stringLowerCase(strPattern);
 
     }
+    if (varExt.isStripDomanName) {
 
-    if (_stk.getTypeof(varExt.remove)==="regexp") {
+        if (isUrlValidFormat(strPattern)) {
 
-        strPattern = strPattern.replace(varExt.remove, "");
+            var details = getHostDetails(strPattern);
+
+            strPattern = details.pathname;
+
+        }
 
     }
+    if (varExt.strict) {
+
+        strPattern = strPattern.replace(new RegExp("[^\\w\\d\\s"+varExt.delimiter+"]", "g"), "");
+
+    }
+
+    strPattern = strPattern.replace(varExt.remove || /[!@#$%^&*()'":]+/g, "");
 
     return strPattern;
 
@@ -2368,7 +2551,10 @@ function formatUrl (pattern, ext) {
 
     var varExt = _stk.varExtend({
         "slash": true,
-        "stripHash": false
+        "stripHash": false,
+        "stripProtocol": false,
+        "stripQuery": false,
+        "stripWww": false
     }, ext);
 
     if ((/\s/g).test(pattern)) {
@@ -2399,6 +2585,8 @@ urs.isUrlValidFormat=isUrlValidFormat;
 urs.urlComposer=urlComposer;
 urs.urlPattern=urlPattern;
 urs.slugify=slugify;
+urs.queryEncode=queryEncode;
+urs.queryDecode=queryDecode;
 
 
  })(typeof window !== "undefined" ? window : this);

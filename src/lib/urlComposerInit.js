@@ -1,4 +1,4 @@
-const {templateValue, isEmpty} = require("structkit");
+const {templateValue, isEmpty, has, getTypeof} = require("structkit");
 const {qsParse} = require("./queryObject");
 const {qsStringify} = require("./queryString");
 
@@ -71,7 +71,8 @@ function ifValidHost (domain, protocol, port, subdomain, tld) {
  */
 function removeSlash (data) {
 
-    return data.replace(/^(\/)/, "").replace(/(\/)$/, "");
+    return data.replace(/^(\/)/g, "").replace(/(\/)$/g, "")
+        .replace(/[/]{2,}/g, "/");
 
 }
 
@@ -171,7 +172,7 @@ UrlComposerInit.prototype.setPort = function (data) {
  */
 UrlComposerInit.prototype.setPathPrefix = function (data) {
 
-    this.variablePathPrefix = data;
+    this.variablePathPrefix = removeSlash(data);
 
 
 };
@@ -190,7 +191,7 @@ UrlComposerInit.prototype.setPathPrefix = function (data) {
  */
 UrlComposerInit.prototype.setPath = function (data) {
 
-    this.variablePath = data;
+    this.variablePath = removeSlash(data);
 
 
 };
@@ -265,6 +266,15 @@ UrlComposerInit.prototype.setSubdomain = function (data) {
  */
 UrlComposerInit.prototype.setQueryString = function (data) {
 
+    if (getTypeof(data) === "string") {
+
+        data = qsParse(data);
+
+    } else if (!has(data)) {
+
+        data = {};
+
+    }
     this.variableQueryString = data;
 
 };
@@ -296,9 +306,7 @@ UrlComposerInit.prototype.getToString = function () {
             : '#'+this.variableHash,
         "path": isEmpty(joinPath)
             ? ''
-            : '/'+removeSlash(joinPath)
-                .replace(/^(\/)/, "")
-                .replace(/(\/)$/, ""),
+            : '/'+removeSlash(joinPath),
         "port": isEmpty(urlData.port)
             ? ''
             : ':'+urlData.port,

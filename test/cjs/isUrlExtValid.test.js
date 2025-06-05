@@ -22,4 +22,54 @@ describe('CJS: isUrlExtValid method', function () {
 
     });
 
+    it('check isUrlExtValid extension with argument and hash', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'js'), true);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'css'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'html'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'html'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'js'), true);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'css'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'html'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'js'), true);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'css'), false);
+
+    });
+    it('check isUrlExtValid extension with argument and hash with different extension', function () {
+
+        assert.deepStrictEqual(isUrlExtValid('https://example.com/example.js?ssasa=1%20&sa=1#hash', 'html'), false);
+
+    });
 });

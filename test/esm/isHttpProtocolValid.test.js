@@ -50,5 +50,65 @@ describe('ESM: isHttpProtocolValid method', function () {
         assert.deepStrictEqual(isHttpProtocolValid("http://localhost:8080"), true);
 
     });
+    it('check isHttpProtocolValid empty string is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid(""), false);
+
+    });
+    it('check isHttpProtocolValid invalid URL is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("invalid-url"), false);
+
+    });
+    it('check isHttpProtocolValid URL without protocol is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("example.com"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and port is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://:8080"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www."), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port with path is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080/test"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port with path and query is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080/test?query=1"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port with path and query and hash is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080/test?query=1#hash"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port with path and query and hash with trailing slash is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080/test?query=1#hash/"), false);
+
+    });
+    it('check isHttpProtocolValid URL with only protocol and subdomain and port with path and query and hash with trailing slash and port is not valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("https://www.:8080/test?query=1#hash/"), false);
+
+    });
 
 });

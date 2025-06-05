@@ -1,8 +1,8 @@
-const {isEmpty, has, getTypeof, first, clone, each, arraySlice, filter} = require("structkit");
+const {isEmpty, has, getTypeof, remove, indexOfExist, someValid, first, setData, getData, flatten, toArray, map, each, arraySlice} = require("structkit");
 const {configQueryString} = require("./config");
 const {zero, one} = require("./variable");
 const {varExtend, indexOfNotExist} = require("structkit");
-const {decodeStr} = require("./format");
+const {queryDecode} = require("./format");
 
 /**
  * Query String object
@@ -24,26 +24,26 @@ function qsParse (value, config) {
         return {};
 
     }
+    if (isEmpty(value)) {
 
+        return {};
+
+    }
+    value = queryDecode(value);
     value = value.trim().replace(/^[?#&]/, '');
-    value = decodeStr(value);
-    const referenceValue = {};
+    let referenceValue = {};
     const defaultConfig = varExtend(configQueryString, config);
     const defaultSplit = value.split(defaultConfig.newLineSeparator);
 
     // https://www.w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
 
     // Schema for data
+    const reFlistKey = [];
+
     qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
 
-        parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
+        referenceValue = parseObjectSchema(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly, reFlistKey, true);
 
-    });
-
-    // Value for its data
-    qsParseCallback(defaultConfig, defaultSplit, function (keyOnly, keyList, getValueOnly) {
-
-        parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly);
 
     });
 
@@ -51,95 +51,6 @@ function qsParse (value, config) {
 
 }
 
-/**
- * Parsing query string into JSON object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} defaultConfig config defalut value
- * @param {any} keyOnly Key in array
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-const parseObjectConvert = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
-
-    const filterKeyList = filter(keyList, function (ke, value) {
-
-        return isEmpty(value)===false;
-
-    });
-
-    if (getTypeof(referenceValue[keyOnly]) === "string") {
-
-        referenceValue[keyOnly] = getValueOnly;
-
-    }
-
-    if (getTypeof(referenceValue[keyOnly]) === "array") {
-
-        const firstKey = first(filterKeyList);
-        const referenceData = {};
-
-        objectMultipleKey(referenceData, filterKeyList, getValueOnly);
-        referenceValue[keyOnly].push(isEmpty(firstKey)
-            ? getValueOnly
-            : referenceData);
-
-    }
-
-    if (getTypeof(referenceValue[keyOnly]) === "json") {
-
-        objectMultipleKey(referenceValue[keyOnly], filterKeyList, getValueOnly);
-
-    }
-
-};
-
-
-/**
- * Parsing nested object
- *
- * @since 1.0.1
- * @category Seq
- * @param {any} referenceValue reference from main function to recursive
- * @param {any} keyList array of keys in array argument
- * @param {any} getValueOnly Value to replace
- * @returns {null} Returns the null.
- * @example
- *
- * parseObjectConvert(referenceValue, defaultConfig, keyOnly, keyList, getValueOnly)
- * // => null
- */
-const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
-
-    const keyListClone = clone(keyList);
-
-    keyList.shift();
-    if (isEmpty(keyList)) {
-
-        if (getTypeof(referenceValue[first(keyListClone)]) === "array") {
-
-            referenceValue[first(keyListClone)].push(getValueOnly);
-
-        } else {
-
-            referenceValue[first(keyListClone)] = getValueOnly;
-
-        }
-
-    } else {
-
-        objectMultipleKey(referenceValue[first(keyListClone)], keyList, getValueOnly);
-
-    }
-
-};
 
 /**
  * Parsing JSON object into query string
@@ -151,59 +62,145 @@ const objectMultipleKey = function (referenceValue, keyList, getValueOnly) {
  * @param {any} keyOnly Key in array
  * @param {any} keyList array of keys in array argument
  * @param {any} getValueOnly Value to replace
+ * @param {any} reFlistKey Value to replace
+ * @param {any} isParent Value to replace
  * @returns {null} Returns the null.
  * @example
  *
  * parseObjectSchema({"test": 11,"test2": 11}, {"test2": 11})
  * // => null
  */
-const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly) {
+const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyList, getValueOnly, reFlistKey, isParent) {
+
+    const keyRefArray = toArray(keyList);
+
+    const keyFlatten = flatten([
+        keyOnly,
+        keyRefArray
+    ]);
+    const keyFlattenJoin = keyFlatten.join(".");
+
 
     if (has(referenceValue, keyOnly) ===false) {
 
         if (isEmpty(keyList)) {
 
-            if (isEmpty(keyOnly) ===false) {
 
-                referenceValue[keyOnly]="";
+            referenceValue[keyOnly] = getValueOnly;
 
-            }
 
         } else {
 
-            const firstKey = first(keyList);
 
-            if (isEmpty(firstKey)) {
+            referenceValue = setData(referenceValue, keyFlattenJoin, getValueOnly);
 
-                referenceValue[keyOnly] = [];
+
+        }
+        reFlistKey.push(keyOnly);
+
+
+        return referenceValue;
+
+    }
+
+
+    if (indexOfExist(reFlistKey, keyOnly)) {
+
+
+        if (indexOfExist([
+            "string",
+            "number",
+            "boolean",
+            "null"
+        ], getTypeof(referenceValue[keyOnly]))) {
+
+
+            const isrefExist = someValid(map(isParent
+                ?[keyOnly]
+                :[keyFlattenJoin], function (params) {
+
+                return getData(referenceValue, params, true) !== null;
+
+            }));
+
+            if (isEmpty(keyList) === false) {
+
+                if (isrefExist) {
+
+                    referenceValue = setData(referenceValue, keyOnly, [
+                        referenceValue[keyOnly],
+                        setData({}, keyList.join("."), getValueOnly)
+                    ]);
+
+
+                } else {
+
+                    referenceValue = setData(referenceValue, keyOnly, setData({}, keyList.join("."), getValueOnly));
+
+
+                }
 
             } else {
 
-                referenceValue[keyOnly] = {};
+                if (isrefExist) {
+
+                    referenceValue = setData(referenceValue, keyOnly, [
+                        referenceValue[keyOnly],
+                        getValueOnly
+                    ]);
+
+
+                } else {
+
+                    referenceValue = setData(referenceValue, keyOnly, getValueOnly);
+
+
+                }
 
             }
+            reFlistKey.push(keyFlattenJoin);
 
-            if (isEmpty(keyList) ===false) {
+            return referenceValue;
 
-                const keyListClone = clone(keyList);
+        }
+        if (getTypeof(referenceValue[keyOnly]) === "array") {
 
-                keyList.shift();
+            // If the key is array, then we need to set the value
+            const referenceData = referenceValue[keyOnly];
 
-                parseObjectSchema(referenceValue[keyOnly], defaultConfig, first(keyListClone), keyList, getValueOnly);
+            if (isEmpty(keyList)) {
+
+                referenceData.push(getValueOnly);
+
+            } else {
+
+                referenceData.push(setData({}, keyList.join("."), getValueOnly));
 
             }
+            referenceValue = setData(referenceValue, keyOnly, referenceData);
+            reFlistKey.push(keyFlattenJoin);
+
+            return referenceValue;
 
         }
 
-    } else {
 
-        if (getTypeof(referenceValue[keyOnly]) === "string") {
+        let referenceData = referenceValue[keyOnly];
 
-            referenceValue[keyOnly] = [];
+        referenceData = parseObjectSchema(referenceData, defaultConfig, first(keyList), toArray(remove(keyList, zero)), getValueOnly, keyList, false);
 
-        }
+        referenceValue = setData(referenceValue, keyOnly, referenceData);
+
+
+        reFlistKey.push(keyFlattenJoin);
+
+        return referenceValue;
+
 
     }
+
+    return referenceValue;
+
 
 };
 
@@ -223,7 +220,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
  */
 const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
-    each(defaultSplit, function (__, val) {
+    each(defaultSplit, function (val) {
 
         const getKeyAndValue = val.split(defaultConfig.equalSeparator);
         const getKeyOnly = first(getKeyAndValue);
@@ -254,12 +251,52 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, getValueOnly);
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
 
         }
 
 
     });
+
+};
+
+/**
+ * Convert value to its type
+ *
+ * @since 1.2.7
+ * @category Seq
+ * @param {any} value config defalut value
+ * @returns {any} Returns the null.
+ * @example
+ *
+ * qsParseCallback(defaultConfig, defaultSplit, callbacks)
+ * // => true
+ */
+const convertValueToItsType = function (value) {
+
+    if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
+
+        value = parseFloat(value);
+
+    } else if ((/^([0-9]{1,})$/gmi).test(value)) {
+
+        value = parseInt(value);
+
+    } else if (value === "true") {
+
+        value = true;
+
+    } else if (value === "false") {
+
+        value = false;
+
+    } else if (value === "null") {
+
+        value = null;
+
+    }
+
+    return value;
 
 };
 

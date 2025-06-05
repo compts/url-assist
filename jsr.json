@@ -1,0 +1,7 @@
+{
+  "name": "@compts/url-assist",
+  "description": "URL library at your ease",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": "./dist/esm/src/index.js"
+}

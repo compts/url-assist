@@ -1,6 +1,6 @@
-const {count, first, last, arraySlice, indexOfNotExist, isEmpty, toString, varExtend, ifUndefined} = require("structkit");
+const {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend, ifUndefined} = require("structkit");
 const {exemptListOfDomain} = require("./config");
-const {zero, one, two, three} = require("./variable");
+const {zero, one, two, three, five, six} = require("./variable");
 
 /**
  * Get if domain segmet details
@@ -27,6 +27,7 @@ const getDomain =function (domain) {
     const splitDomain = referenceDomain.split("/");
     let getDomainFirstSplit = first(splitDomain);
     let pathValueDetails = arraySlice(splitDomain, one).join("/");
+    const referenceDomainNoProtocol = referenceDomain.replace(/^((https|http)?:\/\/)/, "");
 
     let validUrl = true;
 
@@ -49,6 +50,30 @@ const getDomain =function (domain) {
         }
 
         getDomainFirstSplit = referenceDomain.replace(pathValueDetails, "");
+
+    }
+
+    const matchIPV6 = referenceDomain.match(/\[?([A-F0-9:]+)?\]/i);
+
+    if (matchIPV6 && validUrl) {
+
+        validUrl = false;
+        getDomainFirstSplit = first(matchIPV6);
+        pathValueDetails = referenceDomainNoProtocol.replace(getDomainFirstSplit, "");
+
+        pathValueDetails = pathValueDetails.replace(/:([0-9]{2,})?\//g, function (wh, s1) {
+
+            getDomainFirstSplit = getDomainFirstSplit+":"+s1;
+
+            return "";
+
+        });
+
+
+    }
+    if ((/^\[?([A-F0-9]{1,4}(:[A-F0-9]{1,4}){7}|([A-F0-9]{1,4}:){1,7}:|:((:[A-F0-9]{1,4}){1,7}|:)|([A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}|([A-F0-9]{1,4}:){1,5}(:[A-F0-9]{1,4}){1,2}|([A-F0-9]{1,4}:){1,4}(:[A-F0-9]{1,4}){1,3}|([A-F0-9]{1,4}:){1,3}(:[A-F0-9]{1,4}){1,4}|([A-F0-9]{1,4}:){1,2}(:[A-F0-9]{1,4}){1,5}|[A-F0-9]{1,4}:((:[A-F0-9]{1,4}){1,6}))\]?$/i).test(getDomainFirstSplit) && validUrl) {
+
+        validUrl = false;
 
     }
 
@@ -112,7 +137,6 @@ const getDomain =function (domain) {
  */
 const getDomainDetails=function (domain) {
 
-
     let domainDetails = {
         "domain": "",
         "domainWithTld": "",
@@ -141,12 +165,27 @@ const getDomainDetails=function (domain) {
 
     if (count(domainSplit) === one) {
 
-        domainDetails = {
-            "domain": first(getTLD),
-            "domainWithTld": first(getTLD),
-            "subdomain": "",
-            "tld": ""
-        };
+        if (count(getTLD) > one) {
+
+            domainDetails = {
+                "domain": arraySlice(getTLD, zero, count(getTLD)>=six
+                    ?five
+                    : count(getTLD)-one).join(":"),
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            };
+
+        } else {
+
+            domainDetails = {
+                "domain": first(getTLD),
+                "domainWithTld": first(getTLD),
+                "subdomain": "",
+                "tld": ""
+            };
+
+        }
 
     }
 
@@ -163,12 +202,12 @@ const getDomainDetails=function (domain) {
 
     if (count(domainSplit) >= three) {
 
-        const getDefaultDomain = arraySlice(domainSplit, count(domainSplit) - two, count(domainSplit) - two);
+        const getDefaultDomain = arraySlice(domainSplit, one, count(domainSplit) - two).join(".");
 
         domainDetails = {
-            "domain": toString(getDefaultDomain),
+            "domain": getDefaultDomain,
             "domainWithTld": getDefaultDomain +"."+last(domainSplit),
-            "subdomain": arraySlice(domainSplit, zero, count(domainSplit) - three).join("."),
+            "subdomain": first(domainSplit),
             "tld": first(getTLD)
         };
 
@@ -196,6 +235,7 @@ const isUrlValidFormatVerifier=function (domain, config) {
 
     const validConfig = varExtend({
         "allowIP4": true,
+        "allowIP6": true,
         "allowLocalhost": true
     }, config);
     const httpRegExp = new RegExp("^(http|https):\\/\\/", "g");
@@ -218,12 +258,50 @@ const isUrlValidFormatVerifier=function (domain, config) {
             return true;
 
         }
+        if ((/^\[?([A-F0-9]{1,4}(:[A-F0-9]{1,4}){7}|([A-F0-9]{1,4}:){1,7}:|:((:[A-F0-9]{1,4}){1,7}|:)|([A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}|([A-F0-9]{1,4}:){1,5}(:[A-F0-9]{1,4}){1,2}|([A-F0-9]{1,4}:){1,4}(:[A-F0-9]{1,4}){1,3}|([A-F0-9]{1,4}:){1,3}(:[A-F0-9]{1,4}){1,4}|([A-F0-9]{1,4}:){1,2}(:[A-F0-9]{1,4}){1,5}|[A-F0-9]{1,4}:((:[A-F0-9]{1,4}){1,6}))\]?$/i).test(cleanUrl) && validConfig.allowIP6) {
+
+            return true;
+
+        }
         const cleanUrlSplit = cleanUrl.split(".");
+
+        const filterEmpty = filter(cleanUrlSplit, function (valS) {
+
+            return isEmpty(valS);
+
+        });
+
+        // Check if there is a empty in split url
+        if (isEmpty(filterEmpty) === false) {
+
+            return false;
+
+        }
 
         if (count(cleanUrlSplit) >= two) {
 
-            const getTLD = count(first(last(cleanUrlSplit).split("/")).split(""));
+            const tldName = last(cleanUrlSplit);
+            const getTLD = count(first(tldName.split("/")).split(""));
 
+            if ((/^[a-zA-Z]{0,}:?([0-9]{2,})$/g).test(tldName)) {
+
+                const tldNameSplit = tldName.split(":");
+
+                if (count(tldNameSplit) === two && (/^[a-zA-Z]{0,}$/g).test(first(tldNameSplit))) {
+
+                    if (isEmpty(first(tldNameSplit))) {
+
+                        return false;
+
+                    }
+
+                    return validDomainRegExp.test(first(cleanUrlSplit));
+
+                }
+
+                return false;
+
+            }
             if (getTLD > one && getTLD <= validTLDlen) {
 
                 if (count(cleanUrlSplit) === two) {
@@ -289,7 +367,7 @@ const urlDetails=function (domain) {
         "user": ""
     };
 
-    domain.replace(/\b([\w\\+]{1,}):\/\/\b/g, function (wh, s1) {
+    domain.replace(/([\w\\+]{1,}):\/\//g, function (wh, s1) {
 
         dataReference.protocol = s1;
 
