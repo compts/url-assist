@@ -168,4 +168,6 @@ export function urlPattern(pattern: string | object, path: string): any;
  *=> hello-world
  */
 export function slugify(pattern: string, ext?: any | undefined): string;
+import { queryEncode } from './lib/format.js';
+import { queryDecode } from './lib/format.js';
 export { qsStringify, qsParse, queryEncode, queryDecode };
