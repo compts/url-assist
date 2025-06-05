@@ -146,3 +146,8 @@ isHttps('http://example.com')// false
 ```
 
 
+[slugify your url/path](#slugify)
+``` javascript
+slugify("Hello world 123")// "hello-world-123"
+```
+
