@@ -11,11 +11,10 @@ exports.module=function (grassconf) {
 
     const {convertIifeFunction} = grassconf.require("pack-extract");
     const grass_concat = grassconf.require("grass_concat");
-    const {each} = require('structkit');
+    const {each} = grassconf.require('structkit');
 
 
     const packpier = grassconf.require("packpier");
-    const {cjsFileNameOnlyImportOnly, cjsToEsmFileNameOnly} = grassconf.require("pirate-pack-js");
 
 
     grassconf.load("esm", function () {
