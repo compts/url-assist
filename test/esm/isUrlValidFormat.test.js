@@ -1,4 +1,4 @@
-import {isUrlValidFormat} from "../../dist/esm/node.esm";
+import {isUrlValidFormat} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: isUrlValidFormat method', function () {

@@ -1,4 +1,4 @@
-import {slugify} from "../../dist/esm/node.esm";
+import {slugify} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

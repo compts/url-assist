@@ -1,4 +1,4 @@
-import {urlPattern} from "../../dist/esm/node.esm";
+import {urlPattern} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

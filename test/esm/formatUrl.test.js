@@ -1,4 +1,4 @@
-import {formatUrl} from "../../dist/esm/node.esm";
+import {formatUrl} from "../../dist/esm/index";
 import assert from 'assert';
 
 
