@@ -1,4 +1,4 @@
-import {joinUrlPath} from "../../dist/esm/src/index";
+import {joinUrlPath} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

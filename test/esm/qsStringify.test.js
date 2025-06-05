@@ -1,4 +1,4 @@
-import {qsStringify} from "../../dist/esm/src/index";
+import {qsStringify} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: qsStringify method', function () {

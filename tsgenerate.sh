@@ -1,1 +1,1 @@
-npx -p typescript tsc dist/esm/src/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/ts
+npx -p typescript tsc dist/esm/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/ts

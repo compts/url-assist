@@ -1,4 +1,4 @@
-import {urlPattern} from "../../dist/esm/src/index";
+import {urlPattern} from "../../dist/esm/index";
 import assert from 'assert';
 
 

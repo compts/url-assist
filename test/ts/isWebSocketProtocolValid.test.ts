@@ -1,4 +1,4 @@
-import {isWebSocketProtocolValid} from "../../dist/esm/src/index";
+import {isWebSocketProtocolValid} from "../../dist/esm/index";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

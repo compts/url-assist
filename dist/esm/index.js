@@ -1,5 +1,3 @@
-
-/* @ts-self-types="../../ts/index.d.ts" */
 import {qsStringify} from './lib/queryString.js';
 
 import {UrlComposerInit} from './lib/urlComposerInit.js';
@@ -366,4 +364,4 @@ function formatUrl (pattern, ext) {
 
 }
 
-export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWebSocketProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode};
+export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify,queryEncode,queryDecode};
