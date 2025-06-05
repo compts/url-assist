@@ -6,7 +6,7 @@ import {PathPatternInit} from './lib/pathPatternInit.js';
 
 import {getDomainDetails, isUrlValidFormatVerifier, urlDetails} from './lib/domain.js';
 
-import {queryEncode, queryDecode} from './lib/queryString.js';
+import {queryEncode, queryDecode} from './lib/format.js';
 
 import {qsParse} from './lib/queryObject.js';
 
@@ -364,4 +364,4 @@ function formatUrl (pattern, ext) {
 
 }
 
-export {getHostDetails,formatUrl,qsStringify,qsParse,isHttps,isHttpProtocolValid,joinUrlPath,isUrlExtValid,isWebSocketProtocolValid,isUrlValidFormat,urlComposer,urlPattern,slugify,queryEncode,queryDecode};
+export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWebSocketProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode};
