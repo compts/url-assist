@@ -72,7 +72,6 @@
   },
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
-    "tsd": "^0.19.1",
     "structkit": "^1.4.87"
   },
   "devDependencies": {
@@ -87,7 +86,8 @@
     "esm": "^3.2.25",
     "jest": "^27.5.1",
     "mocha": "^5.2.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsd": "^0.19.1"
   },
   "jest": {
     "collectCoverage": true,
