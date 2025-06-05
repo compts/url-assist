@@ -14,7 +14,7 @@ import {
     slugify as slugify_module,
     queryEncode as queryEncode_module,
     queryDecode as queryDecode_module
-} from './index.js';
+    } from './index.js';
 export const getHostDetails = getHostDetails_module;
 export const formatUrl = formatUrl_module;
 export const qsStringify = qsStringify_module;
