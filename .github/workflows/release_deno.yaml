@@ -29,6 +29,7 @@ jobs:
       with:
         deno-version: v2.x
     - uses: actions/checkout@v4
+    - run: deno install
     - name: Deno publish
       run: |
         npx jsr publish
