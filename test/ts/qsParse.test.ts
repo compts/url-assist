@@ -1,4 +1,4 @@
-import {qsParse} from "../../dist/esm/index";
+import {qsParse} from "../../dist/esm/node.esm";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

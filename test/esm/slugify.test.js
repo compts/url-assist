@@ -1,4 +1,4 @@
-import {slugify} from "../../dist/esm/index";
+import {slugify} from "../../dist/esm/node.esm";
 import assert from 'assert';
 
 
