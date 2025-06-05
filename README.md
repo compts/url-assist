@@ -145,8 +145,4 @@ isHttps('https://example.com')// true
 isHttps('http://example.com')// false
 ```
 
-[slugify your url/path](#slugify)
-``` javascript
-isHttpProtocolValid('Hello world 123')// hello-world-123
-```
 
