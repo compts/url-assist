@@ -9,6 +9,7 @@
   "exports": {
     ".": {
       "import": "./dist/esm/src/index.js",
+      "require": "./dist/cjs/url-assist.js",
       "types": {
         "require": "./dist/ts/index.d.ts",
         "default": "./dist/ts/index.d.ts"
