@@ -29,7 +29,11 @@ exports.module=function (grassconf) {
             }
         )
             .pipe(grassconf.dest("dist/esm", {
-                "lsFileType": "path"
+                "lsFileType": "path",
+                "pathDestReplace": {
+                    "from": "src/",
+                    "to": ""
+                }
             }));
 
     });
