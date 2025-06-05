@@ -1,4 +1,4 @@
-import {isHttps} from "../../dist/esm/index";
+import {isHttps} from "../../dist/esm/node.esm";
 import assert from 'assert';
 import {expectType} from 'tsd';
 

@@ -1,4 +1,4 @@
-import {getHostDetails} from "../../dist/esm/index";
+import {getHostDetails} from "../../dist/esm/node.esm";
 import assert from 'assert';
 
 describe('ESM: getHostDetails method', function () {

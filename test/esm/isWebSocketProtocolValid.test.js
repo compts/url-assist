@@ -1,4 +1,4 @@
-import {isWebSocketProtocolValid} from "../../dist/esm/index";
+import {isWebSocketProtocolValid} from "../../dist/esm/node.esm";
 import assert from 'assert';
 
 describe('ESM: isWebSocketProtocolValid method', function () {

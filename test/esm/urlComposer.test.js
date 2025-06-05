@@ -1,4 +1,4 @@
-import {urlComposer} from "../../dist/esm/index";
+import {urlComposer} from "../../dist/esm/node.esm";
 import assert from 'assert';
 
 const data = urlComposer("http://www.example.com/v1");

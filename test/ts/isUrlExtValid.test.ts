@@ -1,4 +1,4 @@
-import {isUrlExtValid} from "../../dist/esm/index";
+import {isUrlExtValid} from "../../dist/esm/node.esm";
 import assert from 'assert';
 import {expectType} from 'tsd';
 
