@@ -1,6 +1,6 @@
 {
   "name": "url-assist",
-  "version": "1.2.7",
+  "version": "1.2.71",
   "description": "URL library at your ease",
   "main": "./dist/cjs/url-assist.cjs.js",
   "module": "./dist/esm/index.js",
