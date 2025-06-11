@@ -73,7 +73,7 @@
   },
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
-    "structkit": "^1.4.87"
+    "structkit": "^1.4.871"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
