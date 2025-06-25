@@ -60,4 +60,4 @@ function queryDecode (query) {
 
 }
 
-export {queryEncode,queryDecode};
+export {queryEncode, queryDecode};

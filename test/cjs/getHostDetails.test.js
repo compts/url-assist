@@ -4,6 +4,28 @@ const assert = require("assert");
 
 describe('CJS: getHostDetails method', function () {
 
+    it('check getHostDetails localhost:3000 check output', function () {
+
+        assert.deepStrictEqual(getHostDetails('http://localhost:3000'), {
+            "domainDetails": {
+                "domain": "localhost:3000",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": 'localhost',
+            "href": 'http://localhost:3000',
+            "password": "",
+            "pathname": "",
+            "port": "3000",
+            "protocol": "http",
+            "search": '',
+            "user": ''
+        });
+
+    });
+
     it('check getHostDetails check output', function () {
 
         assert.deepStrictEqual(getHostDetails('https://example.com'), {
@@ -94,43 +116,41 @@ describe('CJS: getHostDetails method', function () {
 
     it('check getHostDetails with  username and domain', function () {
 
-        assert.deepStrictEqual(getHostDetails('git+ssh://gituser@host.xz/path/name.git'), {
-            "domainDetails": {
-                "domain": "gituser@host",
-                "domainWithTld": "gituser@host.xz",
-                "subdomain": "",
-                "tld": "xz"
-            },
-            "hash": "",
-            "hostname": "host.xz",
-            "href": "git+ssh://gituser@host.xz/path/name.git",
-            "password": "",
-            "pathname": "path/name.git",
-            "port": "",
-            "protocol": "git+ssh",
-            "search": "",
-            "user": "gituser"});
+        assert.deepStrictEqual(getHostDetails('git+ssh://gituser@host.xz/path/name.git'), {"domainDetails": {
+            "domain": "gituser@host",
+            "domainWithTld": "gituser@host.xz",
+            "subdomain": "",
+            "tld": "xz"
+        },
+        "hash": "",
+        "hostname": "host.xz",
+        "href": "git+ssh://gituser@host.xz/path/name.git",
+        "password": "",
+        "pathname": "path/name.git",
+        "port": "",
+        "protocol": "git+ssh",
+        "search": "",
+        "user": "gituser"});
 
     });
 
     it('check getHostDetails with  username and password in domain', function () {
 
-        assert.deepStrictEqual(getHostDetails('git+ssh://gituser:gitpass@host.xz/path/name.git'), {
-            "domainDetails": {
-                "domain": "gituser:gitpass@host",
-                "domainWithTld": "gituser:gitpass@host.xz",
-                "subdomain": "",
-                "tld": "xz"
-            },
-            "hash": "",
-            "hostname": "host.xz",
-            "href": "git+ssh://gituser:gitpass@host.xz/path/name.git",
-            "password": "gitpass",
-            "pathname": "path/name.git",
-            "port": "",
-            "protocol": "git+ssh",
-            "search": "",
-            "user": "gituser"});
+        assert.deepStrictEqual(getHostDetails('git+ssh://gituser:gitpass@host.xz/path/name.git'), {"domainDetails": {
+            "domain": "gituser:gitpass@host",
+            "domainWithTld": "gituser:gitpass@host.xz",
+            "subdomain": "",
+            "tld": "xz"
+        },
+        "hash": "",
+        "hostname": "host.xz",
+        "href": "git+ssh://gituser:gitpass@host.xz/path/name.git",
+        "password": "gitpass",
+        "pathname": "path/name.git",
+        "port": "",
+        "protocol": "git+ssh",
+        "search": "",
+        "user": "gituser"});
 
     });
 

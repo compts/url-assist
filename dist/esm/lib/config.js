@@ -13,4 +13,4 @@ const objRegExpKey = {
     "string": '[a-zA-Z0-9]'
 };
 
-export {configQueryString,exemptListOfDomain,objRegExpKey};
+export {configQueryString, exemptListOfDomain, objRegExpKey};

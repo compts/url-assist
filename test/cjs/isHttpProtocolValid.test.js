@@ -3,6 +3,12 @@ const assert = require("assert");
 
 describe('CJS: isHttpProtocolValid method', function () {
 
+    it('check isHttpProtocolValid http ip address with path must be valid', function () {
+
+        assert.deepStrictEqual(isHttpProtocolValid("http://localhost:3000/api"), true);
+
+    });
+
     it('check isHttpProtocolValid https is valid', function () {
 
         assert.deepStrictEqual(isHttpProtocolValid("https://example.com"), true);
