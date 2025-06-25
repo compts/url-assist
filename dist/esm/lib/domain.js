@@ -33,7 +33,7 @@ const getDomain =function (domain) {
 
     let validUrl = true;
 
-    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+    if ((/^(localhost|localhost:[0-9]{2,})\b/g).test(referenceDomain)) {
 
         validUrl = false;
         pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
@@ -266,12 +266,12 @@ const isUrlValidFormatVerifier=function (domain, config) {
 
         const filterEmpty = filter(cleanUrlSplit, function (valS) {
 
-            return isEmpty(valS);
+            return isEmpty(valS) === false;
 
         });
 
         // Check if there is a empty in split url
-        if (isEmpty(filterEmpty) === false) {
+        if (isEmpty(filterEmpty)) {
 
             return false;
 
@@ -423,4 +423,4 @@ const urlDetails=function (domain) {
 
 };
 
-export {getDomainDetails,isUrlValidFormatVerifier,urlDetails};
+export {getDomainDetails, isUrlValidFormatVerifier, urlDetails};

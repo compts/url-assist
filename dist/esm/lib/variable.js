@@ -7,4 +7,4 @@ const six = 6;
 
 //  * @param {string} url - URL to check
 
-export {zero,one,two,three,five,six};
+export {zero, one, two, three, five, six};
