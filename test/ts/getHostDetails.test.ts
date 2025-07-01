@@ -4,6 +4,27 @@ import {expectType} from 'tsd';
 
 describe('TS: getHostDetails method', function () {
 
+    it('check getHostDetails localhost:3000 check output', function () {
+
+        assert.deepStrictEqual(getHostDetails('http://localhost:3000'), {
+            "domainDetails": {
+                "domain": "localhost:3000",
+                "domainWithTld": "",
+                "subdomain": "",
+                "tld": ""
+            },
+            "hash": "",
+            "hostname": 'localhost',
+            "href": 'http://localhost:3000',
+            "password": "",
+            "pathname": "",
+            "port": "3000",
+            "protocol": "http",
+            "search": '',
+            "user": ''
+        });
+
+    });
 
     it('check getHostDetails check output', function () {
 
