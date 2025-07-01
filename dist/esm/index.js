@@ -1,3 +1,4 @@
+/* @ts-self-types="./dist/ts/index.ts" */
 import {qsStringify} from './lib/queryString.js';
 
 import {UrlComposerInit} from './lib/urlComposerInit.js';

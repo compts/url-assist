@@ -72,11 +72,11 @@ function qsStringify (value, config) {
  * @param {any} type The the type of argument
  * @param {any} config Options of function
  * @param {any} reference The value that you pass from outside
- * @returns {null} Returns null
+ * @returns {undefined} Returns null
  * @example
  *
  * parseStringConvert({"test": 11,"test2": 11}, {"test2": 11})
- * // => null
+ * // => undefined
  */
 var parseStringConvert=function (key, value, type, config, reference) {
 
@@ -1122,7 +1122,7 @@ var getDomain =function (domain) {
 
     var validUrl = true;
 
-    if ((/^(localhost|localhost:[0-9]{2,})$/g).test(referenceDomain)) {
+    if ((/^(localhost|localhost:[0-9]{2,})\b/g).test(referenceDomain)) {
 
         validUrl = false;
         pathValueDetails = referenceDomain.replace(/\b(localhost:[0-9]{2,}|localhost)/g, "");
@@ -1355,12 +1355,12 @@ var isUrlValidFormatVerifier=function (domain, config) {
 
         var filterEmpty = _stk.filter(cleanUrlSplit, function (valS) {
 
-            return _stk.isEmpty(valS);
+            return _stk.isEmpty(valS) === false;
 
         });
 
         // Check if there is a empty in split url
-        if (_stk.isEmpty(filterEmpty) === false) {
+        if (_stk.isEmpty(filterEmpty)) {
 
             return false;
 

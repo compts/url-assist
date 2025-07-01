@@ -1,4 +1,4 @@
-import {isHttpProtocolValid} from "../../dist/esm/node.esm";
+import {isHttpProtocolValid} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: isHttpProtocolValid method', function () {

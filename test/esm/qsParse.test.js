@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import {qsParse} from "../../dist/esm/node.esm";
+import {qsParse} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: qsParse method', function () {

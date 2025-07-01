@@ -1,4 +1,4 @@
-import {isHttps} from "../../dist/esm/node.esm";
+import {isHttps} from "../../dist/esm/index";
 import assert from 'assert';
 
 describe('ESM: isHttps method', function () {
