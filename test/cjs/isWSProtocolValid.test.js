@@ -1,9 +1,9 @@
-import {isWSProtocolValid} from "../../dist/esm/index";
-import assert from 'assert';
+const {isWSProtocolValid} = require("../../dist/cjs/url-assist.cjs");
+const assert = require("assert");
 
 describe('ESM: isWSProtocolValid method', function () {
 
-    it('check isWSProtocolValid wss is valid', function () {
+    it('check isWebSocketProtocolValid wss is valid', function () {
 
         assert.deepStrictEqual(isWSProtocolValid("wss://example.com"), true);
 

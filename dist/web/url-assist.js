@@ -2340,15 +2340,32 @@ function isHttpProtocolValid (host, config) {
  * @since 1.1.0
  * @category Boolean
  * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
- * isWebSocketProtocolValid('wss://example.com')
+ * isWSProtocolValid('wss://example.com')
  *=> true
  */
-function isWebSocketProtocolValid (host) {
+function isWSProtocolValid (host, config) {
 
-    return (/^(wss|ws):\/\//g).test(host);
+    var varConfig = _stk.varExtend({
+        "isSecure": true,
+        "isValidFormat": true
+    }, config);
+
+    if (varConfig.isValidFormat && (/^(ws):\/\//g).test(host)) {
+
+        return true;
+
+    }
+    if (varConfig.isSecure && (/^(wss):\/\//g).test(host)) {
+
+        return true;
+
+    }
+
+    return false;
 
 }
 
@@ -2580,7 +2597,7 @@ urs.isHttps=isHttps;
 urs.isHttpProtocolValid=isHttpProtocolValid;
 urs.joinUrlPath=joinUrlPath;
 urs.isUrlExtValid=isUrlExtValid;
-urs.isWebSocketProtocolValid=isWebSocketProtocolValid;
+urs.isWSProtocolValid=isWSProtocolValid;
 urs.isUrlValidFormat=isUrlValidFormat;
 urs.urlComposer=urlComposer;
 urs.urlPattern=urlPattern;

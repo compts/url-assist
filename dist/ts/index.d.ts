@@ -104,13 +104,14 @@ export function isUrlExtValid(host: string, ext: string): boolean;
  * @since 1.1.0
  * @category Boolean
  * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
- * isWebSocketProtocolValid('wss://example.com')
+ * isWSProtocolValid('wss://example.com')
  *=> true
  */
-export function isWebSocketProtocolValid(host: string): boolean;
+export function isWSProtocolValid(host: string, config?: object | undefined): boolean;
 /**
  * Check url is valid format
  *

@@ -1,7 +1,8 @@
 import {isWSProtocolValid} from "../../dist/esm/index";
 import assert from 'assert';
+import {expectType} from 'tsd';
 
-describe('ESM: isWSProtocolValid method', function () {
+describe('TS: isWSProtocolValid method', function () {
 
     it('check isWSProtocolValid wss is valid', function () {
 
@@ -26,5 +27,9 @@ describe('ESM: isWSProtocolValid method', function () {
         assert.deepStrictEqual(isWSProtocolValid("https://example.com"), false);
 
     });
+    it('check expected type', function () {
 
+        expectType<boolean>(isWSProtocolValid('https://example.com'));
+
+    });
 });

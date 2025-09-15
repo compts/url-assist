@@ -126,15 +126,32 @@ function isHttpProtocolValid (host, config) {
  * @since 1.1.0
  * @category Boolean
  * @param {string} host Passing the complete domain url
+ * @param {object=} config Option you want to set in this function
  * @returns {boolean} Return the boolean.
  * @example
  *
- * isWebSocketProtocolValid('wss://example.com')
+ * isWSProtocolValid('wss://example.com')
  *=> true
  */
-function isWebSocketProtocolValid (host) {
+function isWSProtocolValid (host, config) {
 
-    return (/^(wss|ws):\/\//g).test(host);
+    const varConfig = varExtend({
+        "isSecure": true,
+        "isValidFormat": true
+    }, config);
+
+    if (varConfig.isValidFormat && (/^(ws):\/\//g).test(host)) {
+
+        return true;
+
+    }
+    if (varConfig.isSecure && (/^(wss):\/\//g).test(host)) {
+
+        return true;
+
+    }
+
+    return false;
 
 }
 
@@ -370,7 +387,7 @@ exports.isHttps=isHttps;
 exports.isHttpProtocolValid =isHttpProtocolValid;
 exports.joinUrlPath =joinUrlPath;
 exports.isUrlExtValid =isUrlExtValid;
-exports.isWebSocketProtocolValid =isWebSocketProtocolValid;
+exports.isWSProtocolValid =isWSProtocolValid;
 exports.isUrlValidFormat =isUrlValidFormat;
 exports.urlComposer = urlComposer;
 exports.urlPattern = urlPattern;
