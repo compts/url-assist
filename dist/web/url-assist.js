@@ -40,10 +40,10 @@ var six = 6;
  */
 function qsStringify (value, config) {
 
-    if (_stk.indexOfNotExist([
+    if (_stk.indexOfNotExist(_stk.getTypeof(value), [
         "json",
         "array"
-    ], _stk.getTypeof(value))) {
+    ])) {
 
         return "";
 
@@ -80,26 +80,26 @@ function qsStringify (value, config) {
  */
 var parseStringConvert=function (key, value, type, config, reference) {
 
-    if (_stk.indexOf([
+    if (_stk.indexOf(type, [
         "json",
         "array"
-    ], type) >=zero) {
+    ]) >=zero) {
 
         _stk.each(value, function (vl, ky) {
 
-            var keyVal = _stk.indexOf([
+            var keyVal = _stk.indexOf(type, [
                 "number",
                 "array"
-            ], type) >=zero
+            ]) >=zero
                 ?config.arrayFormat
                 :"["+ky+"]";
 
             var defineKey = keyVal;
 
-            if ((/^\[(.*?)\]$/g).test(ky) && _stk.indexOfNotExist([
+            if ((/^\[(.*?)\]$/g).test(ky) && _stk.indexOfNotExist(type, [
                 "number",
                 "array"
-            ], type)) {
+            ])) {
 
                 defineKey = ky;
 
@@ -191,7 +191,7 @@ function queryDecode (query) {
  */
 function qsParse (value, config) {
 
-    if (_stk.indexOfNotExist(["string"], _stk.getTypeof(value))) {
+    if (_stk.indexOfNotExist(_stk.getTypeof(value), ["string"])) {
 
         return {};
 
@@ -258,7 +258,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         } else {
 
-            referenceValue = _stk.setData(referenceValue, keyFlattenJoin, getValueOnly);
+            referenceValue = _stk.setData(keyFlattenJoin, referenceValue, getValueOnly);
 
         }
         reFlistKey.push(keyOnly);
@@ -267,35 +267,35 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
     }
 
-    if (_stk.indexOfExist(reFlistKey, keyOnly)) {
+    if (_stk.indexOfExist(keyOnly, reFlistKey)) {
 
-        if (_stk.indexOfExist([
+        if (_stk.indexOfExist(_stk.getTypeof(referenceValue[keyOnly]), [
             "string",
             "number",
             "boolean",
             "null"
-        ], _stk.getTypeof(referenceValue[keyOnly]))) {
+        ])) {
 
-            var isrefExist = _stk.someValid(_stk.map(isParent
+            var isrefExist = _stk.someValid(_stk.map(function (params) {
+
+                return _stk.getData(params, referenceValue, true) !== null;
+
+            }, isParent
                 ?[keyOnly]
-                :[keyFlattenJoin], function (params) {
-
-                return _stk.getData(referenceValue, params, true) !== null;
-
-            }));
+                :[keyFlattenJoin]));
 
             if (_stk.isEmpty(keyList) === false) {
 
                 if (isrefExist) {
 
-                    referenceValue = _stk.setData(referenceValue, keyOnly, [
+                    referenceValue = _stk.setData(keyOnly, referenceValue, [
                         referenceValue[keyOnly],
-                        _stk.setData({}, keyList.join("."), getValueOnly)
+                        _stk.setData(keyList.join("."), {}, getValueOnly)
                     ]);
 
                 } else {
 
-                    referenceValue = _stk.setData(referenceValue, keyOnly, _stk.setData({}, keyList.join("."), getValueOnly));
+                    referenceValue = _stk.setData(keyOnly, referenceValue, _stk.setData(keyList.join("."), {}, getValueOnly));
 
                 }
 
@@ -303,14 +303,14 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
                 if (isrefExist) {
 
-                    referenceValue = _stk.setData(referenceValue, keyOnly, [
+                    referenceValue = _stk.setData(keyOnly, referenceValue, [
                         referenceValue[keyOnly],
                         getValueOnly
                     ]);
 
                 } else {
 
-                    referenceValue = _stk.setData(referenceValue, keyOnly, getValueOnly);
+                    referenceValue = _stk.setData(keyOnly, referenceValue, getValueOnly);
 
                 }
 
@@ -331,10 +331,10 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
             } else {
 
-                referenceData.push(_stk.setData({}, keyList.join("."), getValueOnly));
+                referenceData.push(_stk.setData(keyList.join("."), {}, getValueOnly));
 
             }
-            referenceValue = _stk.setData(referenceValue, keyOnly, referenceData);
+            referenceValue = _stk.setData(keyOnly, referenceValue, referenceData);
             reFlistKey.push(keyFlattenJoin);
 
             return referenceValue;
@@ -345,7 +345,7 @@ var parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyLis
 
         referenceData = parseObjectSchema(referenceData, defaultConfig, _stk.first(keyList), _stk.toArray(_stk.remove(keyList, zero)), getValueOnly, keyList, false);
 
-        referenceValue = _stk.setData(referenceValue, keyOnly, referenceData);
+        referenceValue = _stk.setData(keyOnly, referenceValue, referenceData);
 
         reFlistKey.push(keyFlattenJoin);
 
@@ -737,13 +737,13 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 UrlComposerInit.prototype.getToString = function () {
 
     var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
-    var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    var urlFormat = '<!= protocol !><!= subdomain !><!= domain !><!= tld !><!= port !><!= path !><!= queryString !><!= hash !>';
     var joinPath = [
         this.variablePathPrefix,
         this.variablePath
     ].join("/");
 
-    return _stk.templateValue(urlFormat, {
+    return _stk.templates(urlFormat, {
         "domain": urlData.domain,
         "hash": _stk.isEmpty(this.variableHash)
             ? ''
@@ -784,9 +784,10 @@ UrlComposerInit.prototype.getToString = function () {
 UrlComposerInit.prototype.getDomainString = function () {
 
     var urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
-    var urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
 
-    return _stk.templateValue(urlFormat, {
+    var urlFormat = '<!= protocol !><!= subdomain !><!= domain !><!= tld !><!= port !>';
+
+    return _stk.templates(urlFormat, {
         "domain": urlData.domain,
         "port": _stk.isEmpty(urlData.port)
             ? ''
@@ -858,8 +859,12 @@ function basePattern (pattern) {
 
     if (_stk.getTypeof(pattern) ==="json") {
 
-        var patternRegexp = _stk.ifUndefined(pattern, "regexp", "--");
-        var listArgument = _stk.ifUndefined(pattern, "arguments", []);
+        var patternRegexp = _stk.has(pattern, "regexp")
+            ? pattern.regexp
+            : "--";
+        var listArgument = _stk.has(pattern, "regexp")
+            ? pattern.arguments
+            : "--";
 
         if (patternRegexp ==="--") {
 
@@ -911,7 +916,9 @@ function basePattern (pattern) {
 
                 refRegVal[_stk.count(refRegVal)]= {
                     "name": replaceSlashClean,
-                    "regexp": "(?:\\/"+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{0,})"
+                    "regexp": "(?:\\/"+(_stk.has(objRegExpKey, typeRef)
+                        ? typeRef
+                        : objRegExpKey.any)+"{0,})"
                 };
 
                 return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
@@ -922,7 +929,9 @@ function basePattern (pattern) {
 
                 refRegVal[_stk.count(refRegVal)]= {
                     "name": replaceSlashClean,
-                    "regexp": "/("+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+                    "regexp": "/("+(_stk.has(objRegExpKey, typeRef)
+                        ? objRegExpKey[typeRef]
+                        : objRegExpKey.any)+"{1,})"
                 };
 
                 return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
@@ -931,7 +940,9 @@ function basePattern (pattern) {
 
             refRegVal[_stk.count(refRegVal)]= {
                 "name": replaceSlashClean,
-                "regexp": "("+_stk.ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+                "regexp": "("+(_stk.has(objRegExpKey, typeRef)
+                    ?objRegExpKey[typeRef]
+                    : objRegExpKey.any)+"{1,})"
             };
 
             return "(@"+_stk.last(_stk.toArray(_stk.getKey(refRegVal)))+"@)";
@@ -977,7 +988,7 @@ function basePattern (pattern) {
 
     if (_stk.getTypeof(pattern) ==="regexp") {
 
-        var listArgument = _stk.map(_stk.range(_stk.regexCountGroup(pattern)-one, zero), function (value) {
+        var listArgument = _stk.map(function (value) {
 
             return {
                 "index": value,
@@ -985,7 +996,7 @@ function basePattern (pattern) {
 
             };
 
-        });
+        }, _stk.range(_stk.regexCountGroup(pattern)-one, zero));
 
         return {
             "arguments": listArgument,
@@ -1134,7 +1145,7 @@ var getDomain =function (domain) {
         validUrl = false;
         var getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
 
-        if (_stk.ifUndefined(getPath) === false) {
+        if (getPath === false) {
 
             pathValueDetails = getPath;
 
@@ -1167,7 +1178,7 @@ var getDomain =function (domain) {
 
     }
 
-    if (_stk.indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
+    if (_stk.indexOfNotExist(getDomainFirstSplit, exemptListOfDomain) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
@@ -1353,11 +1364,11 @@ var isUrlValidFormatVerifier=function (domain, config) {
         }
         var cleanUrlSplit = cleanUrl.split(".");
 
-        var filterEmpty = _stk.filter(cleanUrlSplit, function (valS) {
+        var filterEmpty = _stk.filter(function (valS) {
 
             return _stk.isEmpty(valS) === false;
 
-        });
+        }, cleanUrlSplit);
 
         // Check if there is a empty in split url
         if (_stk.isEmpty(filterEmpty)) {
@@ -2300,13 +2311,13 @@ function joinUrlPath () {
 
     var replaceDomain = _stk.first(ags).replace(/(\/)$/, "");
     var replacePath = _stk.arraySlice(ags, one);
-    var cleanReplacePath = _stk.reduce([], replacePath, function (grand, value) {
+    var cleanReplacePath = _stk.reduce(function (grand, value) {
 
         grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
         return grand;
 
-    });
+    }, [], replacePath);
 
     return [
         replaceDomain,
@@ -2507,7 +2518,7 @@ function slugify (pattern, ext) {
 
         var refCharMap = _stk.mergeWithKey(charMap, varExt.dictStrictMap);
 
-        strPattern = _stk.reduce("", strPattern.normalize().split(""), function (sums, value) {
+        strPattern = _stk.reduce(function (sums, value) {
 
             sums+= _stk.has(refCharMap, value)
                 ?refCharMap[value]
@@ -2515,7 +2526,7 @@ function slugify (pattern, ext) {
 
             return sums;
 
-        });
+        }, "", strPattern.normalize().split(""));
 
     }
 
@@ -2525,7 +2536,7 @@ function slugify (pattern, ext) {
 
     if (varExt.lower) {
 
-        strPattern = _stk.stringLowerCase(strPattern);
+        strPattern = _stk.strLower(strPattern);
 
     }
     if (varExt.isStripDomanName) {

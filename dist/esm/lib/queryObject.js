@@ -23,7 +23,7 @@ import {queryDecode} from './format.js';
  */
 function qsParse (value, config) {
 
-    if (indexOfNotExist(["string"], getTypeof(value))) {
+    if (indexOfNotExist(getTypeof(value), ["string"])) {
 
         return {};
 
@@ -90,7 +90,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
         } else {
 
-            referenceValue = setData(referenceValue, keyFlattenJoin, getValueOnly);
+            referenceValue = setData(keyFlattenJoin, referenceValue, getValueOnly);
 
         }
         reFlistKey.push(keyOnly);
@@ -99,35 +99,35 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
     }
 
-    if (indexOfExist(reFlistKey, keyOnly)) {
+    if (indexOfExist(keyOnly, reFlistKey)) {
 
-        if (indexOfExist([
+        if (indexOfExist(getTypeof(referenceValue[keyOnly]), [
             "string",
             "number",
             "boolean",
             "null"
-        ], getTypeof(referenceValue[keyOnly]))) {
+        ])) {
 
-            const isrefExist = someValid(map(isParent
+            const isrefExist = someValid(map(function (params) {
+
+                return getData(params, referenceValue, true) !== null;
+
+            }, isParent
                 ?[keyOnly]
-                :[keyFlattenJoin], function (params) {
-
-                return getData(referenceValue, params, true) !== null;
-
-            }));
+                :[keyFlattenJoin]));
 
             if (isEmpty(keyList) === false) {
 
                 if (isrefExist) {
 
-                    referenceValue = setData(referenceValue, keyOnly, [
+                    referenceValue = setData(keyOnly, referenceValue, [
                         referenceValue[keyOnly],
-                        setData({}, keyList.join("."), getValueOnly)
+                        setData(keyList.join("."), {}, getValueOnly)
                     ]);
 
                 } else {
 
-                    referenceValue = setData(referenceValue, keyOnly, setData({}, keyList.join("."), getValueOnly));
+                    referenceValue = setData(keyOnly, referenceValue, setData(keyList.join("."), {}, getValueOnly));
 
                 }
 
@@ -135,14 +135,14 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
                 if (isrefExist) {
 
-                    referenceValue = setData(referenceValue, keyOnly, [
+                    referenceValue = setData(keyOnly, referenceValue, [
                         referenceValue[keyOnly],
                         getValueOnly
                     ]);
 
                 } else {
 
-                    referenceValue = setData(referenceValue, keyOnly, getValueOnly);
+                    referenceValue = setData(keyOnly, referenceValue, getValueOnly);
 
                 }
 
@@ -163,10 +163,10 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
             } else {
 
-                referenceData.push(setData({}, keyList.join("."), getValueOnly));
+                referenceData.push(setData(keyList.join("."), {}, getValueOnly));
 
             }
-            referenceValue = setData(referenceValue, keyOnly, referenceData);
+            referenceValue = setData(keyOnly, referenceValue, referenceData);
             reFlistKey.push(keyFlattenJoin);
 
             return referenceValue;
@@ -177,7 +177,7 @@ const parseObjectSchema = function (referenceValue, defaultConfig, keyOnly, keyL
 
         referenceData = parseObjectSchema(referenceData, defaultConfig, first(keyList), toArray(remove(keyList, zero)), getValueOnly, keyList, false);
 
-        referenceValue = setData(referenceValue, keyOnly, referenceData);
+        referenceValue = setData(keyOnly, referenceValue, referenceData);
 
         reFlistKey.push(keyFlattenJoin);
 

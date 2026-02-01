@@ -10,7 +10,7 @@ import {queryEncode, queryDecode} from './lib/format.js';
 
 import {qsParse} from './lib/queryObject.js';
 
-import {arraySlice, first, has, isEmpty, reduce, stringLowerCase, varExtend, mergeWithKey, trim} from 'structkit';
+import {arraySlice, first, has, isEmpty, reduce, strLower, varExtend, mergeWithKey, trim} from 'structkit';
 
 import {one} from './lib/variable.js';
 
@@ -92,13 +92,13 @@ function joinUrlPath (...ags) {
 
     const replaceDomain = first(ags).replace(/(\/)$/, "");
     const replacePath = arraySlice(ags, one);
-    const cleanReplacePath = reduce([], replacePath, function (grand, value) {
+    const cleanReplacePath = reduce(function (grand, value) {
 
         grand.push(value.replace(/^(\/)/, "").replace(/(\/)$/, ""));
 
         return grand;
 
-    });
+    }, [], replacePath);
 
     return [
         replaceDomain,
@@ -299,7 +299,7 @@ function slugify (pattern, ext) {
 
         const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
 
-        strPattern = reduce("", strPattern.normalize().split(""), function (sums, value) {
+        strPattern = reduce(function (sums, value) {
 
             sums+= has(refCharMap, value)
                 ?refCharMap[value]
@@ -307,7 +307,7 @@ function slugify (pattern, ext) {
 
             return sums;
 
-        });
+        }, "", strPattern.normalize().split(""));
 
     }
 
@@ -317,7 +317,7 @@ function slugify (pattern, ext) {
 
     if (varExt.lower) {
 
-        strPattern = stringLowerCase(strPattern);
+        strPattern = strLower(strPattern);
 
     }
     if (varExt.isStripDomanName) {

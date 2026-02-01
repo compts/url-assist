@@ -1,4 +1,4 @@
-const {getTypeof, each, first, isEmpty, ifUndefined, count,
+const {getTypeof, each, first, isEmpty, count,
     toInteger, toString, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
 
 const {objRegExpKey} = require("./config");
@@ -60,8 +60,12 @@ function basePattern (pattern) {
 
     if (getTypeof(pattern) ==="json") {
 
-        const patternRegexp = ifUndefined(pattern, "regexp", "--");
-        const listArgument = ifUndefined(pattern, "arguments", []);
+        const patternRegexp = has(pattern, "regexp")
+            ? pattern.regexp
+            : "--";
+        const listArgument = has(pattern, "regexp")
+            ? pattern.arguments
+            : "--";
 
         if (patternRegexp ==="--") {
 
@@ -112,7 +116,9 @@ function basePattern (pattern) {
 
                 refRegVal[count(refRegVal)]= {
                     "name": replaceSlashClean,
-                    "regexp": "(?:\\/"+ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{0,})"
+                    "regexp": "(?:\\/"+(has(objRegExpKey, typeRef)
+                        ? typeRef
+                        : objRegExpKey.any)+"{0,})"
                 };
 
                 return "(@"+last(toArray(getKey(refRegVal)))+"@)";
@@ -123,7 +129,9 @@ function basePattern (pattern) {
 
                 refRegVal[count(refRegVal)]= {
                     "name": replaceSlashClean,
-                    "regexp": "/("+ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+                    "regexp": "/("+(has(objRegExpKey, typeRef)
+                        ? objRegExpKey[typeRef]
+                        : objRegExpKey.any)+"{1,})"
                 };
 
                 return "(@"+last(toArray(getKey(refRegVal)))+"@)";
@@ -133,7 +141,9 @@ function basePattern (pattern) {
 
             refRegVal[count(refRegVal)]= {
                 "name": replaceSlashClean,
-                "regexp": "("+ifUndefined(objRegExpKey, typeRef, objRegExpKey.any)+"{1,})"
+                "regexp": "("+(has(objRegExpKey, typeRef)
+                    ?objRegExpKey[typeRef]
+                    : objRegExpKey.any)+"{1,})"
             };
 
             return "(@"+last(toArray(getKey(refRegVal)))+"@)";
@@ -179,7 +189,7 @@ function basePattern (pattern) {
     if (getTypeof(pattern) ==="regexp") {
 
 
-        const listArgument = map(range(regexCountGroup(pattern)-one, zero), function (value) {
+        const listArgument = map(function (value) {
 
             return {
                 "index": value,
@@ -187,7 +197,7 @@ function basePattern (pattern) {
 
             };
 
-        });
+        }, range(regexCountGroup(pattern)-one, zero));
 
         return {
             "arguments": listArgument,

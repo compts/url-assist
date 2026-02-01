@@ -1,4 +1,4 @@
-import {templateValue, isEmpty, has, getTypeof} from 'structkit';
+import {templates, isEmpty, has, getTypeof} from 'structkit';
 
 import {qsParse} from './queryObject.js';
 
@@ -289,13 +289,13 @@ UrlComposerInit.prototype.setQueryString = function (data) {
 UrlComposerInit.prototype.getToString = function () {
 
     const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
-    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !><!- path !><!- queryString !><!- hash !>';
+    const urlFormat = '<!= protocol !><!= subdomain !><!= domain !><!= tld !><!= port !><!= path !><!= queryString !><!= hash !>';
     const joinPath = [
         this.variablePathPrefix,
         this.variablePath
     ].join("/");
 
-    return templateValue(urlFormat, {
+    return templates(urlFormat, {
         "domain": urlData.domain,
         "hash": isEmpty(this.variableHash)
             ? ''
@@ -336,9 +336,10 @@ UrlComposerInit.prototype.getToString = function () {
 UrlComposerInit.prototype.getDomainString = function () {
 
     const urlData = ifValidHost(this.variableDomain, this.variableProtocol, this.variablePort, this.variableSubdomain, this.variableDomainTld);
-    const urlFormat = '<!- protocol !><!- subdomain !><!- domain !><!- tld !><!- port !>';
 
-    return templateValue(urlFormat, {
+    const urlFormat = '<!= protocol !><!= subdomain !><!= domain !><!= tld !><!= port !>';
+
+    return templates(urlFormat, {
         "domain": urlData.domain,
         "port": isEmpty(urlData.port)
             ? ''

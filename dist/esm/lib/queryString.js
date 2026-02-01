@@ -19,10 +19,10 @@ import {zero} from './variable.js';
  */
 function qsStringify (value, config) {
 
-    if (indexOfNotExist([
+    if (indexOfNotExist(getTypeof(value), [
         "json",
         "array"
-    ], getTypeof(value))) {
+    ])) {
 
         return "";
 
@@ -59,26 +59,26 @@ function qsStringify (value, config) {
  */
 const parseStringConvert=function (key, value, type, config, reference) {
 
-    if (indexOf([
+    if (indexOf(type, [
         "json",
         "array"
-    ], type) >=zero) {
+    ]) >=zero) {
 
         each(value, function (vl, ky) {
 
-            const keyVal = indexOf([
+            const keyVal = indexOf(type, [
                 "number",
                 "array"
-            ], type) >=zero
+            ]) >=zero
                 ?config.arrayFormat
                 :"["+ky+"]";
 
             let defineKey = keyVal;
 
-            if ((/^\[(.*?)\]$/g).test(ky) && indexOfNotExist([
+            if ((/^\[(.*?)\]$/g).test(ky) && indexOfNotExist(type, [
                 "number",
                 "array"
-            ], type)) {
+            ])) {
 
                 defineKey = ky;
 

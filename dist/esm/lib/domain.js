@@ -1,4 +1,4 @@
-import {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend, ifUndefined} from 'structkit';
+import {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend, has} from 'structkit';
 
 import {exemptListOfDomain} from './config.js';
 
@@ -45,7 +45,7 @@ const getDomain =function (domain) {
         validUrl = false;
         const getPath = referenceDomain.replace((/^([0-9]{1,3}\.){3}([0-9]{1,3}|[0-9]{1,3}:[0-9]{0,})$/g, ""));
 
-        if (ifUndefined(getPath) === false) {
+        if (getPath === false) {
 
             pathValueDetails = getPath;
 
@@ -78,7 +78,7 @@ const getDomain =function (domain) {
 
     }
 
-    if (indexOfNotExist(exemptListOfDomain, getDomainFirstSplit) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
+    if (indexOfNotExist(getDomainFirstSplit, exemptListOfDomain) && !(/(\.)/g).test(getDomainFirstSplit) && validUrl) {
 
         getDomainFirstSplit = '';
         pathValueDetails = splitDomain.join("/");
@@ -264,11 +264,11 @@ const isUrlValidFormatVerifier=function (domain, config) {
         }
         const cleanUrlSplit = cleanUrl.split(".");
 
-        const filterEmpty = filter(cleanUrlSplit, function (valS) {
+        const filterEmpty = filter(function (valS) {
 
             return isEmpty(valS) === false;
 
-        });
+        }, cleanUrlSplit);
 
         // Check if there is a empty in split url
         if (isEmpty(filterEmpty)) {
