@@ -1,4 +1,4 @@
-const {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend, has} = require("structkit");
+const {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend} = require("structkit");
 const {exemptListOfDomain} = require("./config");
 const {zero, one, two, three, five, six} = require("./variable");
 

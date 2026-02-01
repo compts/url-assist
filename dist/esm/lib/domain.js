@@ -1,4 +1,4 @@
-import {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend, has} from 'structkit';
+import {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend} from 'structkit';
 
 import {exemptListOfDomain} from './config.js';
 
