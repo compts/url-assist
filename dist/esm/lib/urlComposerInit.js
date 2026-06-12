@@ -1,8 +1,8 @@
 import {templates, isEmpty, has, getTypeof} from 'structkit';
 
-import {qsParse} from './queryObject.js';
+import {qsParse} from './queryObject.mjs';
 
-import {qsStringify} from './queryString.js';
+import {qsStringify} from './queryString.mjs';
 
 /**
  * Verify if format is valid

@@ -2,9 +2,13 @@
 global.urs={};
 
 var configQueryString = {
+    "allowQuote": true,
+    "allowUnQuote": true,
     "arrayFormat": "[]",
     "equalSeparator": "=",
     "newLineSeparator": "&",
+    "plusToSpace": false,
+    "safeQuote": null,
     "startWith": ""
 };
 var exemptListOfDomain = ['localhost'];
@@ -22,8 +26,125 @@ var two =2;
 var three = 3;
 var five = 5;
 var six = 6;
+var sixteen = 16;
 
 //  * @param {string} url - URL to check
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.4.9
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreEncodeURI (data) {
+
+    return encodeURIComponent(_stk.toString(data)).replace(/[!'()*"]/g, (ch) => '%' + ch.charCodeAt(zero).toString(sixteen)
+        .toUpperCase());
+
+}
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.4.9
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreDecodeURI (data) {
+
+    return _stk.toString(data).replace(/(?:%[0-9A-Fa-f]{2})+/g, (match) => {
+
+        try {
+
+            return decodeURIComponent(match);
+
+        } catch {
+
+            return match;
+
+        }
+
+    });
+
+}
+
+/**
+ * Url qoute for safe url or domain
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns the quoted uri.
+ * @example
+ *
+ * qoute("?see=asda asd asd ()")
+ * // =>  %3Fsee%3Dasda%20asd%20asd%20()
+ *
+ */
+function qoute (data, config) {
+
+    var defineConfig = _stk.varExtend({"safe": null}, config);
+
+    data = coreEncodeURI(data);
+
+    if (defineConfig.safe !== null) {
+
+        data = _stk.reduce(function (total, value) {
+
+            var encodedChar = coreEncodeURI(value);
+
+            total = total.replaceAll(encodedChar, value);
+
+            return total;
+
+        }, data, defineConfig.safe.split(""));
+
+    }
+
+    return data;
+
+}
+
+/**
+ * Unquote a quoted uri
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns the unquoted uri.
+ * @example
+ *
+ * unQoute("%3Fsee%3Dasda%20asd%20asd%20%28%29")
+ * // =>  ?see=asda asd asd ()
+ *
+ */
+function unQoute (data, config) {
+
+    var defineConfig = _stk.varExtend({"plusToSpace": false}, config);
+
+    if (defineConfig.plusToSpace) {
+
+        data= data.replace(/\+/g, ' ');
+
+    }
+    data = coreDecodeURI(data);
+
+    return data;
+
+}
 
 /**
  * Query String stringify
@@ -110,7 +231,9 @@ var parseStringConvert=function (key, value, type, config, reference) {
 
     } else {
 
-        reference.push(key+""+config.equalSeparator+""+value);
+        reference.push(key+""+config.equalSeparator+""+(config.allowQuote
+            ? qoute(value, {"safe": config.safeQuote})
+            : value));
 
     }
 
@@ -404,7 +527,7 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly, defaultConfig));
 
         }
 
@@ -418,37 +541,53 @@ var qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  * @since 1.2.7
  * @category Seq
  * @param {any} value config defalut value
+ * @param {any} defaultConfig config defalut value
  * @returns {any} Returns the null.
  * @example
  *
  * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
-var convertValueToItsType = function (value) {
+var convertValueToItsType = function (value, defaultConfig) {
+
+    var hasValidType = false;
 
     if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
 
         value = parseFloat(value);
+        hasValidType = true;
 
     } else if ((/^([0-9]{1,})$/gmi).test(value)) {
 
         value = parseInt(value);
+        hasValidType = true;
 
     } else if (value === "true") {
 
         value = true;
+        hasValidType = true;
 
     } else if (value === "false") {
 
         value = false;
+        hasValidType = true;
 
     } else if (value === "null") {
 
         value = null;
+        hasValidType = true;
 
     }
 
-    return value;
+    if (hasValidType) {
+
+        return value;
+
+    }
+
+    return defaultConfig.allowUnQuote
+        ? unQoute(value, {"plusToSpace": defaultConfig.plusToSpace})
+        : value;
 
 };
 
@@ -2236,6 +2375,341 @@ var charMap = {
 };
 
 /**
+ * Create a serialize data if you are coming to php
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {string} Returns number for subtracted value
+ * @example
+ *
+ * phpSerialize(["22s"])
+ * // => 'a:1:{i:0;s:3:"22s";}'
+ */
+function phpSerialize (value) {
+
+    return _stk.curry(function (rawValue) {
+
+        var dataType = _stk.getTypeof(rawValue);
+
+        if (_stk.indexOfExist(dataType, [
+            "array",
+            "json",
+            "object",
+            "set",
+            "map"
+        ])) {
+
+            var getKeyVal = _stk.toArray(_stk.getKey(rawValue));
+            var getValueVal = _stk.toArray(_stk.getValue(rawValue));
+
+            var mapData = _stk.map(function (mValue, kValue) {
+
+                var refMapKey = getKeyVal[kValue];
+                var refMapValue = getValueVal[kValue];
+
+                return parseTypeVal(_stk.getTypeof(refMapKey), refMapKey) +""+parseTypeVal(_stk.getTypeof(refMapValue), refMapValue);
+
+            }, _stk.range(_stk.count(rawValue) - one, zero));
+
+            return "a:"+_stk.count(mapData)+":{"+mapData.join("")+"}";
+
+        }
+
+        return parseTypeVal(dataType, value);
+
+    }, one)(value);
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} typeValue Arugment that you want to convert to serialize string
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeVal ("string", "value")
+ * // => 0
+ */
+function parseTypeVal (typeValue, value) {
+
+    if (_stk.indexOfExist(typeValue, [
+        "array",
+        "json",
+        "object",
+        "set",
+        "map"
+    ])) {
+
+        return phpSerialize(value);
+
+    }
+
+    if (typeValue === "string") {
+
+        return "s:"+_stk.count(value)+":\""+value+"\";";
+
+    }
+    if (typeValue === "function") {
+
+        return "O:"+_stk.count(value.name)+":\""+value.name+"\":0:{};";
+
+    }
+    if (typeValue === "number") {
+
+        return "i:"+value+";";
+
+    }
+
+    return "N;";
+
+}
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.4.9
+ * @category Function
+ * @param {string} value String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function convertValue (value) {
+
+    if (_stk.getTypeof(value) === "string") {
+
+        if ((/^[0-9]{1,}$/g).test(value)) {
+
+            return parseInt(value);
+
+        }
+
+        if ((/^[0-9]{1,}[.]{1}[0-9]{1,}$/g).test(value)) {
+
+            return parseFloat(value);
+
+        }
+
+        return value;
+
+    }
+
+    return value;
+
+}
+
+/**
+ * Create a serialize data if you are coming to php
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * phpUnSerialize('s:6:"Violet";')
+ * // => 'Violet'
+ */
+function phpUnSerialize (value) {
+
+    return _stk.curry(function (rawValue) {
+
+        return parseTypeValObj(rawValue);
+
+    }, one)(value);
+
+    // }, [value], one);
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+function getObjectValue (value) {
+
+    var splitOpen = value.split("{");
+    var splitClose = _stk.reduce(function (total, mVal) {
+
+        var rawVal = mVal;
+
+        if (rawVal.match(/;(\})[a-z]:\d:(.*)/)) {
+
+            var spltRawVal = rawVal.split("}");
+
+            rawVal = spltRawVal.join("};");
+
+        }
+        total.push(rawVal);
+
+        return total;
+
+    }, [], _stk.arraySlice(splitOpen, one)).join("{")
+        .replace(/\}[;]{1,}$/g, "");
+
+    return splitClose;
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * getObjectType ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+function getObjectType (value) {
+
+    var getMatch = value.match(/\b([a-z]){1}:([0-9]+)\b/g);
+
+    if (getMatch !== null) {
+
+        return {
+            "is_valid": true,
+            "matches": getMatch
+        };
+
+    }
+
+    return {
+        "is_valid": false,
+        "matches": []
+    };
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+function parseTypeValObj (value) {
+
+    if (value === "N;") {
+
+        return null;
+
+    }
+
+    var getMatch = getObjectType(value);
+
+    if (getMatch.is_valid) {
+
+        var splitValue = getMatch.matches[zero].split(":");
+
+        if (splitValue[zero] === "s") {
+
+            var stringSplit = value.split(";");
+            var slitGetStr = _stk.first(stringSplit).split(":");
+
+            return slitGetStr[two].replace(/^"/g, "").replace(/"$/g, "");
+
+        }
+
+        if (splitValue[zero] === "O") {
+
+            var stringSplit = value.split(";");
+            var slitGetStr = _stk.first(stringSplit).split(":");
+
+            return slitGetStr[two].replace(/^"/g, "").replace(/"$/g, "");
+
+        }
+
+        if (splitValue[zero] === "i") {
+
+            return convertValue(splitValue[one]);
+
+        }
+
+        if (splitValue[zero] === "a") {
+
+            var objValue = getObjectValue(value).split(";");
+
+            var argVal = {};
+            // This will help as check if the deep type was in array or json
+            var isArrayValue = true;
+            var counterArrayValue =zero;
+
+            _stk.each(_stk.range(convertValue(splitValue[one]) - one, zero), function () {
+
+                var refobjKey = parseTypeValObj(objValue[zero]+";");
+
+                if (isArrayValue && refobjKey !== counterArrayValue) {
+
+                    isArrayValue = false;
+
+                }
+
+                var refobjVal = "";
+                var isValidObject = false;
+                var rawCount = one;
+
+                if (objValue[one].match(/[a-z]:[0-9]+:\{[a-z]:[0-9]/g)) {
+
+                    rawCount = _stk.indexOf("}", objValue);
+                    refobjVal = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
+                    isValidObject = true;
+
+                }
+
+                refobjVal = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
+
+                argVal[refobjKey] = refobjVal;
+
+                if (isValidObject) {
+
+                    objValue = _stk.arraySlice(objValue, rawCount + one);
+                    counterArrayValue += rawCount;
+
+                } else {
+
+                    objValue = _stk.arraySlice(objValue, two);
+                    counterArrayValue += one;
+
+                }
+
+            });
+
+            return isArrayValue
+                ?_stk.toArray(_stk.getValue(argVal))
+                :argVal;
+
+        }
+
+    }
+
+    return null;
+
+}
+
+/**
  * In url or path, you now verified the format of your url
  *
  * @since 1.2.1
@@ -2615,6 +3089,10 @@ urs.urlPattern=urlPattern;
 urs.slugify=slugify;
 urs.queryEncode=queryEncode;
 urs.queryDecode=queryDecode;
+urs.phpSerialize=phpSerialize;
+urs.phpUnSerialize=phpUnSerialize;
+urs.qoute=qoute;
+urs.unQoute=unQoute;
 
 
  })(typeof window !== "undefined" ? window : this);

@@ -38,6 +38,22 @@ describe('ESM: qsStringify method', function () {
 
     });
 
+    it('checl qsStringify to use quote', function () {
+
+        assert.deepStrictEqual(qsStringify({"test": "11 22",
+            "test2": "11"}, {"allowQuote": true}), "test=11%2022&test2=11");
+
+    });
+
+    it('checl qsStringify to use quote with safeQuote', function () {
+
+
+        assert.deepStrictEqual(qsStringify({"test": "\"11 22\"",
+            "test2": "11"}, {"allowQuote": true,
+            "safeQuote": "\""}), 'test="11%2022"&test2=11');
+
+    });
+
     it('check qsStringify argument with key [g][h][j]', function () {
 
         assert.deepStrictEqual(qsStringify({

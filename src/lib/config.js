@@ -1,7 +1,11 @@
 const configQueryString = {
+    "allowQuote": true,
+    "allowUnQuote": true,
     "arrayFormat": "[]",
     "equalSeparator": "=",
     "newLineSeparator": "&",
+    "plusToSpace": false,
+    "safeQuote": null,
     "startWith": ""
 };
 const exemptListOfDomain = ['localhost'];

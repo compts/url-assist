@@ -1,0 +1,54 @@
+import {sixteen, zero} from '../lib/variable.mjs';
+
+import {toString} from 'structkit';
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.4.9
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreEncodeURI (data) {
+
+    return encodeURIComponent(toString(data)).replace(/[!'()*"]/g, (ch) => '%' + ch.charCodeAt(zero).toString(sixteen)
+        .toUpperCase());
+
+}
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.4.9
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreDecodeURI (data) {
+
+    return toString(data).replace(/(?:%[0-9A-Fa-f]{2})+/g, (match) => {
+
+        try {
+
+            return decodeURIComponent(match);
+
+        } catch {
+
+            return match;
+
+        }
+
+    });
+
+}
+
+export {coreEncodeURI, coreDecodeURI};

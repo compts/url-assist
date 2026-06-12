@@ -3,6 +3,8 @@ const {configQueryString} = require("./config");
 const {zero, one} = require("./variable");
 const {varExtend, indexOfNotExist} = require("structkit");
 const {queryDecode} = require("./format");
+const {unQoute} = require("./qoutes");
+
 
 /**
  * Query String object
@@ -251,7 +253,7 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly, defaultConfig));
 
         }
 
@@ -266,37 +268,53 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  * @since 1.2.7
  * @category Seq
  * @param {any} value config defalut value
+ * @param {any} defaultConfig config defalut value
  * @returns {any} Returns the null.
  * @example
  *
  * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
-const convertValueToItsType = function (value) {
+const convertValueToItsType = function (value, defaultConfig) {
+
+    let hasValidType = false;
 
     if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
 
         value = parseFloat(value);
+        hasValidType = true;
 
     } else if ((/^([0-9]{1,})$/gmi).test(value)) {
 
         value = parseInt(value);
+        hasValidType = true;
 
     } else if (value === "true") {
 
         value = true;
+        hasValidType = true;
 
     } else if (value === "false") {
 
         value = false;
+        hasValidType = true;
 
     } else if (value === "null") {
 
         value = null;
+        hasValidType = true;
 
     }
 
-    return value;
+    if (hasValidType) {
+
+        return value;
+
+    }
+
+    return defaultConfig.allowUnQuote
+        ? unQoute(value, {"plusToSpace": defaultConfig.plusToSpace})
+        : value;
 
 };
 

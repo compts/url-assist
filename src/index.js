@@ -8,6 +8,9 @@ const {arraySlice, first, has, isEmpty, reduce, strLower, varExtend, mergeWithKe
 const {one} = require("./lib/variable");
 const {formatUrlInit} = require("./lib/formatUrlInit");
 const {charMap} = require("./lib/slugConfig");
+const {qoute, unQoute} = require("./lib/qoutes");
+const phpSerialize = require('./lib/phpSerialize');
+const phpUnSerialize = require('./lib/phpUnSerialize');
 
 
 /**
@@ -394,3 +397,7 @@ exports.urlPattern = urlPattern;
 exports.slugify = slugify;
 exports.queryEncode = queryEncode;
 exports.queryDecode = queryDecode;
+exports.phpSerialize = phpSerialize;
+exports.phpUnSerialize = phpUnSerialize;
+exports.qoute = qoute;
+exports.unQoute = unQoute;

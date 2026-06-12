@@ -1,8 +1,10 @@
 import {each, varExtend, getTypeof, indexOfNotExist, indexOf} from 'structkit';
 
-import {configQueryString} from './config.js';
+import {configQueryString} from './config.mjs';
 
-import {zero} from './variable.js';
+import {zero} from './variable.mjs';
+
+import {qoute} from './qoutes.mjs';
 
 /**
  * Query String stringify
@@ -89,7 +91,9 @@ const parseStringConvert=function (key, value, type, config, reference) {
 
     } else {
 
-        reference.push(key+""+config.equalSeparator+""+value);
+        reference.push(key+""+config.equalSeparator+""+(config.allowQuote
+            ? qoute(value, {"safe": config.safeQuote})
+            : value));
 
     }
 

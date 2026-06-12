@@ -4,7 +4,8 @@ const two =2;
 const three = 3;
 const five = 5;
 const six = 6;
+const sixteen = 16;
 
 //  * @param {string} url - URL to check
 
-export {zero, one, two, three, five, six};
+export {zero, one, two, three, five, six, sixteen};

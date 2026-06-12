@@ -4,3 +4,4 @@ export const two: 2;
 export const three: 3;
 export const five: 5;
 export const six: 6;
+export const sixteen: 16;

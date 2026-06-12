@@ -1,12 +1,14 @@
 import {isEmpty, has, getTypeof, remove, indexOfExist, someValid, first, setData, getData, flatten, toArray, map, each, arraySlice} from 'structkit';
 
-import {configQueryString} from './config.js';
+import {configQueryString} from './config.mjs';
 
-import {zero, one} from './variable.js';
+import {zero, one} from './variable.mjs';
 
 import {varExtend, indexOfNotExist} from 'structkit';
 
-import {queryDecode} from './format.js';
+import {queryDecode} from './format.mjs';
+
+import {unQoute} from './qoutes.mjs';
 
 /**
  * Query String object
@@ -236,7 +238,7 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly, defaultConfig));
 
         }
 
@@ -250,37 +252,53 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  * @since 1.2.7
  * @category Seq
  * @param {any} value config defalut value
+ * @param {any} defaultConfig config defalut value
  * @returns {any} Returns the null.
  * @example
  *
  * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
-const convertValueToItsType = function (value) {
+const convertValueToItsType = function (value, defaultConfig) {
+
+    let hasValidType = false;
 
     if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
 
         value = parseFloat(value);
+        hasValidType = true;
 
     } else if ((/^([0-9]{1,})$/gmi).test(value)) {
 
         value = parseInt(value);
+        hasValidType = true;
 
     } else if (value === "true") {
 
         value = true;
+        hasValidType = true;
 
     } else if (value === "false") {
 
         value = false;
+        hasValidType = true;
 
     } else if (value === "null") {
 
         value = null;
+        hasValidType = true;
 
     }
 
-    return value;
+    if (hasValidType) {
+
+        return value;
+
+    }
+
+    return defaultConfig.allowUnQuote
+        ? unQoute(value, {"plusToSpace": defaultConfig.plusToSpace})
+        : value;
 
 };
 
