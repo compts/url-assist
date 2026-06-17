@@ -65,7 +65,7 @@ function phpSerialize (value) {
  * parseTypeVal ("string", "value")
  * // => 0
  */
-function parseTypeVal (typeValue, value) {
+const parseTypeVal = function (typeValue, value) {
 
     if (indexOfExist(typeValue, [
         "array",
@@ -98,7 +98,7 @@ function parseTypeVal (typeValue, value) {
     return "N;";
 
 
-}
+};
 
 module.exports=phpSerialize;
 

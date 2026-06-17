@@ -40,7 +40,7 @@ function phpUnSerialize (value) {
  * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function getObjectValue (value) {
+const getObjectValue = function (value) {
 
     const splitOpen = value.split("{");
     const splitClose = reduce(function (total, mVal) {
@@ -68,7 +68,7 @@ function getObjectValue (value) {
     return splitClose;
 
 
-}
+};
 
 /**
  * Convert the value to its type in serialize
@@ -82,7 +82,7 @@ function getObjectValue (value) {
  * getObjectType ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function getObjectType (value) {
+const getObjectType = function (value) {
 
     const getMatch = value.match(/\b([a-z]){1}:([0-9]+)\b/g);
 
@@ -101,7 +101,7 @@ function getObjectType (value) {
         "matches": []
     };
 
-}
+};
 
 /**
  * Convert the value to its type in serialize
@@ -115,7 +115,7 @@ function getObjectType (value) {
  * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function parseTypeValObj (value) {
+const parseTypeValObj = function (value) {
 
     if (value === "N;") {
 
@@ -217,7 +217,7 @@ function parseTypeValObj (value) {
     return null;
 
 
-}
+};
 
 module.exports=phpUnSerialize;
 

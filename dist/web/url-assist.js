@@ -2435,7 +2435,7 @@ function phpSerialize (value) {
  * parseTypeVal ("string", "value")
  * // => 0
  */
-function parseTypeVal (typeValue, value) {
+var parseTypeVal = function (typeValue, value) {
 
     if (_stk.indexOfExist(typeValue, [
         "array",
@@ -2467,7 +2467,7 @@ function parseTypeVal (typeValue, value) {
 
     return "N;";
 
-}
+};
 
 /**
  * Convert date to its preferred value
@@ -2541,7 +2541,7 @@ function phpUnSerialize (value) {
  * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function getObjectValue (value) {
+var getObjectValue = function (value) {
 
     var splitOpen = value.split("{");
     var splitClose = _stk.reduce(function (total, mVal) {
@@ -2564,7 +2564,7 @@ function getObjectValue (value) {
 
     return splitClose;
 
-}
+};
 
 /**
  * Convert the value to its type in serialize
@@ -2578,7 +2578,7 @@ function getObjectValue (value) {
  * getObjectType ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function getObjectType (value) {
+var getObjectType = function (value) {
 
     var getMatch = value.match(/\b([a-z]){1}:([0-9]+)\b/g);
 
@@ -2596,7 +2596,7 @@ function getObjectType (value) {
         "matches": []
     };
 
-}
+};
 
 /**
  * Convert the value to its type in serialize
@@ -2610,7 +2610,7 @@ function getObjectType (value) {
  * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
  * // => ["22s"]
  */
-function parseTypeValObj (value) {
+var parseTypeValObj = function (value) {
 
     if (value === "N;") {
 
@@ -2707,7 +2707,7 @@ function parseTypeValObj (value) {
 
     return null;
 
-}
+};
 
 /**
  * In url or path, you now verified the format of your url
