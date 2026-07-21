@@ -2670,7 +2670,6 @@ const parseTypeValObj = function (value) {
                 if (objValue[one].match(/[a-z]:[0-9]+:\{[a-z]:[0-9]/g)) {
 
                     rawCount = _stk.indexOf("}", objValue);
-                    refobjVal = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
                     isValidObject = true;
 
                 }

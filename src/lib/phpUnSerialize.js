@@ -180,7 +180,6 @@ const parseTypeValObj = function (value) {
                 if (objValue[one].match(/[a-z]:[0-9]+:\{[a-z]:[0-9]/g)) {
 
                     rawCount = indexOf("}", objValue);
-                    refobjVal = parseTypeValObj(arraySlice(objValue, one).join(";")+";");
                     isValidObject = true;
 
                 }
