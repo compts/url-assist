@@ -1,0 +1,15 @@
+/**
+ * Query String stringify
+ *
+ * @since 1.0.0
+ * @category Collection
+ * @param {any} value Passing object to convert string
+ * @param {any=} config Conversion delimeter
+ * @returns {any} Returns the total.
+ * @example
+ *
+ * qsStringify({"test": 11,"test2": 11})
+ *=> test=1&test2=11
+ */
+declare function qsStringify(value: any, config?: any | undefined): any;
+export { qsStringify };

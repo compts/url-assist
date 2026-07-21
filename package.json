@@ -3,16 +3,16 @@
   "version": "1.2.72",
   "description": "URL library at your ease",
   "main": "./dist/cjs/url-assist.cjs.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/ts/index.d.ts",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/ts/index.d.mts",
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/cjs/url-assist.cjs.js",
       "types": {
-        "require": "./dist/ts/index.d.ts",
-        "default": "./dist/ts/index.d.ts"
+        "require": "./dist/ts/index.d.mts",
+        "default": "./dist/ts/index.d.mts"
       },
       "browser": {
         "require": "./dist/cjs/url-assist.cjs.js",
@@ -32,9 +32,9 @@
   ],
   "scripts": {
     "es_linter": "eslint src/lib/*.js src/*.js --fix",
-    "test_esm": "mocha -r esm test/esm/*.test.js",
+    "test_esm": "mocha -r esm test/esm/*.test.mjs",
     "test_cjs": "mocha test/cjs/*.test.js",
-    "test_ts": "mocha --require ts-node/register test/ts/*.test.ts",
+    "test_ts": "npx tsx ./node_modules/mocha/bin/mocha test/ts/*.test.mts",
     "validate": "npm run style && npm run test",
     "test:conv": "jest --coverage --no-cache"
   },
@@ -66,37 +66,46 @@
   "tsd": {
     "directory": "test/ts"
   },
-  "author": "Pein Freccs",
+  "author": "Codehyouka",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/compts/url-assist/issues"
   },
   "homepage": "https://urlassist.codehyouka.xyz",
   "dependencies": {
-    "structkit": "^1.4.9-rc.0"
+    "structkit": "1.4.9-rc.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-typescript": "^7.24.7",
     "@types/assert": "^1.5.6",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^20.4.4",
+    "@types/jest": "^30.0.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^20.5.9",
     "eslint": "^7.16.0",
     "eslint-config-strongloop": "^2.1.0",
     "eslint-plugin-import": "^2.22.1",
     "esm": "^3.2.25",
     "jest": "^27.5.1",
-    "mocha": "^5.2.0",
+    "jsr": "0.13.4",
+    "mocha": "^11.7.5",
     "ts-node": "^10.9.1",
-    "tsd": "^0.19.1",
-     "jsr":"0.13.4"
+    "tsx": "^4.21.0",
+    "tsd": "^0.31.1"
   },
   "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.(t|j)sx?$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
+    },
+    "extensionsToTreatAsEsm": [".ts", ".tsx"],
+    "moduleFileExtensions": ["js", "jsx", "ts", "tsx", "mjs", "json", "node","mts"],
     "collectCoverage": true,
     "coverageReporters": ["json", "html"],
     "collectCoverageFrom": [
-      "dist/esm/src/*.js",
-      "dist/esm/src/lib/*.js"
+      "dist/esm/src/*.mjs",
+      "dist/esm/src/lib/*.mjs"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
