@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "es_linter": "eslint src/lib/*.js src/*.js --fix",
-    "test_esm": "mocha -r esm test/esm/*.test.mjs",
+    "test_esm": "mocha test/esm/*.test.mjs",
     "test_cjs": "mocha test/cjs/*.test.js",
     "test_ts": "npx tsx ./node_modules/mocha/bin/mocha test/ts/*.test.mts",
     "validate": "npm run style && npm run test",
