@@ -1,5 +1,5 @@
 
-import {zero, one, two} from './variable.mjs';
+import {zero, one, two} from '../config/variable.mjs';
 
 import convertValue from '../core/convertValue.mjs';
 

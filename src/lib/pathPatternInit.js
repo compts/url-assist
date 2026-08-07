@@ -1,7 +1,7 @@
 const {getTypeof, each, first, isEmpty, count,
     toInteger, toString, regexCountGroup, range, map, has, getKey, toArray, last} = require("structkit");
 
-const {objRegExpKey} = require("./config");
+const {objRegExpKey} = require("../config/query");
 
 
 /**

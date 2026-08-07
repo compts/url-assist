@@ -1,4 +1,4 @@
-const {sixteen, zero} = require("../lib/variable");
+const {sixteen, zero} = require("../config/variable");
 const {toString} = require("structkit");
 
 /**

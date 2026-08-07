@@ -1,8 +1,8 @@
 import {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend} from 'structkit';
 
-import {exemptListOfDomain} from './config.mjs';
+import {exemptListOfDomain} from '../config/query.mjs';
 
-import {zero, one, two, three, five, six} from './variable.mjs';
+import {zero, one, two, three, five, six} from '../config/variable.mjs';
 
 /**
  * Get if domain segmet details

@@ -1,0 +1,20 @@
+const {charsetToEn} = require("../../dist/cjs/url-assist.cjs");
+const assert = require("assert");
+
+
+describe('CJS: charsetToEn method', function () {
+
+    it('check slugify with non-ASCII characters', function () {
+
+        assert.deepStrictEqual(charsetToEn("Héllo Wörld"), "Hello World");
+
+    });
+
+    it('check charsetToEn with custom replacement map', function () {
+
+        assert.deepStrictEqual(charsetToEn("Hello$World", {"dictStrictMap": {"$": "dollar_dollar"}}), "Hellodollar_dollarWorld");
+
+    });
+
+
+});

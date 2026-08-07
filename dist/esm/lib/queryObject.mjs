@@ -1,8 +1,8 @@
 import {isEmpty, has, getTypeof, remove, indexOfExist, someValid, first, setData, getData, flatten, toArray, map, each, arraySlice} from 'structkit';
 
-import {configQueryString} from './config.mjs';
+import {configQueryString} from '../config/query.mjs';
 
-import {zero, one} from './variable.mjs';
+import {zero, one} from '../config/variable.mjs';
 
 import {varExtend, indexOfNotExist} from 'structkit';
 

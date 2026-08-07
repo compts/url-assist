@@ -1,4 +1,4 @@
-import {sixteen, zero} from '../lib/variable.mjs';
+import {sixteen, zero} from '../config/variable.mjs';
 
 import {toString} from 'structkit';
 

@@ -1,4 +1,4 @@
-import {one, zero} from './variable.mjs';
+import {one, zero} from '../config/variable.mjs';
 
 import {curry, count, range, getKey, getValue, toArray, map, getTypeof, indexOfExist} from 'structkit';
 

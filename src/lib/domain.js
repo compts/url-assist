@@ -1,6 +1,6 @@
 const {count, first, last, arraySlice, indexOfNotExist, isEmpty, filter, varExtend} = require("structkit");
-const {exemptListOfDomain} = require("./config");
-const {zero, one, two, three, five, six} = require("./variable");
+const {exemptListOfDomain} = require("../config/query");
+const {zero, one, two, three, five, six} = require("../config/variable");
 
 /**
  * Get if domain segmet details

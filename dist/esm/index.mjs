@@ -12,11 +12,11 @@ import {qsParse} from './lib/queryObject.mjs';
 
 import {arraySlice, first, has, isEmpty, reduce, strLower, varExtend, mergeWithKey, trim} from 'structkit';
 
-import {one} from './lib/variable.mjs';
+import {one} from './config/variable.mjs';
 
 import {formatUrlInit} from './lib/formatUrlInit.mjs';
 
-import {charMap} from './lib/slugConfig.mjs';
+import {charMap} from './config/slug_data.mjs';
 
 import {qoute, unQoute} from './lib/qoutes.mjs';
 
@@ -272,6 +272,43 @@ function isUrlExtValid (host, ext) {
 }
 
 /**
+ * Convert the charset to english
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} words Passing words you want to convert to english
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * charsetToEn('hello $ world')
+ *=> hello dollar world
+ */
+function charsetToEn (words, ext) {
+
+    const varExt = varExtend({
+        "dictStrictMap": {}
+    }, ext);
+
+    const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
+
+    let rawWords = String(words);
+
+    rawWords = reduce(function (sums, value) {
+
+        sums+= has(refCharMap, value) && value.includes(" ") === false
+            ?refCharMap[value]
+            :value;
+
+        return sums;
+
+    }, "", rawWords.normalize().split(""));
+
+    return rawWords;
+
+}
+
+/**
  * Create url slug from words
  *
  * @since 1.2.6
@@ -303,17 +340,9 @@ function slugify (pattern, ext) {
 
     if (varExt.replaceStrictMap) {
 
-        const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
-
-        strPattern = reduce(function (sums, value) {
-
-            sums+= has(refCharMap, value)
-                ?refCharMap[value]
-                :value;
-
-            return sums;
-
-        }, "", strPattern.normalize().split(""));
+        strPattern = charsetToEn(strPattern, {
+            "dictStrictMap": varExt.dictStrictMap
+        });
 
     }
 
@@ -387,4 +416,4 @@ function formatUrl (pattern, ext) {
 
 }
 
-export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute};
+export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn};

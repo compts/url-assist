@@ -146,6 +146,20 @@ declare function getHostDetails(host: string): any;
  */
 declare function isUrlExtValid(host: string, ext: string): boolean;
 /**
+ * Convert the charset to english
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} words Passing words you want to convert to english
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * charsetToEn('hello $ world')
+ *=> hello dollar world
+ */
+declare function charsetToEn(words: string, ext?: any | undefined): string;
+/**
  * Create url slug from words
  *
  * @since 1.2.6
@@ -173,4 +187,4 @@ declare function slugify(pattern: string, ext?: any | undefined): string;
  *=> helloworld/
  */
 declare function formatUrl(pattern: string, ext?: any | undefined): string;
-export { getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute };
+export { getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn };

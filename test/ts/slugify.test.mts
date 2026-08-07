@@ -98,7 +98,7 @@ describe('ESM: slugify method', function () {
     });
     it('check slugify with custom replacement map', function () {
     
-        assert.deepStrictEqual(slugify("Hello World", {"dictStrictMap": {" ": "_"}}), "hello_world");
+        assert.deepStrictEqual(slugify("Hello$World", {"dictStrictMap": {"$": "dollar_dollar"}}), "hellodollar_dollarworld");
     
     });
 

@@ -1,4 +1,4 @@
-const {one, zero} = require("./variable");
+const {one, zero} = require("../config/variable");
 
 const {curry, count, range, getKey, getValue, toArray, map, getTypeof, indexOfExist} = require("structkit");
 

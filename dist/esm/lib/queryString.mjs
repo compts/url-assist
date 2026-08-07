@@ -1,8 +1,8 @@
 import {each, varExtend, getTypeof, indexOfNotExist, indexOf} from 'structkit';
 
-import {configQueryString} from './config.mjs';
+import {configQueryString} from '../config/query.mjs';
 
-import {zero} from './variable.mjs';
+import {zero} from '../config/variable.mjs';
 
 import {qoute} from './qoutes.mjs';
 

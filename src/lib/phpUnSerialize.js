@@ -1,5 +1,5 @@
 
-const {zero, one, two} = require("./variable");
+const {zero, one, two} = require("../config/variable");
 const convertValue = require("../core/convertValue");
 
 const {curry, each, range, reduce, getValue, toArray, first, arraySlice, indexOf} = require("structkit");

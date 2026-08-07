@@ -1,6 +1,6 @@
 const {isEmpty, has, getTypeof, remove, indexOfExist, someValid, first, setData, getData, flatten, toArray, map, each, arraySlice} = require("structkit");
-const {configQueryString} = require("./config");
-const {zero, one} = require("./variable");
+const {configQueryString} = require("../config/query");
+const {zero, one} = require("../config/variable");
 const {varExtend, indexOfNotExist} = require("structkit");
 const {queryDecode} = require("./format");
 const {unQoute} = require("./qoutes");
