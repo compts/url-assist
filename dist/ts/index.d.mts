@@ -187,4 +187,32 @@ declare function slugify(pattern: string, ext?: any | undefined): string;
  *=> helloworld/
  */
 declare function formatUrl(pattern: string, ext?: any | undefined): string;
-export { getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn };
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+declare function encodeURI(data: string): string;
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+declare function decodeURI(data: string): string;
+export { getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn, encodeURI, decodeURI };

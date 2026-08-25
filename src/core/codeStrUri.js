@@ -2,9 +2,9 @@ const {sixteen, zero} = require("../config/variable");
 const {toString} = require("structkit");
 
 /**
- * Convert date to its preferred value
+ * EncodeURIComponent method with special characters encoded
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Function
  * @param {string} data String to split
  * @returns {string} Returns the total.
@@ -21,9 +21,9 @@ function coreEncodeURI (data) {
 }
 
 /**
- * Convert date to its preferred value
+ * DecodeURIComponent method with special characters decoded
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Function
  * @param {string} data String to split
  * @returns {string} Returns the total.

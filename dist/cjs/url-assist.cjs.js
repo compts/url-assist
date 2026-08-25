@@ -3598,6 +3598,44 @@ function formatUrl (pattern, ext) {
 
 }
 
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function encodeURI (data) {
+
+    return coreEncodeURI(data);
+
+}
+
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function decodeURI (data) {
+
+    return coreDecodeURI(data);
+
+}
+
 urs.getHostDetails=getHostDetails;
 urs.formatUrl=formatUrl;
 urs.qsStringify=qsStringify;
@@ -3618,6 +3656,8 @@ urs.phpUnSerialize=phpUnSerialize;
 urs.qoute=qoute;
 urs.unQoute=unQoute;
 urs.charsetToEn=charsetToEn;
+urs.encodeURI=encodeURI;
+urs.decodeURI=decodeURI;
 
 
  //end of file

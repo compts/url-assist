@@ -11,6 +11,7 @@ const {charMap} = require("./config/slug_data");
 const {qoute, unQoute} = require("./lib/qoutes");
 const phpSerialize = require('./lib/phpSerialize');
 const phpUnSerialize = require('./lib/phpUnSerialize');
+const {coreEncodeURI, coreDecodeURI} = require("./core/codeStrUri");
 
 
 /**
@@ -414,6 +415,48 @@ function formatUrl (pattern, ext) {
 
 }
 
+
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function encodeURI (data) {
+
+
+    return coreEncodeURI(data);
+
+}
+
+
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function decodeURI (data) {
+
+
+    return coreDecodeURI(data);
+
+}
+
 exports.getHostDetails=getHostDetails;
 exports.formatUrl=formatUrl;
 exports.qsStringify=qsStringify;
@@ -434,3 +477,5 @@ exports.phpUnSerialize = phpUnSerialize;
 exports.qoute = qoute;
 exports.unQoute = unQoute;
 exports.charsetToEn = charsetToEn;
+exports.encodeURI = encodeURI;
+exports.decodeURI = decodeURI;

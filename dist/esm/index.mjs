@@ -24,6 +24,8 @@ import phpSerialize from './lib/phpSerialize.mjs';
 
 import phpUnSerialize from './lib/phpUnSerialize.mjs';
 
+import {coreEncodeURI, coreDecodeURI} from './core/codeStrUri.mjs';
+
 /**
  * In url or path, you now verified the format of your url
  *
@@ -416,4 +418,42 @@ function formatUrl (pattern, ext) {
 
 }
 
-export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn};
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function encodeURI (data) {
+
+    return coreEncodeURI(data);
+
+}
+
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function decodeURI (data) {
+
+    return coreDecodeURI(data);
+
+}
+
+export {getHostDetails, formatUrl, qsStringify, qsParse, isHttps, isHttpProtocolValid, joinUrlPath, isUrlExtValid, isWSProtocolValid, isUrlValidFormat, urlComposer, urlPattern, slugify, queryEncode, queryDecode, phpSerialize, phpUnSerialize, qoute, unQoute, charsetToEn, encodeURI, decodeURI};
