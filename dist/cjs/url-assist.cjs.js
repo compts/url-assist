@@ -2,9 +2,13 @@ const _stk = require('structkit');
 const urs = exports;
 
 const configQueryString = {
+    "allowQuote": true,
+    "allowUnQuote": true,
     "arrayFormat": "[]",
     "equalSeparator": "=",
     "newLineSeparator": "&",
+    "plusToSpace": false,
+    "safeQuote": null,
     "startWith": ""
 };
 const exemptListOfDomain = ['localhost'];
@@ -22,8 +26,125 @@ const two =2;
 const three = 3;
 const five = 5;
 const six = 6;
+const sixteen = 16;
 
 //  * @param {string} url - URL to check
+
+/**
+ * EncodeURIComponent method with special characters encoded
+ *
+ * @since 1.2.72
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreEncodeURI (data) {
+
+    return encodeURIComponent(_stk.toString(data)).replace(/[!'()*"]/g, (ch) => '%' + ch.charCodeAt(zero).toString(sixteen)
+        .toUpperCase());
+
+}
+
+/**
+ * DecodeURIComponent method with special characters decoded
+ *
+ * @since 1.2.72
+ * @category Function
+ * @param {string} data String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function coreDecodeURI (data) {
+
+    return _stk.toString(data).replace(/(?:%[0-9A-Fa-f]{2})+/g, (match) => {
+
+        try {
+
+            return decodeURIComponent(match);
+
+        } catch {
+
+            return match;
+
+        }
+
+    });
+
+}
+
+/**
+ * Url qoute for safe url or domain
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns the quoted uri.
+ * @example
+ *
+ * qoute("?see=asda asd asd ()")
+ * // =>  %3Fsee%3Dasda%20asd%20asd%20()
+ *
+ */
+function qoute (data, config) {
+
+    const defineConfig = _stk.varExtend({"safe": null}, config);
+
+    data = coreEncodeURI(data);
+
+    if (defineConfig.safe !== null) {
+
+        data = _stk.reduce(function (total, value) {
+
+            const encodedChar = coreEncodeURI(value);
+
+            total = total.replaceAll(encodedChar, value);
+
+            return total;
+
+        }, data, defineConfig.safe.split(""));
+
+    }
+
+    return data;
+
+}
+
+/**
+ * Unquote a quoted uri
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Arguments for domain or url you want to dissect.
+ * @param {object?} config Options of function
+ * @returns {any} Returns the unquoted uri.
+ * @example
+ *
+ * unQoute("%3Fsee%3Dasda%20asd%20asd%20%28%29")
+ * // =>  ?see=asda asd asd ()
+ *
+ */
+function unQoute (data, config) {
+
+    const defineConfig = _stk.varExtend({"plusToSpace": false}, config);
+
+    if (defineConfig.plusToSpace) {
+
+        data= data.replace(/\+/g, ' ');
+
+    }
+    data = coreDecodeURI(data);
+
+    return data;
+
+}
 
 /**
  * Query String stringify
@@ -110,7 +231,9 @@ const parseStringConvert=function (key, value, type, config, reference) {
 
     } else {
 
-        reference.push(key+""+config.equalSeparator+""+value);
+        reference.push(key+""+config.equalSeparator+""+(config.allowQuote
+            ? qoute(value, {"safe": config.safeQuote})
+            : value));
 
     }
 
@@ -404,7 +527,7 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
 
             });
 
-            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly));
+            callbacks(keyOnly, keyList, convertValueToItsType(getValueOnly, defaultConfig));
 
         }
 
@@ -418,37 +541,53 @@ const qsParseCallback = function (defaultConfig, defaultSplit, callbacks) {
  * @since 1.2.7
  * @category Seq
  * @param {any} value config defalut value
+ * @param {any} defaultConfig config defalut value
  * @returns {any} Returns the null.
  * @example
  *
  * qsParseCallback(defaultConfig, defaultSplit, callbacks)
  * // => true
  */
-const convertValueToItsType = function (value) {
+const convertValueToItsType = function (value, defaultConfig) {
+
+    let hasValidType = false;
 
     if ((/^([0-9]{1,}[.]{1}[0-9]{1,})$/gmi).test(value)) {
 
         value = parseFloat(value);
+        hasValidType = true;
 
     } else if ((/^([0-9]{1,})$/gmi).test(value)) {
 
         value = parseInt(value);
+        hasValidType = true;
 
     } else if (value === "true") {
 
         value = true;
+        hasValidType = true;
 
     } else if (value === "false") {
 
         value = false;
+        hasValidType = true;
 
     } else if (value === "null") {
 
         value = null;
+        hasValidType = true;
 
     }
 
-    return value;
+    if (hasValidType) {
+
+        return value;
+
+    }
+
+    return defaultConfig.allowUnQuote
+        ? unQoute(value, {"plusToSpace": defaultConfig.plusToSpace})
+        : value;
 
 };
 
@@ -520,7 +659,8 @@ function ifValidHost (domain, protocol, port, subdomain, tld) {
 function removeSlash (data) {
 
     return data.replace(/^(\/)/g, "").replace(/(\/)$/g, "")
-        .replace(/[/]{2,}/g, "/");
+        .replace(/[/]{2,}/g, "/")
+        .replace(/[#]{1,}/g, "");
 
 }
 
@@ -584,7 +724,7 @@ UrlComposerInit.prototype.setProtocol = function (data) {
  */
 UrlComposerInit.prototype.setHash = function (data) {
 
-    this.variableHash = data;
+    this.variableHash = data.replace(/[#]{1,}/g, "");
 
 };
 
@@ -747,7 +887,7 @@ UrlComposerInit.prototype.getToString = function () {
         "domain": urlData.domain,
         "hash": _stk.isEmpty(this.variableHash)
             ? ''
-            : '#'+this.variableHash,
+            : '#'+this.variableHash.replace(/[#]{1,}/g, ""),
         "path": _stk.isEmpty(joinPath)
             ? ''
             : '/'+removeSlash(joinPath),
@@ -1588,647 +1728,1480 @@ function formatUrlInit (pattern, ext) {
 }
 
 const charMap = {
-    "$": "dollar",
-    "%": "percent",
-    "&": "and",
-    "<": "less",
-    ">": "greater",
-    "|": "or",
-    "¢": "cent",
-    "£": "pound",
-    "¤": "currency",
-    "¥": "yen",
-    "©": "copyright",
-    "ª": "a",
-    "®": "register trademark",
-    "º": "o",
-    "À": "A",
-    "Á": "A",
-    "Â": "A",
-    "Ã": "A",
-    "Ä": "A",
-    "Å": "A",
-    "Æ": "AE",
-    "Ç": "C",
-    "È": "E",
-    "É": "E",
-    "Ê": "E",
-    "Ë": "E",
-    "Ì": "I",
-    "Í": "I",
-    "Î": "I",
-    "Ï": "I",
-    "Ð": "D",
-    "Ñ": "N",
-    "Ò": "O",
-    "Ó": "O",
-    "Ô": "O",
-    "Õ": "O",
-    "Ö": "O",
-    "Ø": "O",
-    "Ù": "U",
-    "Ú": "U",
-    "Û": "U",
-    "Ü": "U",
-    "Ý": "Y",
-    "Þ": "TH",
-    "ß": "ss",
-    "à": "a",
-    "á": "a",
-    "â": "a",
-    "ã": "a",
-    "ä": "a",
-    "å": "a",
-    "æ": "ae",
-    "ç": "c",
-    "è": "e",
-    "é": "e",
-    "ê": "e",
-    "ë": "e",
-    "ì": "i",
-    "í": "i",
-    "î": "i",
-    "ï": "i",
-    "ð": "d",
-    "ñ": "n",
-    "ò": "o",
-    "ó": "o",
-    "ô": "o",
-    "õ": "o",
-    "ö": "o",
-    "ø": "o",
-    "ù": "u",
-    "ú": "u",
-    "û": "u",
-    "ü": "u",
-    "ý": "y",
-    "þ": "th",
-    "ÿ": "y",
-    "Ā": "A",
-    "ā": "a",
-    "Ă": "A",
-    "ă": "a",
-    "Ą": "A",
-    "ą": "a",
-    "Ć": "C",
-    "ć": "c",
-    "Č": "C",
-    "č": "c",
-    "Ď": "D",
-    "ď": "d",
-    "Đ": "DJ",
-    "đ": "dj",
-    "Ē": "E",
-    "ē": "e",
-    "Ė": "E",
-    "ė": "e",
-    "Ę": "e",
-    "ę": "e",
-    "Ě": "E",
-    "ě": "e",
-    "Ğ": "G",
-    "ğ": "g",
-    "Ģ": "G",
-    "ģ": "g",
-    "Ĩ": "I",
-    "ĩ": "i",
-    "Ī": "i",
-    "ī": "i",
-    "Į": "I",
-    "į": "i",
-    "İ": "I",
-    "ı": "i",
-    "Ķ": "k",
-    "ķ": "k",
-    "Ļ": "L",
-    "ļ": "l",
-    "Ľ": "L",
-    "ľ": "l",
-    "Ł": "L",
-    "ł": "l",
-    "Ń": "N",
-    "ń": "n",
-    "Ņ": "N",
-    "ņ": "n",
-    "Ň": "N",
-    "ň": "n",
-    "Ō": "O",
-    "ō": "o",
-    "Ő": "O",
-    "ő": "o",
-    "Œ": "OE",
-    "œ": "oe",
-    "Ŕ": "R",
-    "ŕ": "r",
-    "Ř": "R",
-    "ř": "r",
-    "Ś": "S",
-    "ś": "s",
-    "Ş": "S",
-    "ş": "s",
-    "Š": "S",
-    "š": "s",
-    "Ţ": "T",
-    "ţ": "t",
-    "Ť": "T",
-    "ť": "t",
-    "Ũ": "U",
-    "ũ": "u",
-    "Ū": "u",
-    "ū": "u",
-    "Ů": "U",
-    "ů": "u",
-    "Ű": "U",
-    "ű": "u",
-    "Ų": "U",
-    "ų": "u",
-    "Ŵ": "W",
-    "ŵ": "w",
-    "Ŷ": "Y",
-    "ŷ": "y",
-    "Ÿ": "Y",
-    "Ź": "Z",
-    "ź": "z",
-    "Ż": "Z",
-    "ż": "z",
-    "Ž": "Z",
-    "ž": "z",
-    "Ə": "E",
-    "ƒ": "f",
-    "Ơ": "O",
-    "ơ": "o",
-    "Ư": "U",
-    "ư": "u",
-    "ǈ": "LJ",
-    "ǉ": "lj",
-    "ǋ": "NJ",
-    "ǌ": "nj",
-    "Ș": "S",
-    "ș": "s",
-    "Ț": "T",
-    "ț": "t",
-    "ə": "e",
-    "˚": "o",
-    "Ά": "A",
-    "Έ": "E",
-    "Ή": "H",
-    "Ί": "I",
-    "Ό": "O",
-    "Ύ": "Y",
-    "Ώ": "W",
-    "ΐ": "i",
-    "Α": "A",
-    "Β": "B",
-    "Γ": "G",
-    "Δ": "D",
-    "Ε": "E",
-    "Ζ": "Z",
-    "Η": "H",
-    "Θ": "8",
-    "Ι": "I",
-    "Κ": "K",
-    "Λ": "L",
-    "Μ": "M",
-    "Ν": "N",
-    "Ξ": "3",
-    "Ο": "O",
-    "Π": "P",
-    "Ρ": "R",
-    "Σ": "S",
-    "Τ": "T",
-    "Υ": "Y",
-    "Φ": "F",
-    "Χ": "X",
-    "Ψ": "PS",
-    "Ω": "W",
-    "Ϊ": "I",
-    "Ϋ": "Y",
-    "ά": "a",
-    "έ": "e",
-    "ή": "h",
-    "ί": "i",
-    "ΰ": "y",
-    "α": "a",
-    "β": "b",
-    "γ": "g",
-    "δ": "d",
-    "ε": "e",
-    "ζ": "z",
-    "η": "h",
-    "θ": "8",
-    "ι": "i",
-    "κ": "k",
-    "λ": "l",
-    "μ": "m",
-    "ν": "n",
-    "ξ": "3",
-    "ο": "o",
-    "π": "p",
-    "ρ": "r",
-    "ς": "s",
-    "σ": "s",
-    "τ": "t",
-    "υ": "y",
-    "φ": "f",
-    "χ": "x",
-    "ψ": "ps",
-    "ω": "w",
-    "ϊ": "i",
-    "ϋ": "y",
-    "ό": "o",
-    "ύ": "y",
-    "ώ": "w",
-    "Ё": "Yo",
-    "Ђ": "DJ",
-    "Є": "Ye",
-    "І": "I",
-    "Ї": "Yi",
-    "Ј": "J",
-    "Љ": "LJ",
-    "Њ": "NJ",
-    "Ћ": "C",
-    "Џ": "DZ",
-    "А": "A",
-    "Б": "B",
-    "В": "V",
-    "Г": "G",
-    "Д": "D",
-    "Е": "E",
-    "Ж": "Zh",
-    "З": "Z",
-    "И": "I",
-    "Й": "J",
-    "К": "K",
-    "Л": "L",
-    "М": "M",
-    "Н": "N",
-    "О": "O",
-    "П": "P",
-    "Р": "R",
-    "С": "S",
-    "Т": "T",
-    "У": "U",
-    "Ф": "F",
-    "Х": "H",
-    "Ц": "C",
-    "Ч": "Ch",
-    "Ш": "Sh",
-    "Щ": "Sh",
-    "Ъ": "U",
-    "Ы": "Y",
-    "Ь": "",
-    "Э": "E",
-    "Ю": "Yu",
-    "Я": "Ya",
-    "а": "a",
-    "б": "b",
-    "в": "v",
-    "г": "g",
-    "д": "d",
-    "е": "e",
-    "ж": "zh",
-    "з": "z",
-    "и": "i",
-    "й": "j",
-    "к": "k",
-    "л": "l",
-    "м": "m",
-    "н": "n",
-    "о": "o",
-    "п": "p",
-    "р": "r",
-    "с": "s",
-    "т": "t",
-    "у": "u",
-    "ф": "f",
-    "х": "h",
-    "ц": "c",
-    "ч": "ch",
-    "ш": "sh",
-    "щ": "sh",
-    "ъ": "u",
-    "ы": "y",
-    "ь": "",
-    "э": "e",
-    "ю": "yu",
-    "я": "ya",
-    "ё": "yo",
-    "ђ": "dj",
-    "є": "ye",
-    "і": "i",
-    "ї": "yi",
-    "ј": "j",
-    "љ": "lj",
-    "њ": "nj",
-    "ћ": "c",
-    "ѝ": "u",
-    "џ": "dz",
-    "Ґ": "G",
-    "ґ": "g",
-    "Ғ": "GH",
-    "ғ": "gh",
-    "Қ": "KH",
-    "қ": "kh",
-    "Ң": "NG",
-    "ң": "ng",
-    "Ү": "UE",
-    "ү": "ue",
-    "Ұ": "U",
-    "ұ": "u",
-    "Һ": "H",
-    "һ": "h",
-    "Ә": "AE",
-    "ә": "ae",
-    "Ө": "OE",
-    "ө": "oe",
-    "Ա": "A",
-    "Բ": "B",
-    "Գ": "G",
-    "Դ": "D",
-    "Ե": "E",
-    "Զ": "Z",
-    "Է": "E'",
-    "Ը": "Y'",
-    "Թ": "T'",
-    "Ժ": "JH",
-    "Ի": "I",
-    "Լ": "L",
-    "Խ": "X",
-    "Ծ": "C'",
-    "Կ": "K",
-    "Հ": "H",
-    "Ձ": "D'",
-    "Ղ": "GH",
-    "Ճ": "TW",
-    "Մ": "M",
-    "Յ": "Y",
-    "Ն": "N",
-    "Շ": "SH",
-    "Չ": "CH",
-    "Պ": "P",
-    "Ջ": "J",
-    "Ռ": "R'",
-    "Ս": "S",
-    "Վ": "V",
-    "Տ": "T",
-    "Ր": "R",
-    "Ց": "C",
-    "Փ": "P'",
-    "Ք": "Q'",
-    "Օ": "O''",
-    "Ֆ": "F",
-    "և": "EV",
-    "ء": "a",
-    "آ": "aa",
-    "أ": "a",
-    "ؤ": "u",
-    "إ": "i",
-    "ئ": "e",
-    "ا": "a",
-    "ب": "b",
-    "ة": "h",
-    "ت": "t",
-    "ث": "th",
-    "ج": "j",
-    "ح": "h",
-    "خ": "kh",
-    "د": "d",
-    "ذ": "th",
-    "ر": "r",
-    "ز": "z",
-    "س": "s",
-    "ش": "sh",
-    "ص": "s",
-    "ض": "dh",
-    "ط": "t",
-    "ظ": "z",
-    "ع": "a",
-    "غ": "gh",
-    "ف": "f",
-    "ق": "q",
-    "ك": "k",
-    "ل": "l",
-    "م": "m",
-    "ن": "n",
-    "ه": "h",
-    "و": "w",
-    "ى": "a",
-    "ي": "y",
-    "ً": "an",
-    "ٌ": "on",
-    "ٍ": "en",
-    "َ": "a",
-    "ُ": "u",
-    "ِ": "e",
-    "ْ": "",
-    "٠": "0",
-    "١": "1",
-    "٢": "2",
-    "٣": "3",
-    "٤": "4",
-    "٥": "5",
-    "٦": "6",
-    "٧": "7",
-    "٨": "8",
-    "٩": "9",
-    "پ": "p",
-    "چ": "ch",
-    "ژ": "zh",
-    "ک": "k",
-    "گ": "g",
-    "ی": "y",
-    "۰": "0",
-    "۱": "1",
-    "۲": "2",
-    "۳": "3",
-    "۴": "4",
-    "۵": "5",
-    "۶": "6",
-    "۷": "7",
-    "۸": "8",
-    "۹": "9",
-    "฿": "baht",
-    "ა": "a",
-    "ბ": "b",
-    "გ": "g",
-    "დ": "d",
-    "ე": "e",
-    "ვ": "v",
-    "ზ": "z",
-    "თ": "t",
-    "ი": "i",
-    "კ": "k",
-    "ლ": "l",
-    "მ": "m",
-    "ნ": "n",
-    "ო": "o",
-    "პ": "p",
-    "ჟ": "zh",
-    "რ": "r",
-    "ს": "s",
-    "ტ": "t",
-    "უ": "u",
-    "ფ": "f",
-    "ქ": "k",
-    "ღ": "gh",
-    "ყ": "q",
-    "შ": "sh",
-    "ჩ": "ch",
-    "ც": "ts",
-    "ძ": "dz",
-    "წ": "ts",
-    "ჭ": "ch",
-    "ხ": "kh",
-    "ჯ": "j",
-    "ჰ": "h",
-    "Ṣ": "S",
-    "ṣ": "s",
-    "Ẁ": "W",
-    "ẁ": "w",
-    "Ẃ": "W",
-    "ẃ": "w",
-    "Ẅ": "W",
-    "ẅ": "w",
-    "ẞ": "SS",
-    "Ạ": "A",
-    "ạ": "a",
-    "Ả": "A",
-    "ả": "a",
-    "Ấ": "A",
-    "ấ": "a",
-    "Ầ": "A",
-    "ầ": "a",
-    "Ẩ": "A",
-    "ẩ": "a",
-    "Ẫ": "A",
-    "ẫ": "a",
-    "Ậ": "A",
-    "ậ": "a",
-    "Ắ": "A",
-    "ắ": "a",
-    "Ằ": "A",
-    "ằ": "a",
-    "Ẳ": "A",
-    "ẳ": "a",
-    "Ẵ": "A",
-    "ẵ": "a",
-    "Ặ": "A",
-    "ặ": "a",
-    "Ẹ": "E",
-    "ẹ": "e",
-    "Ẻ": "E",
-    "ẻ": "e",
-    "Ẽ": "E",
-    "ẽ": "e",
-    "Ế": "E",
-    "ế": "e",
-    "Ề": "E",
-    "ề": "e",
-    "Ể": "E",
-    "ể": "e",
-    "Ễ": "E",
-    "ễ": "e",
-    "Ệ": "E",
-    "ệ": "e",
-    "Ỉ": "I",
-    "ỉ": "i",
-    "Ị": "I",
-    "ị": "i",
-    "Ọ": "O",
-    "ọ": "o",
-    "Ỏ": "O",
-    "ỏ": "o",
-    "Ố": "O",
-    "ố": "o",
-    "Ồ": "O",
-    "ồ": "o",
-    "Ổ": "O",
-    "ổ": "o",
-    "Ỗ": "O",
-    "ỗ": "o",
-    "Ộ": "O",
-    "ộ": "o",
-    "Ớ": "O",
-    "ớ": "o",
-    "Ờ": "O",
-    "ờ": "o",
-    "Ở": "O",
-    "ở": "o",
-    "Ỡ": "O",
-    "ỡ": "o",
-    "Ợ": "O",
-    "ợ": "o",
-    "Ụ": "U",
-    "ụ": "u",
-    "Ủ": "U",
-    "ủ": "u",
-    "Ứ": "U",
-    "ứ": "u",
-    "Ừ": "U",
-    "ừ": "u",
-    "Ử": "U",
-    "ử": "u",
-    "Ữ": "U",
-    "ữ": "u",
-    "Ự": "U",
-    "ự": "u",
-    "Ỳ": "Y",
-    "ỳ": "y",
-    "Ỵ": "Y",
-    "ỵ": "y",
-    "Ỷ": "Y",
-    "ỷ": "y",
-    "Ỹ": "Y",
-    "ỹ": "y",
-    "–": "-",
-    "‘": "'",
-    "’": "'",
-    "“": "\\\"",
-    "”": "\\\"",
-    "„": "\\\"",
-    "†": "+",
-    "•": "*",
-    "…": "...",
-    "₠": "ecu",
-    "₢": "cruzeiro",
-    "₣": "french franc",
-    "₤": "lira",
-    "₥": "mill",
-    "₦": "naira",
-    "₧": "peseta",
-    "₨": "rupee",
-    "₩": "won",
-    "₪": "new shequel",
-    "₫": "dong",
-    "€": "euro",
-    "₭": "kip",
-    "₮": "tugrik",
-    "₯": "drachma",
-    "₰": "penny",
-    "₱": "peso",
-    "₲": "guarani",
-    "₳": "austral",
-    "₴": "hryvnia",
-    "₵": "cedi",
-    "₸": "kazakhstani tenge",
-    "₹": "indian rupee",
-    "₺": "turkish lira",
-    "₽": "russian ruble",
-    "₿": "bitcoin",
-    "℠": "sm",
-    "™": "tm",
-    "∂": "d",
-    "∆": "delta",
-    "∑": "sum",
-    "∞": "infinity",
-    "♥": "love",
-    "元": "yuan",
-    "円": "yen",
-    "﷼": "rial",
-    "ﻵ": "laa",
-    "ﻷ": "laa",
-    "ﻹ": "lai",
-    "ﻻ": "la"
+  "$": "dollar",
+  "%": "percent",
+  "&": "and",
+  "<": "less",
+  ">": "greater",
+  "|": "or",
+  "˚": "o",
+  "Ά": "A",
+  "Έ": "E",
+  "Ή": "H",
+  "Ί": "I",
+  "Ό": "O",
+  "Ύ": "Y",
+  "Ώ": "W",
+  "ΐ": "i",
+  "Α": "A",
+  "Β": "B",
+  "Γ": "G",
+  "Δ": "D",
+  "Ε": "E",
+  "Ζ": "Z",
+  "Η": "H",
+  "Θ": "8",
+  "Ι": "I",
+  "Κ": "K",
+  "Λ": "L",
+  "Μ": "M",
+  "Ν": "N",
+  "Ξ": "3",
+  "Ο": "O",
+  "Π": "P",
+  "Ρ": "R",
+  "Σ": "S",
+  "Τ": "T",
+  "Υ": "Y",
+  "Φ": "F",
+  "Χ": "X",
+  "Ψ": "PS",
+  "Ω": "W",
+  "Ϊ": "I",
+  "Ϋ": "Y",
+  "ά": "a",
+  "έ": "e",
+  "ή": "h",
+  "ί": "i",
+  "ΰ": "y",
+  "α": "a",
+  "β": "b",
+  "γ": "g",
+  "δ": "d",
+  "ε": "e",
+  "ζ": "z",
+  "η": "h",
+  "θ": "8",
+  "ι": "i",
+  "κ": "k",
+  "λ": "l",
+  "μ": "m",
+  "ν": "n",
+  "ξ": "3",
+  "ο": "o",
+  "π": "p",
+  "ρ": "r",
+  "ς": "s",
+  "σ": "s",
+  "τ": "t",
+  "υ": "y",
+  "φ": "f",
+  "χ": "x",
+  "ψ": "ps",
+  "ω": "w",
+  "ϊ": "i",
+  "ϋ": "y",
+  "ό": "o",
+  "ύ": "y",
+  "ώ": "w",
+  "Ё": "Yo",
+  "Ђ": "DJ",
+  "Є": "Ye",
+  "І": "I",
+  "Ї": "Yi",
+  "Ј": "J",
+  "Љ": "LJ",
+  "Њ": "NJ",
+  "Ћ": "C",
+  "Џ": "DZ",
+  "А": "A",
+  "Б": "B",
+  "В": "V",
+  "Г": "G",
+  "Д": "D",
+  "Е": "E",
+  "Ж": "Zh",
+  "З": "Z",
+  "И": "I",
+  "Й": "J",
+  "К": "K",
+  "Л": "L",
+  "М": "M",
+  "Н": "N",
+  "О": "O",
+  "П": "P",
+  "Р": "R",
+  "С": "S",
+  "Т": "T",
+  "У": "U",
+  "Ф": "F",
+  "Х": "H",
+  "Ц": "C",
+  "Ч": "Ch",
+  "Ш": "Sh",
+  "Щ": "Sh",
+  "Ъ": "U",
+  "Ы": "Y",
+  "Э": "E",
+  "Ю": "Yu",
+  "Я": "Ya",
+  "а": "a",
+  "б": "b",
+  "в": "v",
+  "г": "g",
+  "д": "d",
+  "е": "e",
+  "ж": "zh",
+  "з": "z",
+  "и": "i",
+  "й": "j",
+  "к": "k",
+  "л": "l",
+  "м": "m",
+  "н": "n",
+  "о": "o",
+  "п": "p",
+  "р": "r",
+  "с": "s",
+  "т": "t",
+  "у": "u",
+  "ф": "f",
+  "х": "h",
+  "ц": "c",
+  "ч": "ch",
+  "ш": "sh",
+  "щ": "sh",
+  "ъ": "u",
+  "ы": "y",
+  "э": "e",
+  "ю": "yu",
+  "я": "ya",
+  "ё": "yo",
+  "ђ": "dj",
+  "є": "ye",
+  "і": "i",
+  "ї": "yi",
+  "ј": "j",
+  "љ": "lj",
+  "њ": "nj",
+  "ћ": "c",
+  "ѝ": "u",
+  "џ": "dz",
+  "Ґ": "G",
+  "ґ": "g",
+  "Ғ": "GH",
+  "ғ": "gh",
+  "Қ": "KH",
+  "қ": "kh",
+  "Ң": "NG",
+  "ң": "ng",
+  "Ү": "UE",
+  "ү": "ue",
+  "Ұ": "U",
+  "ұ": "u",
+  "Һ": "H",
+  "һ": "h",
+  "Ә": "AE",
+  "ә": "ae",
+  "Ө": "OE",
+  "ө": "oe",
+  "Ա": "A",
+  "Բ": "B",
+  "Գ": "G",
+  "Դ": "D",
+  "Ե": "E",
+  "Զ": "Z",
+  "Է": "E'",
+  "Ը": "Y'",
+  "Թ": "T'",
+  "Ժ": "JH",
+  "Ի": "I",
+  "Լ": "L",
+  "Խ": "X",
+  "Ծ": "C'",
+  "Կ": "K",
+  "Հ": "H",
+  "Ձ": "D'",
+  "Ղ": "GH",
+  "Ճ": "TW",
+  "Մ": "M",
+  "Յ": "Y",
+  "Ն": "N",
+  "Շ": "SH",
+  "Չ": "CH",
+  "Պ": "P",
+  "Ջ": "J",
+  "Ռ": "R'",
+  "Ս": "S",
+  "Վ": "V",
+  "Տ": "T",
+  "Ր": "R",
+  "Ց": "C",
+  "Փ": "P'",
+  "Ք": "Q'",
+  "Օ": "O''",
+  "Ֆ": "F",
+  "և": "EV",
+  "ء": "a",
+  "آ": "aa",
+  "أ": "a",
+  "ؤ": "u",
+  "إ": "i",
+  "ئ": "e",
+  "ا": "a",
+  "ب": "b",
+  "ة": "h",
+  "ت": "t",
+  "ث": "th",
+  "ج": "j",
+  "ح": "h",
+  "خ": "kh",
+  "د": "d",
+  "ذ": "th",
+  "ر": "r",
+  "ز": "z",
+  "س": "s",
+  "ش": "sh",
+  "ص": "s",
+  "ض": "dh",
+  "ط": "t",
+  "ظ": "z",
+  "ع": "a",
+  "غ": "gh",
+  "ف": "f",
+  "ق": "q",
+  "ك": "k",
+  "ل": "l",
+  "م": "m",
+  "ن": "n",
+  "ه": "h",
+  "و": "w",
+  "ى": "a",
+  "ي": "y",
+  "ً": "an",
+  "ٌ": "on",
+  "ٍ": "en",
+  "َ": "a",
+  "ُ": "u",
+  "ِ": "e",
+  "٠": "0",
+  "١": "1",
+  "٢": "2",
+  "٣": "3",
+  "٤": "4",
+  "٥": "5",
+  "٦": "6",
+  "٧": "7",
+  "٨": "8",
+  "٩": "9",
+  "پ": "p",
+  "چ": "ch",
+  "ژ": "zh",
+  "ک": "k",
+  "گ": "g",
+  "ی": "y",
+  "۰": "0",
+  "۱": "1",
+  "۲": "2",
+  "۳": "3",
+  "۴": "4",
+  "۵": "5",
+  "۶": "6",
+  "۷": "7",
+  "۸": "8",
+  "۹": "9",
+  "฿": "baht",
+  "ა": "a",
+  "ბ": "b",
+  "გ": "g",
+  "დ": "d",
+  "ე": "e",
+  "ვ": "v",
+  "ზ": "z",
+  "თ": "t",
+  "ი": "i",
+  "კ": "k",
+  "ლ": "l",
+  "მ": "m",
+  "ნ": "n",
+  "ო": "o",
+  "პ": "p",
+  "ჟ": "zh",
+  "რ": "r",
+  "ს": "s",
+  "ტ": "t",
+  "უ": "u",
+  "ფ": "f",
+  "ქ": "k",
+  "ღ": "gh",
+  "ყ": "q",
+  "შ": "sh",
+  "ჩ": "ch",
+  "ც": "ts",
+  "ძ": "dz",
+  "წ": "ts",
+  "ჭ": "ch",
+  "ხ": "kh",
+  "ჯ": "j",
+  "ჰ": "h",
+  "–": "-",
+  "‘": "'",
+  "’": "'",
+  "“": "\\\"",
+  "”": "\\\"",
+  "„": "\\\"",
+  "†": "+",
+  "•": "*",
+  "…": "...",
+  "₠": "ecu",
+  "₢": "cruzeiro",
+  "₣": "french-franc",
+  "₤": "lira",
+  "₥": "mill",
+  "₦": "naira",
+  "₧": "peseta",
+  "₨": "rupee",
+  "₩": "won",
+  "₪": "new-shequel",
+  "₫": "dong",
+  "€": "euro",
+  "₭": "kip",
+  "₮": "tugrik",
+  "₯": "drachma",
+  "₰": "penny",
+  "₱": "peso",
+  "₲": "guarani",
+  "₳": "austral",
+  "₴": "hryvnia",
+  "₵": "cedi",
+  "₸": "kazakhstani-tenge",
+  "₹": "indian-rupee",
+  "₺": "turkish-lira",
+  "₽": "russian-ruble",
+  "₿": "bitcoin",
+  "℠": "sm",
+  "™": "tm",
+  "∂": "d",
+  "∆": "delta",
+  "∑": "sum",
+  "∞": "infinity",
+  "♥": "love",
+  "元": "yuan",
+  "円": "yen",
+  "﷼": "rial",
+  "ﻵ": "laa",
+  "ﻷ": "laa",
+  "ﻹ": "lai",
+  "ﻻ": "la",
+  "": "Soft-hyphen",
+  "¡": "Exclamation-Mark",
+  "¢": "Cent",
+  "£": "Pound",
+  "¤": "Currency",
+  "¥": "Yen",
+  "¦": "Broken",
+  "§": "Section",
+  "¨": "Umlaut",
+  "©": "Copy",
+  "ª": "Feminine-Ordinal-Indicator",
+  "«": "pointing-angle-quotation-mark",
+  "¬": "Not",
+  "®": "Registered-trademark",
+  "°": "Degree",
+  "±": "Plus–minus",
+  "²": "two",
+  "³": "three",
+  "´": "accent",
+  "µ": "Micro",
+  "¶": "Pilcrow",
+  "¹": "one",
+  "º": "Masculine-ordinal-indicator",
+  "»": "pointing-angle-quotation-mark",
+  "¼": "one-quarter",
+  "½": "one-half",
+  "¾": "three-quarters",
+  "¿": "Question-Mark",
+  "À": "A",
+  "Á": "A",
+  "Â": "A",
+  "Ã": "A",
+  "Ä": "A",
+  "Å": "A",
+  "Æ": "AE",
+  "Ç": "C",
+  "È": "E",
+  "É": "E",
+  "Ê": "E",
+  "Ë": "E",
+  "Ì": "I",
+  "Í": "I",
+  "Î": "I",
+  "Ï": "I",
+  "Ð": "ETH",
+  "Ñ": "N",
+  "Ò": "O",
+  "Ó": "O",
+  "Ô": "O",
+  "Õ": "O",
+  "Ö": "O",
+  "×": "Multiplication",
+  "Ø": "O",
+  "Ù": "U",
+  "Ú": "U",
+  "Û": "U",
+  "Ü": "U",
+  "Ý": "Y",
+  "Þ": "T",
+  "ß": "s",
+  "à": "a",
+  "á": "a",
+  "â": "a",
+  "ã": "a",
+  "ä": "a",
+  "å": "a",
+  "æ": "ae",
+  "ç": "c",
+  "è": "e",
+  "é": "e",
+  "ê": "e",
+  "ë": "e",
+  "ì": "i",
+  "í": "i",
+  "î": "i",
+  "ï": "i",
+  "ð": "eth",
+  "ñ": "n",
+  "ò": "o",
+  "ó": "o",
+  "ô": "o",
+  "õ": "o",
+  "ö": "o",
+  "÷": "Division",
+  "ø": "o",
+  "ù": "u",
+  "ú": "u",
+  "û": "u",
+  "ü": "u",
+  "ý": "y",
+  "þ": "t",
+  "ÿ": "y",
+  "Ā": "A",
+  "ā": "a",
+  "Ă": "A",
+  "ă": "a",
+  "Ą": "A",
+  "ą": "a",
+  "Ć": "C",
+  "ć": "c",
+  "Ĉ": "C",
+  "ĉ": "c",
+  "Ċ": "C",
+  "ċ": "c",
+  "Č": "C",
+  "č": "c",
+  "Ď": "D",
+  "ď": "d",
+  "Đ": "D",
+  "đ": "d",
+  "Ē": "E",
+  "ē": "e",
+  "Ĕ": "E",
+  "ĕ": "e",
+  "Ė": "E",
+  "ė": "e",
+  "Ę": "E",
+  "ę": "e",
+  "Ě": "E",
+  "ě": "e",
+  "Ĝ": "G",
+  "ĝ": "g",
+  "Ğ": "G",
+  "ğ": "g",
+  "Ġ": "G",
+  "ġ": "g",
+  "Ģ": "G",
+  "ģ": "g",
+  "Ĥ": "H",
+  "ĥ": "h",
+  "Ħ": "H",
+  "ħ": "h",
+  "Ĩ": "I",
+  "ĩ": "i",
+  "Ī": "I",
+  "ī": "i",
+  "Ĭ": "I",
+  "ĭ": "i",
+  "Į": "I",
+  "į": "i",
+  "İ": "I",
+  "ı": "i",
+  "Ĳ": "IJ",
+  "ĳ": "ij",
+  "Ĵ": "J",
+  "ĵ": "j",
+  "Ķ": "K",
+  "ķ": "k",
+  "ĸ": "kra",
+  "Ĺ": "L",
+  "ĺ": "l",
+  "Ļ": "L",
+  "ļ": "l",
+  "Ľ": "L",
+  "ľ": "l",
+  "Ŀ": "L",
+  "ŀ": "l",
+  "Ł": "L",
+  "ł": "l",
+  "Ń": "N",
+  "ń": "n",
+  "Ņ": "N",
+  "ņ": "n",
+  "Ň": "N",
+  "ň": "n",
+  "ŉ": "n",
+  "Ŋ": "ENG",
+  "ŋ": "eng",
+  "Ō": "O",
+  "ō": "o",
+  "Ŏ": "O",
+  "ŏ": "o",
+  "Ő": "O",
+  "ő": "o",
+  "Œ": "OE",
+  "œ": "oe",
+  "Ŕ": "R",
+  "ŕ": "r",
+  "Ŗ": "R",
+  "ŗ": "r",
+  "Ř": "R",
+  "ř": "r",
+  "Ś": "S",
+  "ś": "s",
+  "Ŝ": "S",
+  "ŝ": "s",
+  "Ş": "S",
+  "ş": "s",
+  "Š": "S",
+  "š": "s",
+  "Ţ": "T",
+  "ţ": "t",
+  "Ť": "T",
+  "ť": "t",
+  "Ŧ": "T",
+  "ŧ": "t",
+  "Ũ": "U",
+  "ũ": "u",
+  "Ū": "U",
+  "ū": "u",
+  "Ŭ": "U",
+  "ŭ": "u",
+  "Ů": "U",
+  "ů": "u",
+  "Ű": "U",
+  "ű": "u",
+  "Ų": "U",
+  "ų": "u",
+  "Ŵ": "W",
+  "ŵ": "w",
+  "Ŷ": "Y",
+  "ŷ": "y",
+  "Ÿ": "Y",
+  "Ź": "Z",
+  "ź": "z",
+  "Ż": "Z",
+  "ż": "z",
+  "Ž": "Z",
+  "ž": "z",
+  "ſ": "s",
+  "ƀ": "b",
+  "Ɓ": "B",
+  "Ƃ": "B",
+  "ƃ": "b",
+  "Ƅ": "SIX",
+  "ƅ": "six",
+  "Ɔ": "O",
+  "Ƈ": "C",
+  "ƈ": "c",
+  "Ɖ": "D",
+  "Ɗ": "D",
+  "Ƌ": "D",
+  "ƌ": "d",
+  "ƍ": "delta",
+  "Ǝ": "E",
+  "Ə": "SCHWA",
+  "Ɛ": "E",
+  "Ƒ": "F",
+  "ƒ": "f",
+  "Ɠ": "G",
+  "Ɣ": "GAMMA",
+  "ƕ": "hv",
+  "Ɩ": "IOTA",
+  "Ɨ": "I",
+  "Ƙ": "K",
+  "ƙ": "k",
+  "ƚ": "l",
+  "ƛ": "lambda",
+  "Ɯ": "M",
+  "Ɲ": "N",
+  "ƞ": "n",
+  "Ɵ": "O",
+  "Ơ": "O",
+  "ơ": "o",
+  "Ƣ": "OI",
+  "ƣ": "oi",
+  "Ƥ": "P",
+  "ƥ": "p",
+  "Ʀ": "YR",
+  "Ƨ": "TWO",
+  "ƨ": "two",
+  "Ʃ": "ESH",
+  "ƪ": "Esh",
+  "ƫ": "t-palatal",
+  "Ƭ": "T",
+  "ƭ": "t",
+  "Ʈ": "T",
+  "Ư": "U",
+  "ư": "u",
+  "Ʊ": "UPSILON",
+  "Ʋ": "V",
+  "Ƴ": "Y",
+  "ƴ": "y",
+  "Ƶ": "Z",
+  "ƶ": "z",
+  "Ʒ": "EZH",
+  "Ƹ": "EZH",
+  "ƹ": "ezh",
+  "ƺ": "ezh",
+  "ƻ": "Two",
+  "Ƽ": "FIVE",
+  "ƽ": "five",
+  "ƾ": "Glottal",
+  "ƿ": "Wynn",
+  "ǀ": "Dental",
+  "ǁ": "Lateral",
+  "ǂ": "Alveolar",
+  "Ǆ": "DZ",
+  "ǅ": "Dz",
+  "ǆ": "dz",
+  "Ǉ": "LJ",
+  "ǈ": "Lj",
+  "ǉ": "lj",
+  "Ǌ": "NJ",
+  "ǋ": "Nj",
+  "ǌ": "nj",
+  "Ǎ": "A",
+  "ǎ": "a",
+  "Ǐ": "I",
+  "ǐ": "i",
+  "Ǒ": "O",
+  "ǒ": "o",
+  "Ǔ": "U",
+  "ǔ": "u",
+  "Ǖ": "U",
+  "ǖ": "u",
+  "Ǘ": "U",
+  "ǘ": "u",
+  "Ǚ": "U",
+  "ǚ": "u",
+  "Ǜ": "U",
+  "ǜ": "u",
+  "ǝ": "e",
+  "Ǟ": "A",
+  "ǟ": "a",
+  "Ǡ": "A",
+  "ǡ": "a",
+  "Ǣ": "AE",
+  "ǣ": "ae",
+  "Ǥ": "G",
+  "ǥ": "g",
+  "Ǧ": "G",
+  "ǧ": "g",
+  "Ǩ": "K",
+  "ǩ": "k",
+  "Ǫ": "O",
+  "ǫ": "o",
+  "Ǭ": "O",
+  "ǭ": "o",
+  "Ǯ": "EZH",
+  "ǯ": "ezh",
+  "ǰ": "j",
+  "Ǳ": "DZ",
+  "ǲ": "Dz",
+  "ǳ": "dz",
+  "Ǵ": "G",
+  "ǵ": "g",
+  "Ƕ": "HWAIR",
+  "Ƿ": "WYNN",
+  "Ǹ": "N",
+  "ǹ": "n",
+  "Ǻ": "A",
+  "ǻ": "a",
+  "Ǽ": "AE",
+  "ǽ": "ae",
+  "Ǿ": "O",
+  "ǿ": "o",
+  "Ȁ": "A",
+  "ȁ": "a",
+  "Ȃ": "A",
+  "ȃ": "a",
+  "Ȅ": "E",
+  "ȅ": "e",
+  "Ȇ": "E",
+  "ȇ": "e",
+  "Ȉ": "I",
+  "ȉ": "i",
+  "Ȋ": "I",
+  "ȋ": "i",
+  "Ȍ": "O",
+  "ȍ": "o",
+  "Ȏ": "O",
+  "ȏ": "o",
+  "Ȑ": "R",
+  "ȑ": "r",
+  "Ȓ": "R",
+  "ȓ": "r",
+  "Ȕ": "U",
+  "ȕ": "u",
+  "Ȗ": "U",
+  "ȗ": "u",
+  "Ș": "S",
+  "ș": "s",
+  "Ț": "T",
+  "ț": "t",
+  "Ȝ": "YOGH",
+  "ȝ": "yogh",
+  "Ȟ": "H",
+  "ȟ": "h",
+  "Ƞ": "N",
+  "ȡ": "d",
+  "Ȣ": "OU",
+  "ȣ": "ou",
+  "Ȥ": "Z",
+  "ȥ": "z",
+  "Ȧ": "A",
+  "ȧ": "a",
+  "Ȩ": "E",
+  "ȩ": "e",
+  "Ȫ": "O",
+  "ȫ": "o",
+  "Ȭ": "O",
+  "ȭ": "o",
+  "Ȯ": "O",
+  "ȯ": "o",
+  "Ȱ": "O",
+  "ȱ": "o",
+  "Ȳ": "Y",
+  "ȳ": "y",
+  "ȴ": "l",
+  "ȵ": "n",
+  "ȶ": "t",
+  "ȷ": "j",
+  "ȸ": "db",
+  "ȹ": "qp",
+  "Ⱥ": "A",
+  "Ȼ": "C",
+  "ȼ": "c",
+  "Ƚ": "L",
+  "Ⱦ": "T",
+  "ȿ": "s",
+  "ɀ": "z",
+  "Ɂ": "GLOTTAL",
+  "ɂ": "glottal",
+  "Ƀ": "B",
+  "Ʉ": "U",
+  "Ʌ": "V",
+  "Ɇ": "E",
+  "ɇ": "e",
+  "Ɉ": "J",
+  "ɉ": "j",
+  "Ɋ": "Q",
+  "ɋ": "q",
+  "Ɍ": "R",
+  "ɍ": "r",
+  "Ɏ": "Y",
+  "ɏ": "y",
+  "Ḁ": "A",
+  "ḁ": "a",
+  "Ḃ": "B",
+  "ḃ": "b",
+  "Ḅ": "B",
+  "ḅ": "b",
+  "Ḇ": "B",
+  "ḇ": "b",
+  "Ḉ": "C",
+  "ḉ": "c",
+  "Ḋ": "D",
+  "ḋ": "d",
+  "Ḍ": "D",
+  "ḍ": "d",
+  "Ḏ": "D",
+  "ḏ": "d",
+  "Ḑ": "D",
+  "ḑ": "d",
+  "Ḓ": "D",
+  "ḓ": "d",
+  "Ḕ": "E",
+  "ḕ": "e",
+  "Ḗ": "E",
+  "ḗ": "e",
+  "Ḙ": "E",
+  "ḙ": "e",
+  "Ḛ": "E",
+  "ḛ": "e",
+  "Ḝ": "E",
+  "ḝ": "e",
+  "Ḟ": "F",
+  "ḟ": "f",
+  "Ḡ": "G",
+  "ḡ": "g",
+  "Ḣ": "H",
+  "ḣ": "h",
+  "Ḥ": "H",
+  "ḥ": "h",
+  "Ḧ": "H",
+  "ḧ": "h",
+  "Ḩ": "H",
+  "ḩ": "h",
+  "Ḫ": "H",
+  "ḫ": "h",
+  "Ḭ": "I",
+  "ḭ": "i",
+  "Ḯ": "I",
+  "ḯ": "i",
+  "Ḱ": "K",
+  "ḱ": "k",
+  "Ḳ": "K",
+  "ḳ": "k",
+  "Ḵ": "K",
+  "ḵ": "k",
+  "Ḷ": "L",
+  "ḷ": "l",
+  "Ḹ": "L",
+  "ḹ": "l",
+  "Ḻ": "L",
+  "ḻ": "l",
+  "Ḽ": "L",
+  "ḽ": "l",
+  "Ḿ": "M",
+  "ḿ": "m",
+  "Ṁ": "M",
+  "ṁ": "m",
+  "Ṃ": "M",
+  "ṃ": "m",
+  "Ṅ": "N",
+  "ṅ": "n",
+  "Ṇ": "N",
+  "ṇ": "n",
+  "Ṉ": "N",
+  "ṉ": "n",
+  "Ṋ": "N",
+  "ṋ": "n",
+  "Ṍ": "O",
+  "ṍ": "o",
+  "Ṏ": "O",
+  "ṏ": "o",
+  "Ṑ": "O",
+  "ṑ": "o",
+  "Ṓ": "O",
+  "ṓ": "o",
+  "Ṕ": "P",
+  "ṕ": "p",
+  "Ṗ": "P",
+  "ṗ": "p",
+  "Ṙ": "R",
+  "ṙ": "r",
+  "Ṛ": "R",
+  "ṛ": "r",
+  "Ṝ": "R",
+  "ṝ": "r",
+  "Ṟ": "R",
+  "ṟ": "r",
+  "Ṡ": "S",
+  "ṡ": "s",
+  "Ṣ": "S",
+  "ṣ": "s",
+  "Ṥ": "S",
+  "ṥ": "s",
+  "Ṧ": "S",
+  "ṧ": "s",
+  "Ṩ": "S",
+  "ṩ": "s",
+  "Ṫ": "T",
+  "ṫ": "t",
+  "Ṭ": "T",
+  "ṭ": "t",
+  "Ṯ": "T",
+  "ṯ": "t",
+  "Ṱ": "T",
+  "ṱ": "t",
+  "Ṳ": "U",
+  "ṳ": "u",
+  "Ṵ": "U",
+  "ṵ": "u",
+  "Ṷ": "U",
+  "ṷ": "u",
+  "Ṹ": "U",
+  "ṹ": "u",
+  "Ṻ": "U",
+  "ṻ": "u",
+  "Ṽ": "V",
+  "ṽ": "v",
+  "Ṿ": "V",
+  "ṿ": "v",
+  "Ẁ": "W",
+  "ẁ": "w",
+  "Ẃ": "W",
+  "ẃ": "w",
+  "Ẅ": "W",
+  "ẅ": "w",
+  "Ẇ": "W",
+  "ẇ": "w",
+  "Ẉ": "W",
+  "ẉ": "w",
+  "Ẋ": "X",
+  "ẋ": "x",
+  "Ẍ": "X",
+  "ẍ": "x",
+  "Ẏ": "Y",
+  "ẏ": "y",
+  "Ẑ": "Z",
+  "ẑ": "z",
+  "Ẓ": "Z",
+  "ẓ": "z",
+  "Ẕ": "Z",
+  "ẕ": "z",
+  "ẖ": "h",
+  "ẗ": "t",
+  "ẘ": "w",
+  "ẙ": "y",
+  "ẛ": "s",
+  "ẜ": "s",
+  "ẝ": "s",
+  "ẞ": "S",
+  "ẟ": "delta",
+  "Ạ": "A",
+  "ạ": "a",
+  "Ả": "A",
+  "ả": "a",
+  "Ấ": "A",
+  "ấ": "a",
+  "Ầ": "A",
+  "ầ": "a",
+  "Ẩ": "A",
+  "ẩ": "a",
+  "Ẫ": "A",
+  "ẫ": "a",
+  "Ậ": "A",
+  "ậ": "a",
+  "Ắ": "A",
+  "ắ": "a",
+  "Ằ": "A",
+  "ằ": "a",
+  "Ẳ": "A",
+  "ẳ": "a",
+  "Ẵ": "A",
+  "ẵ": "a",
+  "Ặ": "A",
+  "ặ": "a",
+  "Ẹ": "E",
+  "ẹ": "e",
+  "Ẻ": "E",
+  "ẻ": "e",
+  "Ẽ": "E",
+  "ẽ": "e",
+  "Ế": "E",
+  "ế": "e",
+  "Ề": "E",
+  "ề": "e",
+  "Ể": "E",
+  "ể": "e",
+  "Ễ": "E",
+  "ễ": "e",
+  "Ệ": "E",
+  "ệ": "e",
+  "Ỉ": "I",
+  "ỉ": "i",
+  "Ị": "I",
+  "ị": "i",
+  "Ọ": "O",
+  "ọ": "o",
+  "Ỏ": "O",
+  "ỏ": "o",
+  "Ố": "O",
+  "ố": "o",
+  "Ồ": "O",
+  "ồ": "o",
+  "Ổ": "O",
+  "ổ": "o",
+  "Ỗ": "O",
+  "ỗ": "o",
+  "Ộ": "O",
+  "ộ": "o",
+  "Ớ": "O",
+  "ớ": "o",
+  "Ờ": "O",
+  "ờ": "o",
+  "Ở": "O",
+  "ở": "o",
+  "Ỡ": "O",
+  "ỡ": "o",
+  "Ợ": "O",
+  "ợ": "o",
+  "Ụ": "U",
+  "ụ": "u",
+  "Ủ": "U",
+  "ủ": "u",
+  "Ứ": "U",
+  "ứ": "u",
+  "Ừ": "U",
+  "ừ": "u",
+  "Ử": "U",
+  "ử": "u",
+  "Ữ": "U",
+  "ữ": "u",
+  "Ự": "U",
+  "ự": "u",
+  "Ỳ": "Y",
+  "ỳ": "y",
+  "Ỵ": "Y",
+  "ỵ": "y",
+  "Ỷ": "Y",
+  "ỷ": "y",
+  "Ỹ": "Y",
+  "ỹ": "y",
+  "Ỻ": "WELSHLL",
+  "ỻ": "welsh-ll",
+  "Ỽ": "WELSH-V",
+  "ỽ": "welsh-v",
+  "Ỿ": "Y",
+  "ỿ": "y",
+  "ɐ": "a",
+  "ɑ": "alpha",
+  "ɒ": "alpha",
+  "ɓ": "b",
+  "ɔ": "o",
+  "ɕ": "c",
+  "ɖ": "d",
+  "ɗ": "d",
+  "ɘ": "e",
+  "ə": "schwa",
+  "ɚ": "schwa",
+  "ɛ": "e",
+  "ɜ": "e",
+  "ɝ": "e",
+  "ɞ": "e",
+  "ɟ": "j",
+  "ɠ": "g",
+  "ɡ": "g",
+  "ɢ": "G",
+  "ɣ": "gamma",
+  "ɤ": "rams",
+  "ɥ": "h",
+  "ɦ": "h",
+  "ɧ": "heng",
+  "ɨ": "i",
+  "ɩ": "iota",
+  "ɪ": "I",
+  "ɫ": "l",
+  "ɬ": "l",
+  "ɭ": "l",
+  "ɮ": "lezh",
+  "ɯ": "m",
+  "ɰ": "m",
+  "ɱ": "m",
+  "ɲ": "n",
+  "ɳ": "n",
+  "ɴ": "N",
+  "ɵ": "o",
+  "ɶ": "OE",
+  "ɷ": "omega",
+  "ɸ": "phi",
+  "ɹ": "r",
+  "ɺ": "r",
+  "ɻ": "r",
+  "ɼ": "r",
+  "ɽ": "r",
+  "ɾ": "r",
+  "ɿ": "r",
+  "ʀ": "R",
+  "ʁ": "R",
+  "ʂ": "s",
+  "ʃ": "esh",
+  "ʄ": "j",
+  "ʅ": "esh",
+  "ʆ": "esh",
+  "ʇ": "t",
+  "ʈ": "t",
+  "ʉ": "u",
+  "ʊ": "upsilon",
+  "ʋ": "v",
+  "ʌ": "v",
+  "ʍ": "w",
+  "ʎ": "y",
+  "ʏ": "Y",
+  "ʐ": "z",
+  "ʑ": "z",
+  "ʒ": "ezh",
+  "ʓ": "ezh",
+  "ʔ": "Glottal",
+  "ʕ": "Pharyngeal",
+  "ʖ": "Glottal",
+  "ʗ": "C",
+  "ʘ": "Bilabial",
+  "ʙ": "B",
+  "ʚ": "e",
+  "ʛ": "G",
+  "ʜ": "H",
+  "ʝ": "j",
+  "ʞ": "k",
+  "ʟ": "L",
+  "ʠ": "q",
+  "ʡ": "Glottal",
+  "ʢ": "Glottal",
+  "ʣ": "dz",
+  "ʤ": "dezh",
+  "ʥ": "dz",
+  "ʦ": "ts",
+  "ʧ": "tesh",
+  "ʨ": "tc",
+  "ʩ": "feng",
+  "ʪ": "ls",
+  "ʫ": "lz",
+  "ʬ": "Bilabial",
+  "ʭ": "Bidental",
+  "ʮ": "h",
+  "ʯ": "h"
+};
+
+/**
+ * Create a serialize data if you are coming to php
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {string} Returns number for subtracted value
+ * @example
+ *
+ * phpSerialize(["22s"])
+ * // => 'a:1:{i:0;s:3:"22s";}'
+ */
+function phpSerialize (value) {
+
+    return _stk.curry(function (rawValue) {
+
+        const dataType = _stk.getTypeof(rawValue);
+
+        if (_stk.indexOfExist(dataType, [
+            "array",
+            "json",
+            "object",
+            "set",
+            "map"
+        ])) {
+
+            const getKeyVal = _stk.toArray(_stk.getKey(rawValue));
+            const getValueVal = _stk.toArray(_stk.getValue(rawValue));
+
+            const mapData = _stk.map(function (mValue, kValue) {
+
+                const refMapKey = getKeyVal[kValue];
+                const refMapValue = getValueVal[kValue];
+
+                return parseTypeVal(_stk.getTypeof(refMapKey), refMapKey) +""+parseTypeVal(_stk.getTypeof(refMapValue), refMapValue);
+
+            }, _stk.range(_stk.count(rawValue) - one, zero));
+
+            return "a:"+_stk.count(mapData)+":{"+mapData.join("")+"}";
+
+        }
+
+        return parseTypeVal(dataType, value);
+
+    }, one)(value);
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} typeValue Arugment that you want to convert to serialize string
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeVal ("string", "value")
+ * // => 0
+ */
+const parseTypeVal = function (typeValue, value) {
+
+    if (_stk.indexOfExist(typeValue, [
+        "array",
+        "json",
+        "object",
+        "set",
+        "map"
+    ])) {
+
+        return phpSerialize(value);
+
+    }
+
+    if (typeValue === "string") {
+
+        return "s:"+_stk.count(value)+":\""+value+"\";";
+
+    }
+    if (typeValue === "function") {
+
+        return "O:"+_stk.count(value.name)+":\""+value.name+"\":0:{};";
+
+    }
+    if (typeValue === "number") {
+
+        return "i:"+value+";";
+
+    }
+
+    return "N;";
+
+};
+
+/**
+ * Convert date to its preferred value
+ *
+ * @since 1.2.72
+ * @category Function
+ * @param {string} value String to split
+ * @returns {string} Returns the total.
+ * @example
+ *
+ * convertValue("split-this-string")
+ *=>"split this string"
+ */
+function convertValue (value) {
+
+    if (_stk.getTypeof(value) === "string") {
+
+        if ((/^[0-9]{1,}$/g).test(value)) {
+
+            return parseInt(value);
+
+        }
+
+        if ((/^[0-9]{1,}[.]{1}[0-9]{1,}$/g).test(value)) {
+
+            return parseFloat(value);
+
+        }
+
+        return value;
+
+    }
+
+    return value;
+
+}
+
+/**
+ * Create a serialize data if you are coming to php
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * phpUnSerialize('s:6:"Violet";')
+ * // => 'Violet'
+ */
+function phpUnSerialize (value) {
+
+    return _stk.curry(function (rawValue) {
+
+        return parseTypeValObj(rawValue);
+
+    }, one)(value);
+
+    // }, [value], one);
+
+}
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+const getObjectValue = function (value) {
+
+    const splitOpen = value.split("{");
+    const splitClose = _stk.reduce(function (total, mVal) {
+
+        let rawVal = mVal;
+
+        if (rawVal.match(/;(\})[a-z]:\d:(.*)/)) {
+
+            const spltRawVal = rawVal.split("}");
+
+            rawVal = spltRawVal.join("};");
+
+        }
+        total.push(rawVal);
+
+        return total;
+
+    }, [], _stk.arraySlice(splitOpen, one)).join("{")
+        .replace(/\}[;]{1,}$/g, "");
+
+    return splitClose;
+
+};
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * getObjectType ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+const getObjectType = function (value) {
+
+    const getMatch = value.match(/\b([a-z]){1}:([0-9]+)\b/g);
+
+    if (getMatch !== null) {
+
+        return {
+            "is_valid": true,
+            "matches": getMatch
+        };
+
+    }
+
+    return {
+        "is_valid": false,
+        "matches": []
+    };
+
+};
+
+/**
+ * Convert the value to its type in serialize
+ *
+ * @since 1.4.9
+ * @category Collection
+ * @param {any} value Arugment that you want to convert to serialize string
+ * @returns {any} Returns number for subtracted value
+ * @example
+ *
+ * parseTypeValObj ( 'a:1:{i:0;s:3:"22s";};')
+ * // => ["22s"]
+ */
+const parseTypeValObj = function (value) {
+
+    if (value === "N;") {
+
+        return null;
+
+    }
+
+    const getMatch = getObjectType(value);
+
+    if (getMatch.is_valid) {
+
+        const splitValue = getMatch.matches[zero].split(":");
+
+        if (splitValue[zero] === "s") {
+
+            const stringSplit = value.split(";");
+            const slitGetStr = _stk.first(stringSplit).split(":");
+
+            return slitGetStr[two].replace(/^"/g, "").replace(/"$/g, "");
+
+        }
+
+        if (splitValue[zero] === "O") {
+
+            const stringSplit = value.split(";");
+            const slitGetStr = _stk.first(stringSplit).split(":");
+
+            return slitGetStr[two].replace(/^"/g, "").replace(/"$/g, "");
+
+        }
+
+        if (splitValue[zero] === "i") {
+
+            return convertValue(splitValue[one]);
+
+        }
+
+        if (splitValue[zero] === "a") {
+
+            let objValue = getObjectValue(value).split(";");
+
+            const argVal = {};
+            // This will help as check if the deep type was in array or json
+            let isArrayValue = true;
+            let counterArrayValue =zero;
+
+            _stk.each(_stk.range(convertValue(splitValue[one]) - one, zero), function () {
+
+                const refobjKey = parseTypeValObj(objValue[zero]+";");
+
+                if (isArrayValue && refobjKey !== counterArrayValue) {
+
+                    isArrayValue = false;
+
+                }
+
+                let isValidObject = false;
+                let rawCount = one;
+
+                if (objValue[one].match(/[a-z]:[0-9]+:\{[a-z]:[0-9]/g)) {
+
+                    rawCount = _stk.indexOf("}", objValue);
+                    isValidObject = true;
+
+                }
+
+                argVal[refobjKey] = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
+
+                if (isValidObject) {
+
+                    objValue = _stk.arraySlice(objValue, rawCount + one);
+                    counterArrayValue += rawCount;
+
+                } else {
+
+                    objValue = _stk.arraySlice(objValue, two);
+                    counterArrayValue += one;
+
+                }
+
+            });
+
+            return isArrayValue
+                ?_stk.toArray(_stk.getValue(argVal))
+                :argVal;
+
+        }
+
+    }
+
+    return null;
+
 };
 
 /**
@@ -2479,6 +3452,43 @@ function isUrlExtValid (host, ext) {
 }
 
 /**
+ * Convert the charset to english
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} words Passing words you want to convert to english
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * charsetToEn('hello $ world')
+ *=> hello dollar world
+ */
+function charsetToEn (words, ext) {
+
+    const varExt = _stk.varExtend({
+        "dictStrictMap": {}
+    }, ext);
+
+    const refCharMap = _stk.mergeWithKey(charMap, varExt.dictStrictMap);
+
+    let rawWords = String(words);
+
+    rawWords = _stk.reduce(function (sums, value) {
+
+        sums+= _stk.has(refCharMap, value) && value.includes(" ") === false
+            ?refCharMap[value]
+            :value;
+
+        return sums;
+
+    }, "", rawWords.normalize().split(""));
+
+    return rawWords;
+
+}
+
+/**
  * Create url slug from words
  *
  * @since 1.2.6
@@ -2510,17 +3520,9 @@ function slugify (pattern, ext) {
 
     if (varExt.replaceStrictMap) {
 
-        const refCharMap = _stk.mergeWithKey(charMap, varExt.dictStrictMap);
-
-        strPattern = _stk.reduce(function (sums, value) {
-
-            sums+= _stk.has(refCharMap, value)
-                ?refCharMap[value]
-                :value;
-
-            return sums;
-
-        }, "", strPattern.normalize().split(""));
+        strPattern = charsetToEn(strPattern, {
+            "dictStrictMap": varExt.dictStrictMap
+        });
 
     }
 
@@ -2594,6 +3596,44 @@ function formatUrl (pattern, ext) {
 
 }
 
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function encodeURI (data) {
+
+    return coreEncodeURI(data);
+
+}
+
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function decodeURI (data) {
+
+    return coreDecodeURI(data);
+
+}
+
 urs.getHostDetails=getHostDetails;
 urs.formatUrl=formatUrl;
 urs.qsStringify=qsStringify;
@@ -2609,6 +3649,13 @@ urs.urlPattern=urlPattern;
 urs.slugify=slugify;
 urs.queryEncode=queryEncode;
 urs.queryDecode=queryDecode;
+urs.phpSerialize=phpSerialize;
+urs.phpUnSerialize=phpUnSerialize;
+urs.qoute=qoute;
+urs.unQoute=unQoute;
+urs.charsetToEn=charsetToEn;
+urs.encodeURI=encodeURI;
+urs.decodeURI=decodeURI;
 
 
  //end of file

@@ -1,5 +1,5 @@
 const list_package_utility_js = [
-//    "src/*.js",
+    "src/*.js",
     "src/*/*.js",
     "src/*/*/*.js",
     "src/*/*/*/*.js"
@@ -36,7 +36,9 @@ exports.module=function (grassconf) {
                 "pathReplace": {
                     "from": "src/",
                     "to": ""
-                }
+                },
+                "savePathReplace": {"from": ".js",
+                    "to": ".mjs"}
             }));
 
     });

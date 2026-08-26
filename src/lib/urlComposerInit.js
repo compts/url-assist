@@ -72,7 +72,8 @@ function ifValidHost (domain, protocol, port, subdomain, tld) {
 function removeSlash (data) {
 
     return data.replace(/^(\/)/g, "").replace(/(\/)$/g, "")
-        .replace(/[/]{2,}/g, "/");
+        .replace(/[/]{2,}/g, "/")
+        .replace(/[#]{1,}/g, "");
 
 }
 
@@ -136,7 +137,7 @@ UrlComposerInit.prototype.setProtocol = function (data) {
  */
 UrlComposerInit.prototype.setHash = function (data) {
 
-    this.variableHash = data;
+    this.variableHash = data.replace(/[#]{1,}/g, "");
 
 };
 
@@ -303,7 +304,7 @@ UrlComposerInit.prototype.getToString = function () {
         "domain": urlData.domain,
         "hash": isEmpty(this.variableHash)
             ? ''
-            : '#'+this.variableHash,
+            : '#'+this.variableHash.replace(/[#]{1,}/g, ""),
         "path": isEmpty(joinPath)
             ? ''
             : '/'+removeSlash(joinPath),

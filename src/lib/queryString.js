@@ -1,6 +1,8 @@
 const {each, varExtend, getTypeof, indexOfNotExist, indexOf} = require("structkit");
-const {configQueryString} = require("./config");
-const {zero} = require("./variable");
+const {configQueryString} = require("../config/query");
+const {zero} = require("../config/variable");
+const {qoute} = require("./qoutes");
+
 
 /**
  * Query String stringify
@@ -89,7 +91,9 @@ const parseStringConvert=function (key, value, type, config, reference) {
 
     } else {
 
-        reference.push(key+""+config.equalSeparator+""+value);
+        reference.push(key+""+config.equalSeparator+""+(config.allowQuote
+            ? qoute(value, {"safe": config.safeQuote})
+            : value));
 
     }
 

@@ -5,9 +5,13 @@ const {getDomainDetails, isUrlValidFormatVerifier, urlDetails} = require("./lib/
 const {queryEncode, queryDecode} = require("./lib/format");
 const {qsParse} = require("./lib/queryObject");
 const {arraySlice, first, has, isEmpty, reduce, strLower, varExtend, mergeWithKey, trim} = require("structkit");
-const {one} = require("./lib/variable");
+const {one} = require("./config/variable");
 const {formatUrlInit} = require("./lib/formatUrlInit");
-const {charMap} = require("./lib/slugConfig");
+const {charMap} = require("./config/slug_data");
+const {qoute, unQoute} = require("./lib/qoutes");
+const phpSerialize = require('./lib/phpSerialize');
+const phpUnSerialize = require('./lib/phpUnSerialize');
+const {coreEncodeURI, coreDecodeURI} = require("./core/codeStrUri");
 
 
 /**
@@ -260,6 +264,46 @@ function isUrlExtValid (host, ext) {
 
 }
 
+
+/**
+ * Convert the charset to english
+ *
+ * @since 1.2.6
+ * @category string
+ * @param {string} words Passing words you want to convert to english
+ * @param {any=} ext Option you want to set in this function
+ * @returns {string} Return the string.
+ * @example
+ *
+ * charsetToEn('hello $ world')
+ *=> hello dollar world
+ */
+function charsetToEn (words, ext) {
+
+    const varExt = varExtend({
+        "dictStrictMap": {}
+    }, ext);
+
+    const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
+
+    let rawWords = String(words);
+
+    rawWords = reduce(function (sums, value) {
+
+        sums+= has(refCharMap, value) && value.includes(" ") === false
+            ?refCharMap[value]
+            :value;
+
+
+        return sums;
+
+    }, "", rawWords.normalize().split(""));
+
+    return rawWords;
+
+}
+
+
 /**
  * Create url slug from words
  *
@@ -292,17 +336,9 @@ function slugify (pattern, ext) {
 
     if (varExt.replaceStrictMap) {
 
-        const refCharMap = mergeWithKey(charMap, varExt.dictStrictMap);
-
-        strPattern = reduce(function (sums, value) {
-
-            sums+= has(refCharMap, value)
-                ?refCharMap[value]
-                :value;
-
-            return sums;
-
-        }, "", strPattern.normalize().split(""));
+        strPattern = charsetToEn(strPattern, {
+            "dictStrictMap": varExt.dictStrictMap
+        });
 
     }
 
@@ -379,6 +415,48 @@ function formatUrl (pattern, ext) {
 
 }
 
+
+/**
+ * Encode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the encoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function encodeURI (data) {
+
+
+    return coreEncodeURI(data);
+
+}
+
+
+/**
+ * Decode the url to valid format
+ *
+ * @since 1.2.72
+ * @category Seq
+ * @param {string} data Passing url path like `/12`
+ * @returns {string} Return the decoded string.
+ * @example
+ *
+ * data = urlPattern('/','/');
+ * data.isValid()
+ *=> true
+ */
+function decodeURI (data) {
+
+
+    return coreDecodeURI(data);
+
+}
+
 exports.getHostDetails=getHostDetails;
 exports.formatUrl=formatUrl;
 exports.qsStringify=qsStringify;
@@ -394,3 +472,10 @@ exports.urlPattern = urlPattern;
 exports.slugify = slugify;
 exports.queryEncode = queryEncode;
 exports.queryDecode = queryDecode;
+exports.phpSerialize = phpSerialize;
+exports.phpUnSerialize = phpUnSerialize;
+exports.qoute = qoute;
+exports.unQoute = unQoute;
+exports.charsetToEn = charsetToEn;
+exports.encodeURI = encodeURI;
+exports.decodeURI = decodeURI;

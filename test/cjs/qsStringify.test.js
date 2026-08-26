@@ -39,6 +39,22 @@ describe('CJS: qsStringify method', function () {
 
     });
 
+    it('checl qsStringify to use quote', function () {
+
+        assert.deepStrictEqual(qsStringify({"test": "11 22",
+            "test2": "11"}, {"allowQuote": true}), "test=11%2022&test2=11");
+
+    });
+
+    it('checl qsStringify to use quote with safeQuote', function () {
+
+
+        assert.deepStrictEqual(qsStringify({"test": "\"11 22\"",
+            "test2": "11"}, {"allowQuote": true,
+            "safeQuote": "\""}), 'test="11%2022"&test2=11');
+
+    });
+
     it('check qsStringify argument with key [g][h][j]', function () {
 
         assert.deepStrictEqual(qsStringify({
@@ -169,7 +185,8 @@ describe('CJS: qsStringify method', function () {
                     }
                 }
             }
-        }, {"arrayFormat": "repeat", "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
+        }, {"arrayFormat": "repeat",
+            "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
 
     });
     it('check qsStringify argument with key [g][h][j] and arrayFormat "brackets" and startWith', function () {
@@ -188,7 +205,8 @@ describe('CJS: qsStringify method', function () {
                     }
                 }
             }
-        }, {"arrayFormat": "brackets", "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
+        }, {"arrayFormat": "brackets",
+            "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
 
     });
     it('check qsStringify argument with key [g][h][j] and arrayFormat "indices" and startWith', function () {
@@ -207,7 +225,8 @@ describe('CJS: qsStringify method', function () {
                     }
                 }
             }
-        }, {"arrayFormat": "indices", "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
+        }, {"arrayFormat": "indices",
+            "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
 
     });
     it('check qsStringify argument with key [g][h][j] and arrayFormat "comma" and startWith', function () {
@@ -226,7 +245,8 @@ describe('CJS: qsStringify method', function () {
                     }
                 }
             }
-        }, {"arrayFormat": "comma", "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
+        }, {"arrayFormat": "comma",
+            "startWith": "?"}), "?a[b][c][d][e][f][g][h][i]=j");
 
     });
 
