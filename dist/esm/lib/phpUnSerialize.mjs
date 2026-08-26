@@ -167,7 +167,6 @@ const parseTypeValObj = function (value) {
 
                 }
 
-                let refobjVal = "";
                 let isValidObject = false;
                 let rawCount = one;
 
@@ -178,9 +177,7 @@ const parseTypeValObj = function (value) {
 
                 }
 
-                refobjVal = parseTypeValObj(arraySlice(objValue, one).join(";")+";");
-
-                argVal[refobjKey] = refobjVal;
+                argVal[refobjKey] = parseTypeValObj(arraySlice(objValue, one).join(";")+";")
 
                 if (isValidObject) {
 

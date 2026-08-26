@@ -31,9 +31,9 @@ const sixteen = 16;
 //  * @param {string} url - URL to check
 
 /**
- * Convert date to its preferred value
+ * EncodeURIComponent method with special characters encoded
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Function
  * @param {string} data String to split
  * @returns {string} Returns the total.
@@ -50,9 +50,9 @@ function coreEncodeURI (data) {
 }
 
 /**
- * Convert date to its preferred value
+ * DecodeURIComponent method with special characters decoded
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Function
  * @param {string} data String to split
  * @returns {string} Returns the total.
@@ -2970,7 +2970,7 @@ const parseTypeVal = function (typeValue, value) {
 /**
  * Convert date to its preferred value
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Function
  * @param {string} value String to split
  * @returns {string} Returns the total.
@@ -3165,7 +3165,6 @@ const parseTypeValObj = function (value) {
 
                 }
 
-                let refobjVal = "";
                 let isValidObject = false;
                 let rawCount = one;
 
@@ -3176,9 +3175,7 @@ const parseTypeValObj = function (value) {
 
                 }
 
-                refobjVal = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
-
-                argVal[refobjKey] = refobjVal;
+                argVal[refobjKey] = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";")
 
                 if (isValidObject) {
 
