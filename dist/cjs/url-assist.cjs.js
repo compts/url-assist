@@ -3175,7 +3175,7 @@ const parseTypeValObj = function (value) {
 
                 }
 
-                argVal[refobjKey] = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";")
+                argVal[refobjKey] = parseTypeValObj(_stk.arraySlice(objValue, one).join(";")+";");
 
                 if (isValidObject) {
 
