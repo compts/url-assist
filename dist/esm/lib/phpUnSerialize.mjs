@@ -8,7 +8,7 @@ import {curry, each, range, reduce, getValue, toArray, first, arraySlice, indexO
 /**
  * Create a serialize data if you are coming to php
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} value Arugment that you want to convert to serialize string
  * @returns {any} Returns number for subtracted value
@@ -32,7 +32,7 @@ function phpUnSerialize (value) {
 /**
  * Convert the value to its type in serialize
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} value Arugment that you want to convert to serialize string
  * @returns {any} Returns number for subtracted value
@@ -69,7 +69,7 @@ const getObjectValue = function (value) {
 /**
  * Convert the value to its type in serialize
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} value Arugment that you want to convert to serialize string
  * @returns {any} Returns number for subtracted value
@@ -101,7 +101,7 @@ const getObjectType = function (value) {
 /**
  * Convert the value to its type in serialize
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} value Arugment that you want to convert to serialize string
  * @returns {any} Returns number for subtracted value

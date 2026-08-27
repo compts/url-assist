@@ -6,7 +6,7 @@ const {curry, count, range, getKey, getValue, toArray, map, getTypeof, indexOfEx
 /**
  * Create a serialize data if you are coming to php
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} value Arugment that you want to convert to serialize string
  * @returns {string} Returns number for subtracted value
@@ -55,7 +55,7 @@ function phpSerialize (value) {
 /**
  * Convert the value to its type in serialize
  *
- * @since 1.4.9
+ * @since 1.2.72
  * @category Collection
  * @param {any} typeValue Arugment that you want to convert to serialize string
  * @param {any} value Arugment that you want to convert to serialize string
